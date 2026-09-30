@@ -11,7 +11,7 @@ subtitle: "School district, county, and college-location crosswalks used by ever
 ## Setup
 
 ```{python}
-import pandas, sqlalchemy
+import sqlalchemy
 import geopandas as gpd
 from pygris import blocks, counties
 from pygris.helpers import validate_state, validate_county
