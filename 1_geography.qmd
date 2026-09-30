@@ -5,8 +5,20 @@ subtitle: "School district, county, and college-location crosswalks used by ever
 
 ## Overview
 
-<!-- TODO: one paragraph — what this page produces and why (block-level crosswalks so district/
-     county rollups from PopulationSim and enrollment data are exact joins, no area-weighting). -->
+This script builds the geographic crosswalk that every later step in this project joins against.
+
+- **Objective**: tie every Census block in the Wasatch Front region (Box Elder, Davis, Weber, Salt
+  Lake, and Utah counties) to the school district and county it falls in, and to the K-12 school(s)
+  and college(s) located in it — so that PopulationSim's synthetic population (`3_synthetic.qmd`)
+  and real enrollment data (`2_enrollment.qmd`) can both be rolled up to district/county level as
+  exact joins, with no area-weighting or estimation involved.
+- **What it pulls**: county, school district, and Census block boundaries; K-12 school and college
+  locations from both UGRC/SGID (the state-preferred source) and NCES (kept alongside, not as a
+  replacement, so schools and colleges can also be joined back to federal CCD/IPEDS data by ID);
+  and the WFRC/MAG travel demand model boundary, used later to handle Box Elder County's partial
+  coverage in that model.
+- **Output**: a single block-level crosswalk (`_data/intermediate/crosswalk.csv`) carrying each
+  block's county, district, and matched school/college IDs from every source.
 
 ## Setup
 
