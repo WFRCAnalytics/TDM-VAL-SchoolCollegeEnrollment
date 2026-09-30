@@ -4,13 +4,25 @@ version = "0.1.0"
 description = "Validate PopulationSim synthetic population against real K-12 and college enrollment data for the Wasatch Front."
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "geopandas>=1.2.0",
-    "ipykernel>=7.4.0",
-    "jupyter>=1.1.1",
-    "openpyxl>=3.1.5",
-    "pandas>=3.0.6",
-    "pygris>=0.2.1",
-    "pyogrio>=0.13.0",
-    "python-dotenv>=1.2.3",
-    "requests>=2.34.2",
+  "geopandas>=1.2.0",
+  "ipykernel>=7.4.0",
+  "jupyter>=1.1.1",
+  "openpyxl>=3.1.5",
+  "pandas>=3.0.6",
+  "pygris>=0.2.1",
+  "pyogrio>=0.13.0",
+  "python-dotenv>=1.2.3",
+  "requests>=2.34.2",
+  "sqlalchemy[postgresql-psycopgbinary]>=2.1.1",
 ]
+
+[dependency-groups]
+dev = [
+  "folium>=0.20.0",
+  "mapclassify>=2.11.0",
+  "matplotlib>=3.11.2",
+]
+
+[tool.uv]
+link-mode = "copy"
+cache-dir = ".uv-cache"

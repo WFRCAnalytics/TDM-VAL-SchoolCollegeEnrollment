@@ -1,0 +1,380 @@
+---
+title: "Geography"
+subtitle: "School district, county, and college-location crosswalks used by every later step"
+---
+
+## Overview
+
+<!-- TODO: one paragraph — what this page produces and why (block-level crosswalks so district/
+     county rollups from PopulationSim and enrollment data are exact joins, no area-weighting). -->
+
+## Setup
+
+```{python}
+import pandas, sqlalchemy
+import geopandas as gpd
+from pygris import blocks, counties
+from pygris.helpers import validate_state, validate_county
+from pathlib import Path
+```
+
+```{python}
+
+paths = {
+    "raw": Path("_data/raw/"),
+    "intermediate": Path("_data/intermediate/"),
+    "output": Path("_outputs/"),
+}
+
+constants = {
+    "state": "UT",
+    "counties": {"Box Elder", "Davis", "Weber", "Salt Lake", "Utah"},
+    "crs": "EPSG:26912",
+}
+```
+
+```{python}
+opensgid_engine = sqlalchemy.create_engine(
+    "postgresql+psycopg://agrc:agrc@opensgid.ugrc.utah.gov:5432/opensgid"
+)
+```
+
+```{python}
+# Derive FIPS codes via pygris instead of hardcoding them
+state_fips = validate_state(constants["state"])
+county_fips = [
+    validate_county(state_fips, county)
+    for county in constants["counties"]
+]
+fips_codes = [f"{state_fips}{county}" for county in county_fips]
+fips_codes
+```
+
+## 1. County boundaries
+
+```{python}
+county_boundary_path = paths["raw"] / "geometry" / "county_boundary.gpkg"
+
+# 1. Download only if not already cached locally
+if not county_boundary_path.exists():
+    all_counties = counties(state=state_fips, year=2023, cache=True).to_crs(constants["crs"])
+    all_counties.to_file(county_boundary_path)
+
+# 2. Always read from local storage
+county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
+
+bound_counties = gpd.read_file(
+    county_boundary_path, sql=f"SELECT * FROM county_boundary WHERE COUNTYFP IN ({county_list_sql})"
+)
+```
+
+```{python}
+#| eval: false
+bound_counties.explore()
+```
+
+
+## 2. School district boundaries
+
+```{python}
+district_boundary_path = paths["raw"] / "geometry" / "school_district_boundary.gpkg"
+
+# 1. Download only if not already cached locally
+if not district_boundary_path.exists():
+    all_districts = gpd.read_postgis(
+        "select * from boundaries.school_district_boundaries", opensgid_engine, geom_col="shape"
+    ).to_crs(constants["crs"])
+
+    all_districts["county_fips"] = gpd.sjoin(
+        all_districts.set_geometry(all_districts.centroid),
+        all_counties[["COUNTYFP", "geometry"]],
+        predicate="within",
+        how="left",
+    )["COUNTYFP"]
+
+    all_districts.to_file(district_boundary_path)
+
+# 2. Read + filter in one step, pushed down to SQLite
+county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
+
+bound_districts = gpd.read_file(
+    district_boundary_path,
+    sql=f"SELECT * FROM school_district_boundary WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+bound_districts.explore()
+```
+
+## 3. Census blocks
+
+```{python}
+block_boundary_path = paths["raw"] / "geometry" / "block_boundary.gpkg"
+
+# 1. Download only if not already cached locally
+if not block_boundary_path.exists():
+    all_blocks = blocks(state=state_fips, county=county_fips, year=2023, cache=True).to_crs(
+        constants["crs"]
+    )
+
+    all_blocks["district_name"] = gpd.sjoin(
+        all_blocks.set_geometry(all_blocks.centroid),
+        all_districts[["name", "shape"]],
+        predicate="within",
+        how="left",
+    )["name"]
+
+    all_blocks.to_file(block_boundary_path)
+
+# 2. Read + filter in one step, pushed down to SQLite
+county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
+
+bound_blocks = gpd.read_file(
+    block_boundary_path, sql=f"SELECT * FROM block_boundary WHERE COUNTYFP20 IN ({county_list_sql})"
+)
+```
+
+```{python}
+#| eval: false
+bound_blocks.explore()
+```
+
+## 4. Pre-K to 12 school locations
+
+### UGRC Pre-K to 12
+
+```{python}
+ugrc_school_path = paths["raw"] / "geometry" / "ugrc_school.gpkg"
+
+# 1. Download only if not already cached locally
+if not ugrc_school_path.exists():
+    all_ugrc_schools = gpd.read_postgis(
+        "select * from society.schools_prek_to_12", opensgid_engine, geom_col="shape"
+    ).to_crs(constants["crs"])
+
+    all_ugrc_schools["county_fips"] = gpd.sjoin(
+        all_ugrc_schools, all_counties[["COUNTYFP", "geometry"]], predicate="within", how="left"
+    )["COUNTYFP"]
+
+    all_ugrc_schools.to_file(ugrc_school_path)
+
+# 2. Read + filter in one step, pushed down to SQLite
+county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
+
+ugrc_schools = gpd.read_file(
+    ugrc_school_path,
+    sql=f"SELECT * FROM ugrc_school WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+ugrc_schools.explore()
+```
+
+### NCES public schools
+
+```{python}
+# School year 2023-24
+nces_public_school_path = paths["raw"] / "geometry" / "nces_public_school.gpkg"
+
+if not nces_public_school_path.exists():
+    all_nces_public_schools = gpd.read_file(
+        "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/"
+        "EDGE_ADMINDATA_PUBLICSCH_2324/MapServer/1/query?where=LSTATE='UT'&outFields=*&f=geojson"
+    ).to_crs(constants["crs"])
+
+    all_nces_public_schools["county_fips"] = gpd.sjoin(
+        all_nces_public_schools,
+        all_counties[["COUNTYFP", "geometry"]],
+        predicate="within",
+        how="left",
+    )["COUNTYFP"]
+
+    all_nces_public_schools.to_file(nces_public_school_path)
+
+nces_public_schools = gpd.read_file(
+    nces_public_school_path,
+    sql=f"SELECT * FROM nces_public_school WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+nces_public_schools.explore()
+```
+
+### NCES private school
+
+```{python}
+# School year 2023-24
+nces_private_school_path = paths["raw"] / "geometry" / "nces_private_school.gpkg"
+
+if not nces_private_school_path.exists():
+    all_nces_private_schools = gpd.read_file(
+        "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/"
+        "EDGE_GEOCODE_PRIVATESCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
+    ).to_crs(constants["crs"])
+
+    all_nces_private_schools["county_fips"] = gpd.sjoin(
+        all_nces_private_schools,
+        all_counties[["COUNTYFP", "geometry"]],
+        predicate="within",
+        how="left",
+    )["COUNTYFP"]
+
+    all_nces_private_schools.to_file(nces_private_school_path)
+
+nces_private_schools = gpd.read_file(
+    nces_private_school_path,
+    sql=f"SELECT * FROM nces_private_school WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+nces_private_schools.explore()
+```
+
+## 5. College campus locations
+
+### UGRC higher education
+
+```{python}
+ugrc_college_path = paths["raw"] / "geometry" / "ugrc_college.gpkg"
+
+# 1. Download only if not already cached locally
+if not ugrc_college_path.exists():
+    all_ugrc_colleges = gpd.read_postgis(
+        "select * from society.schools_higher_education", opensgid_engine, geom_col="shape"
+    ).to_crs(constants["crs"])
+
+    all_ugrc_colleges["county_fips"] = gpd.sjoin(
+        all_ugrc_colleges, all_counties[["COUNTYFP", "geometry"]], predicate="within", how="left"
+    )["COUNTYFP"]
+
+    all_ugrc_colleges.to_file(ugrc_college_path)
+
+# 2. Read + filter in one step, pushed down to SQLite
+county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
+
+ugrc_colleges = gpd.read_file(
+    ugrc_college_path,
+    sql=f"SELECT * FROM ugrc_college WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+ugrc_colleges.explore()
+```
+
+### NCES postsecondary (colleges)
+
+```{python}
+# School year 2023-24
+nces_college_path = paths["raw"] / "geometry" / "nces_college.gpkg"
+
+if not nces_college_path.exists():
+    all_nces_colleges = gpd.read_file(
+        "https://nces.ed.gov/opengis/rest/services/Postsecondary_School_Locations/"
+        "EDGE_GEOCODE_POSTSECONDARYSCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
+    ).to_crs(constants["crs"])
+
+    all_nces_colleges["county_fips"] = gpd.sjoin(
+        all_nces_colleges, all_counties[["COUNTYFP", "geometry"]], predicate="within", how="left"
+    )["COUNTYFP"]
+
+    all_nces_colleges.to_file(nces_college_path)
+
+nces_colleges = gpd.read_file(
+    nces_college_path,
+    sql=f"SELECT * FROM nces_college WHERE county_fips IN ({county_list_sql})",
+)
+```
+
+```{python}
+#| eval: false
+nces_colleges.explore()
+```
+
+## 6. Model / MPO region boundary
+
+```{python}
+model_boundary_path = paths["raw"] / "geometry" / "model_boundary.gpkg"
+
+# 1. Download only if not already cached locally
+if not model_boundary_path.exists():
+    model_boundary = gpd.read_file(
+        "https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/"
+        "WFRC_Administrative_and_Planning_Area_Boundaries/FeatureServer/4/query"
+        "?where=1=1&outFields=*&f=geojson"
+    ).to_crs(constants["crs"])
+    model_boundary.to_file(model_boundary_path)
+
+# 2. Always read from local storage
+bound_model = gpd.read_file(model_boundary_path)
+```
+
+```{python}
+#| eval: false
+bound_model.explore()
+```
+
+## 7. Generate crosswalks
+
+```{python}
+school_block_match = gpd.sjoin(
+    ugrc_schools[["schoolid", "geometry"]],
+    bound_blocks[["GEOID20", "geometry"]],
+    predicate="within",
+    how="left",
+)[["schoolid", "GEOID20"]]
+
+college_block_match = gpd.sjoin(
+    ugrc_colleges[["xid", "geometry"]],
+    bound_blocks[["GEOID20", "geometry"]],
+    predicate="within",
+    how="left",
+)[["xid", "GEOID20"]].rename(columns={"xid": "College ID"})
+
+nces_public_block_match = gpd.sjoin(
+    nces_public_schools[["NCESSCH", "geometry"]],
+    bound_blocks[["GEOID20", "geometry"]],
+    predicate="within",
+    how="left",
+)[["NCESSCH", "GEOID20"]].rename(columns={"NCESSCH": "NCES School ID"})
+
+nces_private_block_match = gpd.sjoin(
+    nces_private_schools[["PPIN", "geometry"]],
+    bound_blocks[["GEOID20", "geometry"]],
+    predicate="within",
+    how="left",
+)[["PPIN", "GEOID20"]].rename(columns={"PPIN": "NCES Private School ID"})
+
+nces_college_block_match = gpd.sjoin(
+    nces_colleges[["UNITID", "geometry"]],
+    bound_blocks[["GEOID20", "geometry"]],
+    predicate="within",
+    how="left",
+)[["UNITID", "GEOID20"]].rename(columns={"UNITID": "NCES College ID"})
+
+crosswalk = (
+    bound_blocks[["GEOID20", "COUNTYFP20", "district_name"]]
+    .merge(school_block_match.rename(columns={"schoolid": "School ID"}), on="GEOID20", how="left")
+    .merge(college_block_match, on="GEOID20", how="left")
+    .merge(nces_public_block_match, on="GEOID20", how="left")
+    .merge(nces_private_block_match, on="GEOID20", how="left")
+    .merge(nces_college_block_match, on="GEOID20", how="left")
+    .rename(
+        columns={"GEOID20": "GEOID", "COUNTYFP20": "COUNTYFP", "district_name": "District Name"}
+    )
+)
+
+crosswalk["School ID"] = crosswalk["School ID"].astype("Int64")
+crosswalk["College ID"] = crosswalk["College ID"].astype("Int64")
+
+crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
+```

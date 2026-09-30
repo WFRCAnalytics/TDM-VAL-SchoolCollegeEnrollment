@@ -211,3 +211,4 @@ __marimo__/
 
 # intermediate files that are reproduced by the script
 _data/intermediate
+.uv-cache/
