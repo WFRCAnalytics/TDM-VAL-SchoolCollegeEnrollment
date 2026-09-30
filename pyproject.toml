@@ -1,0 +1,6 @@
+[project]
+name = "tdm-val-schoolcollegeenrollment"
+version = "0.1.0"
+description = "Validate PopulationSim synthetic population against real K-12 and college enrollment data for the Wasatch Front."
+requires-python = ">=3.12,<3.13"
+dependencies = []
