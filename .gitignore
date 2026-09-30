@@ -208,3 +208,6 @@ __marimo__/
 
 /.quarto/
 **/*.quarto_ipynb
+
+# intermediate files that are reproduced by the script
+_data/intermediate

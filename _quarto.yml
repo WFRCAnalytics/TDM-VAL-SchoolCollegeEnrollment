@@ -1,0 +1,72 @@
+project:
+  type: website
+  output-dir: docs
+  brand: _extensions/WFRCAnalytics/wfrc-brand/brand.yml
+
+website:
+  title: "School & College Enrollment Validation"
+  site-url: "https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment"
+
+  announcement:
+    icon: info-circle
+    dismissable: true
+    content: "Site under development."
+    type: primary
+    position: below-navbar
+
+  navbar:
+    logo-alt: "Wasatch Front Regional Council"
+    right:
+      - text: Follow Us
+        menu:
+          - icon: facebook
+            text: Facebook
+            href: https://www.facebook.com/WasatchFrontRegionalCouncil
+            target: _blank
+          - icon: twitter-x
+            text: X (Twitter)
+            href: https://twitter.com/wasatchcouncil
+            target: _blank
+          - icon: instagram
+            text: Instagram
+            href: https://www.instagram.com/wasatchfrontregionalcouncil/
+            target: _blank
+          - icon: linkedin
+            text: LinkedIn
+            href: https://www.linkedin.com/company/wasatch-front-regional-council
+            target: _blank
+          - icon: youtube
+            text: YouTube
+            href: https://www.youtube.com/user/wfrcvideo
+            target: _blank
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            href: https://github.com/WFRCAnalytics/TDM-VAL-SchoolCollegeEnrollment
+            target: _blank
+          - text: Report a Bug
+            href: https://github.com/WFRCAnalytics/TDM-VAL-SchoolCollegeEnrollment/issues/new
+            target: _blank
+
+jupyter: python3
+
+format:
+  html:
+    axe: true
+    page-layout: full
+    grid:
+      sidebar-width: 350px
+    toc: true
+    respect-user-color-scheme: true
+    highlight-style:
+      light: github
+      dark: dracula
+    theme:
+      light:
+        - cosmo
+        - _extensions/WFRCAnalytics/wfrc-brand/assets/theme/wfrc.scss
+        - _extensions/WFRCAnalytics/wfrc-brand/assets/theme/wfrc-light.scss
+      dark:
+        - _extensions/WFRCAnalytics/wfrc-brand/assets/theme/wfrc.scss
+        - _extensions/WFRCAnalytics/wfrc-brand/assets/theme/wfrc-dark.scss
