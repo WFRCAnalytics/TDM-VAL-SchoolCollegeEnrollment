@@ -1,0 +1,75 @@
+---
+title: "Validation"
+subtitle: "Real enrollment vs. PopulationSim synthetic estimates, by district and county"
+---
+
+## Overview
+
+This is the page the site is actually built around — where the real enrollment numbers
+(`2_enrollment.qmd`) and PopulationSim's synthetic estimates (`3_synthetic.qmd`) get compared.
+
+- **Objective**: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against
+  PopulationSim's synthetic K-12 student count (the real test, since that's uncontrolled) and
+  against its synthetic age 5-17 population (a sanity bound, since that's controlled — not expected
+  to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs. synthetic
+  university-student count and college-age population.
+- **What it reads**: the two output tables from `2_enrollment.qmd` and the two from
+  `3_synthetic.qmd`, all from `_outputs/`.
+- **Box Elder**: reported separately from the other four counties, since its real and synthetic
+  numbers are both scoped differently there (model region vs. full county) — a single pooled number
+  would misrepresent it either way.
+- **Output**: this page itself — the published comparison tables and charts, not another
+  intermediate file.
+
+<!-- All code cells below are eval: false -- nothing here is implemented yet, just TODO outlines. -->
+
+## Setup
+
+```{python}
+#| eval: false
+# TODO: imports; load the four _outputs/ tables from 2_enrollment.qmd and 3_synthetic.qmd
+```
+
+## 1. School validation (by district)
+
+```{python}
+#| eval: false
+# TODO: join real (DOE, NCES) + synthetic (enrolled-status, age-band) by District Name;
+#   compute diff and ratio for both the enrolled-status comparison and the age-band comparison
+```
+
+## 2. College validation (by county)
+
+```{python}
+#| eval: false
+# TODO: join real (USHE, NCES/IPEDS) + synthetic (enrolled-status, age-band) by COUNTYFP;
+#   compute diff and ratio for both comparisons
+```
+
+## 3. Box Elder
+
+```{python}
+#| eval: false
+# TODO: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary
+#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own
+#   section rather than folded into the main district/county tables
+```
+
+## 4. Results
+
+```{python}
+#| eval: false
+# TODO: ojs_define() the final comparison tables for the charts below
+```
+
+<!-- TODO: Observable Plot charts -- real vs. synthetic by district (K-12) and by county (college),
+     both the enrolled-status and age-band comparisons. Left as a comment, not a {ojs} cell, since
+     an OJS cell with no real declaration is a hard Quarto render error ("requires at least one
+     declaration") -- eval: false doesn't apply to OJS the way it does to Python/R cells, since OJS
+     compiles into the Observable runtime at build time regardless. Add the real {ojs} cell once
+     there's an actual declaration to put in it. -->
+
+## 5. Summary
+
+<!-- TODO: a few sentences on what the validation actually shows once there are real numbers to
+     describe -- not written in advance of having results. -->

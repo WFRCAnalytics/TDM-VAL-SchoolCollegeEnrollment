@@ -1,0 +1,61 @@
+---
+title: "School and College Enrollment Validation"
+---
+
+This site validates the [PopulationSim](https://github.com/WFRCAnalytics/TDM-INP-PopulationSim)
+synthetic population — the household/person microdata underlying WFRC's travel demand model —
+against real K-12 and college enrollment, for the Wasatch Front region (Box Elder, Davis, Weber,
+Salt Lake, and Utah counties). School enrollment is compared at the **school district** level;
+college enrollment at the **county** level.
+
+PopulationSim doesn't control on school enrollment directly, so each comparison is made two ways:
+against the synthetic population's uncontrolled enrollment-status label (the real test of how well
+the synthetic population reflects actual enrollment), and against its controlled age-band population
+(a sanity bound — age-eligible should meet or exceed enrolled, not match it exactly).
+
+## How this site is built
+
+```{mermaid}
+flowchart TD
+    subgraph sources["Data sources"]
+        UGRC["UGRC / Open SGID\nboundaries, school and college locations"]
+        NCES["NCES\nCCD, Private School Survey, IPEDS locations"]
+        CENSUS["Census TIGER\ncounties, blocks"]
+        TAZSRC["WFRC WasatchFrontTAZ\nTravel Analysis Zones"]
+        MAZSRC["WFRC MAZ\n(planned — not yet published)"]
+        PSIM["PopulationSim\nsynthetic population (local)"]
+        USHE["USHE\nenrollment by student home ZIP"]
+        IPEDS["IPEDS\nFall Enrollment survey"]
+    end
+
+    UGRC --> GEO
+    NCES --> GEO
+    CENSUS --> GEO
+    TAZSRC --> GEO
+    MAZSRC -.-> GEO
+    GEO["1_geography.qmd\nblock-level crosswalk"] --> XWALK[("crosswalk.csv")]
+
+    XWALK --> ENR
+    USHE --> ENR
+    IPEDS --> ENR
+    UGRC --> ENR
+    NCES --> ENR
+    ENR["2_enrollment.qmd\nreal DOE / NCES / USHE / IPEDS enrollment"] --> ENR_OUT[("real enrollment\nby district and county")]
+
+    XWALK --> SYN
+    PSIM --> SYN
+    SYN["3_synthetic.qmd\nPopulationSim rollups"] --> SYN_OUT[("synthetic enrollment\nby district and county")]
+
+    ENR_OUT --> VAL
+    SYN_OUT --> VAL
+    VAL["4_validation.qmd\nreal vs. synthetic comparison"]
+```
+
+- [**Geography**](1_geography.qmd) — builds the block-level crosswalk (county, district, TAZ, and
+  matched school/college IDs) that every later step joins against. MAZ is a placeholder for now —
+  WFRC hasn't published it yet.
+- [**Enrollment**](2_enrollment.qmd) — real K-12 and college enrollment, from state and federal
+  sources.
+- [**Synthetic Population**](3_synthetic.qmd) — PopulationSim's synthetic enrollment estimates,
+  rolled up to the same district/county geography.
+- [**Validation**](4_validation.qmd) — the comparison itself.

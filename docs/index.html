@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>School &amp; College Enrollment Validation</title>
+<title>School and College Enrollment Validation – School &amp; College Enrollment Validation</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -81,6 +81,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -339,18 +342,95 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#how-this-site-is-built" id="toc-how-this-site-is-built" class="nav-link active" data-scroll-target="#how-this-site-is-built">How this site is built</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page-left" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">School and College Enrollment Validation</h1>
+</div>
 
 
 
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This site validates the <a href="https://github.com/WFRCAnalytics/TDM-INP-PopulationSim">PopulationSim</a> synthetic population — the household/person microdata underlying WFRC’s travel demand model — against real K-12 and college enrollment, for the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties). School enrollment is compared at the <strong>school district</strong> level; college enrollment at the <strong>county</strong> level.</p>
+<p>PopulationSim doesn’t control on school enrollment directly, so each comparison is made two ways: against the synthetic population’s uncontrolled enrollment-status label (the real test of how well the synthetic population reflects actual enrollment), and against its controlled age-band population (a sanity bound — age-eligible should meet or exceed enrolled, not match it exactly).</p>
+<section id="how-this-site-is-built" class="level2">
+<h2 class="anchored" data-anchor-id="how-this-site-is-built">How this site is built</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    subgraph sources["Data sources"]
+        UGRC["UGRC / Open SGID\nboundaries, school and college locations"]
+        NCES["NCES\nCCD, Private School Survey, IPEDS locations"]
+        CENSUS["Census TIGER\ncounties, blocks"]
+        TAZSRC["WFRC WasatchFrontTAZ\nTravel Analysis Zones"]
+        MAZSRC["WFRC MAZ\n(planned — not yet published)"]
+        PSIM["PopulationSim\nsynthetic population (local)"]
+        USHE["USHE\nenrollment by student home ZIP"]
+        IPEDS["IPEDS\nFall Enrollment survey"]
+    end
+
+    UGRC --&gt; GEO
+    NCES --&gt; GEO
+    CENSUS --&gt; GEO
+    TAZSRC --&gt; GEO
+    MAZSRC -.-&gt; GEO
+    GEO["1_geography.qmd\nblock-level crosswalk"] --&gt; XWALK[("crosswalk.csv")]
+
+    XWALK --&gt; ENR
+    USHE --&gt; ENR
+    IPEDS --&gt; ENR
+    UGRC --&gt; ENR
+    NCES --&gt; ENR
+    ENR["2_enrollment.qmd\nreal DOE / NCES / USHE / IPEDS enrollment"] --&gt; ENR_OUT[("real enrollment\nby district and county")]
+
+    XWALK --&gt; SYN
+    PSIM --&gt; SYN
+    SYN["3_synthetic.qmd\nPopulationSim rollups"] --&gt; SYN_OUT[("synthetic enrollment\nby district and county")]
+
+    ENR_OUT --&gt; VAL
+    SYN_OUT --&gt; VAL
+    VAL["4_validation.qmd\nreal vs. synthetic comparison"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><a href="./1_geography.html"><strong>Geography</strong></a> — builds the block-level crosswalk (county, district, TAZ, and matched school/college IDs) that every later step joins against. MAZ is a placeholder for now — WFRC hasn’t published it yet.</li>
+<li><a href="./2_enrollment.html"><strong>Enrollment</strong></a> — real K-12 and college enrollment, from state and federal sources.</li>
+<li><a href="./3_synthetic.html"><strong>Synthetic Population</strong></a> — PopulationSim’s synthetic enrollment estimates, rolled up to the same district/county geography.</li>
+<li><a href="./4_validation.html"><strong>Validation</strong></a> — the comparison itself.</li>
+</ul>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

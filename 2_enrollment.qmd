@@ -5,13 +5,27 @@ subtitle: "Real K-12 (Utah DOE + NCES) and college (USHE + IPEDS) enrollment, by
 
 ## Overview
 
-<!-- TODO: one paragraph — this page produces the "real enrollment" half of the validation schema
-     (district-level DOE/NCES K-12 enrollment, county-level USHE/IPEDS college enrollment), read
-     against the geometry/crosswalk built in 1_geography.qmd. -->
+This script produces the "real enrollment" half of the validation schema — the numbers
+PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
+
+- **Objective**: get district-level K-12 enrollment and county-level college enrollment from real,
+  non-synthetic sources, joined through the block-level crosswalk built in `1_geography.qmd`.
+- **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts)
+  and NCES enrollment by district; USHE (student home ZIP code, not institution location — a
+  different geography than everything else in this project) and NCES/IPEDS enrollment by county.
+- **Known gaps**: no NCES private-school enrollment yet (would need the separate Private School
+  Survey bulk file); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists
+  in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used
+  everywhere else, not an oversight.
+- **Output**: one table of district-level enrollment, one table of county-level enrollment, both
+  written to `_outputs/`.
+
+<!-- All code cells below are eval: false -- draft/unverified, not yet run as part of a render. -->
 
 ## Setup
 
 ```{python}
+#| eval: false
 import pandas as pd
 import geopandas as gpd
 from pathlib import Path
@@ -28,6 +42,7 @@ crosswalk = pd.read_csv(paths["intermediate"] / "crosswalk.csv")
 ## 1. K-12 — Utah DOE enrollment by district
 
 ```{python}
+#| eval: false
 # Public schools only (Utah DOE administers public education; private counts are self-reported
 # for a different purpose and aren't comparable to NCES public-school enrollment below)
 ugrc_school = gpd.read_file(paths["raw"] / "geometry" / "ugrc_school.gpkg")
@@ -50,6 +65,7 @@ doe_enrollment_by_district
 ## 2. K-12 — NCES enrollment by district
 
 ```{python}
+#| eval: false
 # School year 2023-24, matching the vintage pulled in 1_geography.qmd
 nces_public_school = gpd.read_file(paths["raw"] / "geometry" / "nces_public_school.gpkg")
 
@@ -65,6 +81,7 @@ nces_enrollment_by_district
 ```
 
 ```{python}
+#| eval: false
 # TODO: NCES private-school enrollment isn't in nces_private_school.gpkg (location-only layer).
 #   Would need the actual Private School Survey (PSS) bulk file if/when private enrollment is
 #   wanted from the NCES side specifically -- parking this for now, matching the "public only"
@@ -74,6 +91,7 @@ nces_enrollment_by_district
 ## 3. Colleges — USHE enrollment by county
 
 ```{python}
+#| eval: false
 # NOTE: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic
 #   Year 2020 (Term 2) -- neither is 2023-24. Using AY2025 as the closest available; this is a
 #   real year mismatch against the ~2023 vintage used everywhere else in this project, not an
@@ -82,6 +100,7 @@ ushe = pd.read_excel(paths["raw"] / "ushe" / "WFRC Data Request_Final.xlsx")
 ```
 
 ```{python}
+#| eval: false
 # USHE enrollment is reported by STUDENT HOME ZIP CODE, not institution location -- needs a
 # ZIP -> county crosswalk, unlike everything else in this project so far which is location-based.
 from pygris import zctas
@@ -100,6 +119,7 @@ zip_to_county = utah_zctas[["ZCTA5CE20", "county_fips"]]
 ```
 
 ```{python}
+#| eval: false
 ushe_enrollment_by_county = (
     ushe.assign(ZIPCODE=ushe["ZIPCODE"].astype(str).str.zfill(5))
     .merge(zip_to_county, left_on="ZIPCODE", right_on="ZCTA5CE20", how="left")
@@ -114,6 +134,7 @@ ushe_enrollment_by_county
 ## 4. Colleges — NCES/IPEDS enrollment by county
 
 ```{python}
+#| eval: false
 # 2023-24 IPEDS Fall Enrollment survey component (EF), matching year across the project.
 # NOTE: the correct current URL is nces.ed.gov/ipeds/datacenter/data/... -- the College repo's
 #   "tablefiles/zipfiles" path 404s; verified directly before using it here.
@@ -136,6 +157,7 @@ ipeds_ef = pd.read_csv(ipeds_csv_path)
 ```
 
 ```{python}
+#| eval: false
 # EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total
 # before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)
 ipeds_totals = ipeds_ef.query("EFALEVEL == 1")[["UNITID", "EFTOTLT"]]
@@ -159,6 +181,7 @@ ipeds_enrollment_by_county
 ## 5. Assemble enrollment tables
 
 ```{python}
+#| eval: false
 # TODO: merge doe_enrollment_by_district + nces_enrollment_by_district into one per-district
 #   table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into one per-county
 #   table; write both to _outputs/ as the real (non-synthetic) half of the validation schema.

@@ -1,0 +1,96 @@
+---
+title: "Synthetic Population"
+subtitle: "PopulationSim synthetic enrollment estimates, by district and county"
+---
+
+## Overview
+
+This script produces the "synthetic" half of the validation schema — PopulationSim's estimate of
+how many K-12 students and college students live in each district/county, to compare against the
+real enrollment numbers from `2_enrollment.qmd`.
+
+- **Objective**: for each district, count synthetic persons two ways — by enrollment status
+  (`PersonType_Label == "K-12 student"`, **uncontrolled** in PopulationSim, so this is the real
+  test) and by age band (5-17, a **controlled** variable, so a sanity bound rather than an exact
+  match). Same two-way count for colleges by county, using `"University student"` and a college-age
+  band, combining PopulationSim's regular household persons with its separate dorm/group-quarters
+  student file.
+- **What it reads**: PopulationSim's synthetic person/household output (local-only — gitignored in
+  the `TDM-INP-PopulationSim` repo, so this script needs a local path to wherever that output
+  actually lives on this machine, not a repo-relative path) and the block-level crosswalk from
+  `1_geography.qmd`.
+- **MAZ/TAZ join**: PopulationSim's output is keyed at MAZ/TAZ level, not Census block. The
+  crosswalk from `1_geography.qmd` now carries `TAZID` per block (sourced from WFRC's
+  [WasatchFrontTAZ](https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0)
+  feature service), so district/county rollup can go through TAZID rather than needing a direct
+  MAZ-to-block join — still need to confirm PopulationSim's output is keyed at this same TAZID
+  (not a different internal MAZ id) before relying on it.
+- **Box Elder**: handled last — the MPO/TDM model region only partially covers the county, so its
+  synthetic counts need to be clipped to the model boundary (`1_geography.qmd`'s `model_boundary`
+  layer) rather than compared at full-county scope like the other four counties.
+- **Output**: synthetic enrollment-status and age-band counts, by district and by county, written
+  to `_outputs/`.
+
+<!-- All code cells below are eval: false -- nothing here is implemented yet, just TODO outlines. -->
+
+## Setup
+
+```{python}
+#| eval: false
+# TODO: imports; path to local PopulationSim output (likely via .env, machine-specific, not a
+#   repo-relative path since that data is gitignored in TDM-INP-PopulationSim); load crosswalk.csv
+```
+
+## 1. Load synthetic persons
+
+```{python}
+#| eval: false
+# TODO: load PopulationSim's synthetic NonGQ persons + dorm/GQ student persons, concat
+```
+
+## 2. Classify K-12 students
+
+```{python}
+#| eval: false
+# TODO: PersonType_Label == "K-12 student" (uncontrolled) and age 5-17 (controlled) -- two
+#   separate boolean columns, not one, since they answer different questions
+```
+
+## 3. Classify college students
+
+```{python}
+#| eval: false
+# TODO: PersonType_Label == "University student" (uncontrolled) and college-age band (controlled)
+#   -- combine NonGQ + dorm/GQ persons first
+```
+
+## 4. Join persons to district / county
+
+```{python}
+#| eval: false
+# TODO: resolve the MAZ/TAZ-vs-block join-key question (see Overview), then join to crosswalk.csv
+#   to get each person's District Name (K-12) and COUNTYFP (college)
+```
+
+## 5. Aggregate to district and county
+
+```{python}
+#| eval: false
+# TODO: groupby District Name -> K-12 enrolled count, age 5-17 count
+#   groupby COUNTYFP -> University-student count, college-age count
+```
+
+## 6. Box Elder clipping
+
+```{python}
+#| eval: false
+# TODO: using 1_geography.qmd's model_boundary layer, flag which Box Elder blocks/persons fall
+#   inside vs. outside the actual MPO/TDM model domain; handle separately from the other 4 counties
+```
+
+## 7. Write output
+
+```{python}
+#| eval: false
+# TODO: write both synthetic tables to _outputs/
+```

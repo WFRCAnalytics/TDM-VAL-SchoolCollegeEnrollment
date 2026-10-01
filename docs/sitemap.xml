@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment/index.html</loc>
+    <lastmod>2026-10-01T00:12:10.663Z</lastmod>
+  </url>
+  <url>
+    <loc>https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment/3_synthetic.html</loc>
+    <lastmod>2026-10-01T00:17:01.802Z</lastmod>
+  </url>
+  <url>
+    <loc>https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment/1_geography.html</loc>
+    <lastmod>2026-10-01T00:11:24.352Z</lastmod>
+  </url>
+  <url>
+    <loc>https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment/2_enrollment.html</loc>
+    <lastmod>2026-10-01T00:16:39.851Z</lastmod>
+  </url>
+  <url>
+    <loc>https://wfrcanalytics.github.io/TDM-VAL-SchoolCollegeEnrollment/4_validation.html</loc>
+    <lastmod>2026-10-01T00:18:34.103Z</lastmod>
+  </url>
 </urlset>

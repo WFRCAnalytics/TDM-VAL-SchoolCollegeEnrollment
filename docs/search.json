@@ -1,0 +1,282 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "School and College Enrollment Validation",
+    "section": "",
+    "text": "This site validates the PopulationSim synthetic population — the household/person microdata underlying WFRC’s travel demand model — against real K-12 and college enrollment, for the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties). School enrollment is compared at the school district level; college enrollment at the county level.\nPopulationSim doesn’t control on school enrollment directly, so each comparison is made two ways: against the synthetic population’s uncontrolled enrollment-status label (the real test of how well the synthetic population reflects actual enrollment), and against its controlled age-band population (a sanity bound — age-eligible should meet or exceed enrolled, not match it exactly)."
+  },
+  {
+    "objectID": "index.html#how-this-site-is-built",
+    "href": "index.html#how-this-site-is-built",
+    "title": "School and College Enrollment Validation",
+    "section": "How this site is built",
+    "text": "How this site is built\n\n\n\n\n\nflowchart TD\n    subgraph sources[\"Data sources\"]\n        UGRC[\"UGRC / Open SGID\\nboundaries, school and college locations\"]\n        NCES[\"NCES\\nCCD, Private School Survey, IPEDS locations\"]\n        CENSUS[\"Census TIGER\\ncounties, blocks\"]\n        TAZSRC[\"WFRC WasatchFrontTAZ\\nTravel Analysis Zones\"]\n        MAZSRC[\"WFRC MAZ\\n(planned — not yet published)\"]\n        PSIM[\"PopulationSim\\nsynthetic population (local)\"]\n        USHE[\"USHE\\nenrollment by student home ZIP\"]\n        IPEDS[\"IPEDS\\nFall Enrollment survey\"]\n    end\n\n    UGRC --&gt; GEO\n    NCES --&gt; GEO\n    CENSUS --&gt; GEO\n    TAZSRC --&gt; GEO\n    MAZSRC -.-&gt; GEO\n    GEO[\"1_geography.qmd\\nblock-level crosswalk\"] --&gt; XWALK[(\"crosswalk.csv\")]\n\n    XWALK --&gt; ENR\n    USHE --&gt; ENR\n    IPEDS --&gt; ENR\n    UGRC --&gt; ENR\n    NCES --&gt; ENR\n    ENR[\"2_enrollment.qmd\\nreal DOE / NCES / USHE / IPEDS enrollment\"] --&gt; ENR_OUT[(\"real enrollment\\nby district and county\")]\n\n    XWALK --&gt; SYN\n    PSIM --&gt; SYN\n    SYN[\"3_synthetic.qmd\\nPopulationSim rollups\"] --&gt; SYN_OUT[(\"synthetic enrollment\\nby district and county\")]\n\n    ENR_OUT --&gt; VAL\n    SYN_OUT --&gt; VAL\n    VAL[\"4_validation.qmd\\nreal vs. synthetic comparison\"]\n\n\n\n\n\n\n\nGeography — builds the block-level crosswalk (county, district, TAZ, and matched school/college IDs) that every later step joins against. MAZ is a placeholder for now — WFRC hasn’t published it yet.\nEnrollment — real K-12 and college enrollment, from state and federal sources.\nSynthetic Population — PopulationSim’s synthetic enrollment estimates, rolled up to the same district/county geography.\nValidation — the comparison itself."
+  },
+  {
+    "objectID": "3_synthetic.html",
+    "href": "3_synthetic.html",
+    "title": "Synthetic Population",
+    "section": "",
+    "text": "This script produces the “synthetic” half of the validation schema — PopulationSim’s estimate of how many K-12 students and college students live in each district/county, to compare against the real enrollment numbers from 2_enrollment.qmd.\n\nObjective: for each district, count synthetic persons two ways — by enrollment status (PersonType_Label == \"K-12 student\", uncontrolled in PopulationSim, so this is the real test) and by age band (5-17, a controlled variable, so a sanity bound rather than an exact match). Same two-way count for colleges by county, using \"University student\" and a college-age band, combining PopulationSim’s regular household persons with its separate dorm/group-quarters student file.\nWhat it reads: PopulationSim’s synthetic person/household output (local-only — gitignored in the TDM-INP-PopulationSim repo, so this script needs a local path to wherever that output actually lives on this machine, not a repo-relative path) and the block-level crosswalk from 1_geography.qmd.\nMAZ/TAZ join: PopulationSim’s output is keyed at MAZ/TAZ level, not Census block. The crosswalk from 1_geography.qmd now carries TAZID per block (sourced from WFRC’s WasatchFrontTAZ feature service), so district/county rollup can go through TAZID rather than needing a direct MAZ-to-block join — still need to confirm PopulationSim’s output is keyed at this same TAZID (not a different internal MAZ id) before relying on it.\nBox Elder: handled last — the MPO/TDM model region only partially covers the county, so its synthetic counts need to be clipped to the model boundary (1_geography.qmd’s model_boundary layer) rather than compared at full-county scope like the other four counties.\nOutput: synthetic enrollment-status and age-band counts, by district and by county, written to _outputs/."
+  },
+  {
+    "objectID": "3_synthetic.html#overview",
+    "href": "3_synthetic.html#overview",
+    "title": "Synthetic Population",
+    "section": "",
+    "text": "This script produces the “synthetic” half of the validation schema — PopulationSim’s estimate of how many K-12 students and college students live in each district/county, to compare against the real enrollment numbers from 2_enrollment.qmd.\n\nObjective: for each district, count synthetic persons two ways — by enrollment status (PersonType_Label == \"K-12 student\", uncontrolled in PopulationSim, so this is the real test) and by age band (5-17, a controlled variable, so a sanity bound rather than an exact match). Same two-way count for colleges by county, using \"University student\" and a college-age band, combining PopulationSim’s regular household persons with its separate dorm/group-quarters student file.\nWhat it reads: PopulationSim’s synthetic person/household output (local-only — gitignored in the TDM-INP-PopulationSim repo, so this script needs a local path to wherever that output actually lives on this machine, not a repo-relative path) and the block-level crosswalk from 1_geography.qmd.\nMAZ/TAZ join: PopulationSim’s output is keyed at MAZ/TAZ level, not Census block. The crosswalk from 1_geography.qmd now carries TAZID per block (sourced from WFRC’s WasatchFrontTAZ feature service), so district/county rollup can go through TAZID rather than needing a direct MAZ-to-block join — still need to confirm PopulationSim’s output is keyed at this same TAZID (not a different internal MAZ id) before relying on it.\nBox Elder: handled last — the MPO/TDM model region only partially covers the county, so its synthetic counts need to be clipped to the model boundary (1_geography.qmd’s model_boundary layer) rather than compared at full-county scope like the other four counties.\nOutput: synthetic enrollment-status and age-band counts, by district and by county, written to _outputs/."
+  },
+  {
+    "objectID": "3_synthetic.html#setup",
+    "href": "3_synthetic.html#setup",
+    "title": "Synthetic Population",
+    "section": "Setup",
+    "text": "Setup\n\n# TODO: imports; path to local PopulationSim output (likely via .env, machine-specific, not a\n#   repo-relative path since that data is gitignored in TDM-INP-PopulationSim); load crosswalk.csv"
+  },
+  {
+    "objectID": "3_synthetic.html#load-synthetic-persons",
+    "href": "3_synthetic.html#load-synthetic-persons",
+    "title": "Synthetic Population",
+    "section": "1. Load synthetic persons",
+    "text": "1. Load synthetic persons\n\n# TODO: load PopulationSim's synthetic NonGQ persons + dorm/GQ student persons, concat"
+  },
+  {
+    "objectID": "3_synthetic.html#classify-k-12-students",
+    "href": "3_synthetic.html#classify-k-12-students",
+    "title": "Synthetic Population",
+    "section": "2. Classify K-12 students",
+    "text": "2. Classify K-12 students\n\n# TODO: PersonType_Label == \"K-12 student\" (uncontrolled) and age 5-17 (controlled) -- two\n#   separate boolean columns, not one, since they answer different questions"
+  },
+  {
+    "objectID": "3_synthetic.html#classify-college-students",
+    "href": "3_synthetic.html#classify-college-students",
+    "title": "Synthetic Population",
+    "section": "3. Classify college students",
+    "text": "3. Classify college students\n\n# TODO: PersonType_Label == \"University student\" (uncontrolled) and college-age band (controlled)\n#   -- combine NonGQ + dorm/GQ persons first"
+  },
+  {
+    "objectID": "3_synthetic.html#join-persons-to-district-county",
+    "href": "3_synthetic.html#join-persons-to-district-county",
+    "title": "Synthetic Population",
+    "section": "4. Join persons to district / county",
+    "text": "4. Join persons to district / county\n\n# TODO: resolve the MAZ/TAZ-vs-block join-key question (see Overview), then join to crosswalk.csv\n#   to get each person's District Name (K-12) and COUNTYFP (college)"
+  },
+  {
+    "objectID": "3_synthetic.html#aggregate-to-district-and-county",
+    "href": "3_synthetic.html#aggregate-to-district-and-county",
+    "title": "Synthetic Population",
+    "section": "5. Aggregate to district and county",
+    "text": "5. Aggregate to district and county\n\n# TODO: groupby District Name -&gt; K-12 enrolled count, age 5-17 count\n#   groupby COUNTYFP -&gt; University-student count, college-age count"
+  },
+  {
+    "objectID": "3_synthetic.html#box-elder-clipping",
+    "href": "3_synthetic.html#box-elder-clipping",
+    "title": "Synthetic Population",
+    "section": "6. Box Elder clipping",
+    "text": "6. Box Elder clipping\n\n# TODO: using 1_geography.qmd's model_boundary layer, flag which Box Elder blocks/persons fall\n#   inside vs. outside the actual MPO/TDM model domain; handle separately from the other 4 counties"
+  },
+  {
+    "objectID": "3_synthetic.html#write-output",
+    "href": "3_synthetic.html#write-output",
+    "title": "Synthetic Population",
+    "section": "7. Write output",
+    "text": "7. Write output\n\n# TODO: write both synthetic tables to _outputs/"
+  },
+  {
+    "objectID": "1_geography.html",
+    "href": "1_geography.html",
+    "title": "Geography",
+    "section": "",
+    "text": "This script builds the geographic crosswalk that every later step in this project joins against.\n\nObjective: tie every Census block in the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties) to the school district and county it falls in, and to the K-12 school(s) and college(s) located in it — so that PopulationSim’s synthetic population (3_synthetic.qmd) and real enrollment data (2_enrollment.qmd) can both be rolled up to district/county level as exact joins, with no area-weighting or estimation involved.\nWhat it pulls: county, school district, Travel Analysis Zone (TAZ), and Census block boundaries; K-12 school and college locations from both UGRC/SGID (the state-preferred source) and NCES (kept alongside, not as a replacement, so schools and colleges can also be joined back to federal CCD/IPEDS data by ID); and the WFRC/MAG travel demand model boundary, used later to handle Box Elder County’s partial coverage in that model. TAZ boundaries come from WFRC’s WasatchFrontTAZ feature service rather than the TDM-GEO-AnalysisZones repo directly, so the pull stays current without tracking that repo’s releases — TAZID is what resolves 3_synthetic.qmd’s open question of how to join PopulationSim’s MAZ/TAZ-keyed output to this block-level crosswalk.\nOutput: a single block-level crosswalk (_data/intermediate/crosswalk.csv) carrying each block’s county, district, TAZ, and matched school/college IDs from every source."
+  },
+  {
+    "objectID": "1_geography.html#overview",
+    "href": "1_geography.html#overview",
+    "title": "Geography",
+    "section": "",
+    "text": "This script builds the geographic crosswalk that every later step in this project joins against.\n\nObjective: tie every Census block in the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties) to the school district and county it falls in, and to the K-12 school(s) and college(s) located in it — so that PopulationSim’s synthetic population (3_synthetic.qmd) and real enrollment data (2_enrollment.qmd) can both be rolled up to district/county level as exact joins, with no area-weighting or estimation involved.\nWhat it pulls: county, school district, Travel Analysis Zone (TAZ), and Census block boundaries; K-12 school and college locations from both UGRC/SGID (the state-preferred source) and NCES (kept alongside, not as a replacement, so schools and colleges can also be joined back to federal CCD/IPEDS data by ID); and the WFRC/MAG travel demand model boundary, used later to handle Box Elder County’s partial coverage in that model. TAZ boundaries come from WFRC’s WasatchFrontTAZ feature service rather than the TDM-GEO-AnalysisZones repo directly, so the pull stays current without tracking that repo’s releases — TAZID is what resolves 3_synthetic.qmd’s open question of how to join PopulationSim’s MAZ/TAZ-keyed output to this block-level crosswalk.\nOutput: a single block-level crosswalk (_data/intermediate/crosswalk.csv) carrying each block’s county, district, TAZ, and matched school/college IDs from every source."
+  },
+  {
+    "objectID": "1_geography.html#setup",
+    "href": "1_geography.html#setup",
+    "title": "Geography",
+    "section": "Setup",
+    "text": "Setup\n\nimport sqlalchemy\nimport geopandas as gpd\nfrom pygris import blocks, counties\nfrom pygris.helpers import validate_state, validate_county\nfrom pathlib import Path\n\n\npaths = {\n    \"raw\": Path(\"_data/raw/\"),\n    \"intermediate\": Path(\"_data/intermediate/\"),\n    \"output\": Path(\"_outputs/\"),\n}\n\nconstants = {\n    \"state\": \"UT\",\n    \"counties\": {\"Box Elder\", \"Davis\", \"Weber\", \"Salt Lake\", \"Utah\"},\n    \"crs\": \"EPSG:26912\",\n}\n\n\nopensgid_engine = sqlalchemy.create_engine(\n    \"postgresql+psycopg://agrc:agrc@opensgid.ugrc.utah.gov:5432/opensgid\"\n)\n\n\n# Derive FIPS codes via pygris instead of hardcoding them\nstate_fips = validate_state(constants[\"state\"])\ncounty_fips = [\n    validate_county(state_fips, county)\n    for county in constants[\"counties\"]\n]\nfips_codes = [f\"{state_fips}{county}\" for county in county_fips]\nfips_codes\n\nUsing FIPS code '49' for input 'UT'\nUsing FIPS code '057' for input 'Weber'\nUsing FIPS code '035' for input 'Salt Lake'\nUsing FIPS code '003' for input 'Box Elder'\nUsing FIPS code '049' for input 'Utah'\nUsing FIPS code '011' for input 'Davis'\n\n\n['49057', '49035', '49003', '49049', '49011']"
+  },
+  {
+    "objectID": "1_geography.html#county-boundaries",
+    "href": "1_geography.html#county-boundaries",
+    "title": "Geography",
+    "section": "1. County boundaries",
+    "text": "1. County boundaries\n\ncounty_boundary_path = paths[\"raw\"] / \"geometry\" / \"county_boundary.gpkg\"\n\n# 1. Download only if not already cached locally\nif not county_boundary_path.exists():\n    all_counties = counties(state=state_fips, year=2023, cache=True).to_crs(constants[\"crs\"])\n    all_counties.to_file(county_boundary_path)\n\n# 2. Always read from local storage\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nbound_counties = gpd.read_file(\n    county_boundary_path, sql=f\"SELECT * FROM county_boundary WHERE COUNTYFP IN ({county_list_sql})\"\n)\n\n\nbound_counties.explore()"
+  },
+  {
+    "objectID": "1_geography.html#school-district-boundaries",
+    "href": "1_geography.html#school-district-boundaries",
+    "title": "Geography",
+    "section": "2. School district boundaries",
+    "text": "2. School district boundaries\n\ndistrict_boundary_path = paths[\"raw\"] / \"geometry\" / \"school_district_boundary.gpkg\"\n\n# 1. Download only if not already cached locally\nif not district_boundary_path.exists():\n    all_districts = gpd.read_postgis(\n        \"select * from boundaries.school_district_boundaries\", opensgid_engine, geom_col=\"shape\"\n    ).to_crs(constants[\"crs\"])\n\n    all_districts[\"county_fips\"] = gpd.sjoin(\n        all_districts.set_geometry(all_districts.centroid),\n        all_counties[[\"COUNTYFP\", \"geometry\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"COUNTYFP\"]\n\n    all_districts.to_file(district_boundary_path)\n\n# 2. Read + filter in one step, pushed down to SQLite\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nbound_districts = gpd.read_file(\n    district_boundary_path,\n    sql=f\"SELECT * FROM school_district_boundary WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nbound_districts.explore()"
+  },
+  {
+    "objectID": "1_geography.html#travel-analysis-zone-taz-boundaries",
+    "href": "1_geography.html#travel-analysis-zone-taz-boundaries",
+    "title": "Geography",
+    "section": "3. Travel Analysis Zone (TAZ) boundaries",
+    "text": "3. Travel Analysis Zone (TAZ) boundaries\n\n\ntaz_boundary_path = paths[\"raw\"] / \"geometry\" / \"taz_boundary.gpkg\"\n\n# 1. Download only if not already cached locally\nif not taz_boundary_path.exists():\n    all_taz = gpd.read_file(\n        \"https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/\"\n        \"WasatchFrontTAZ/FeatureServer/0/query?where=1=1&outFields=*&f=geojson\"\n    ).to_crs(constants[\"crs\"])\n\n    all_taz[\"county_fips\"] = gpd.sjoin(\n        all_taz.set_geometry(all_taz.centroid),\n        all_counties[[\"COUNTYFP\", \"geometry\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"COUNTYFP\"]\n\n    all_taz.to_file(taz_boundary_path)\n\n# 2. Read + filter in one step, pushed down to SQLite\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nbound_taz = gpd.read_file(\n    taz_boundary_path, sql=f\"SELECT * FROM taz_boundary WHERE county_fips IN ({county_list_sql})\"\n)\n\n\nbound_taz.explore()"
+  },
+  {
+    "objectID": "1_geography.html#micro-analysis-zone-maz-boundaries",
+    "href": "1_geography.html#micro-analysis-zone-maz-boundaries",
+    "title": "Geography",
+    "section": "4. Micro Analysis Zone (MAZ) boundaries",
+    "text": "4. Micro Analysis Zone (MAZ) boundaries\n\n\n# TODO: once a MAZ source exists -- download/cache to _data/raw/geometry/maz_boundary.gpkg,\n#   tag all_blocks with MAZID the same way TAZID is tagged above, add MAZID to the crosswalk"
+  },
+  {
+    "objectID": "1_geography.html#census-blocks",
+    "href": "1_geography.html#census-blocks",
+    "title": "Geography",
+    "section": "5. Census blocks",
+    "text": "5. Census blocks\n\nblock_boundary_path = paths[\"raw\"] / \"geometry\" / \"block_boundary.gpkg\"\n\n# 1. Download only if not already cached locally\nif not block_boundary_path.exists():\n    all_blocks = blocks(state=state_fips, county=county_fips, year=2023, cache=True).to_crs(\n        constants[\"crs\"]\n    )\n\n    all_blocks[\"district_name\"] = gpd.sjoin(\n        all_blocks.set_geometry(all_blocks.centroid),\n        all_districts[[\"name\", \"shape\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"name\"]\n\n    all_blocks[\"TAZID\"] = gpd.sjoin(\n        all_blocks.set_geometry(all_blocks.centroid),\n        all_taz[[\"TAZID\", \"geometry\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"TAZID\"]\n\n    all_blocks.to_file(block_boundary_path)\n\n# 2. Read + filter in one step, pushed down to SQLite\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nbound_blocks = gpd.read_file(\n    block_boundary_path, sql=f\"SELECT * FROM block_boundary WHERE COUNTYFP20 IN ({county_list_sql})\"\n)\n\n\nbound_blocks.explore()"
+  },
+  {
+    "objectID": "1_geography.html#pre-k-to-12-school-locations",
+    "href": "1_geography.html#pre-k-to-12-school-locations",
+    "title": "Geography",
+    "section": "6. Pre-K to 12 school locations",
+    "text": "6. Pre-K to 12 school locations\n\nUGRC Pre-K to 12\n\nugrc_school_path = paths[\"raw\"] / \"geometry\" / \"ugrc_school.gpkg\"\n\n# 1. Download only if not already cached locally\nif not ugrc_school_path.exists():\n    all_ugrc_schools = gpd.read_postgis(\n        \"select * from society.schools_prek_to_12\", opensgid_engine, geom_col=\"shape\"\n    ).to_crs(constants[\"crs\"])\n\n    all_ugrc_schools[\"county_fips\"] = gpd.sjoin(\n        all_ugrc_schools, all_counties[[\"COUNTYFP\", \"geometry\"]], predicate=\"within\", how=\"left\"\n    )[\"COUNTYFP\"]\n\n    all_ugrc_schools.to_file(ugrc_school_path)\n\n# 2. Read + filter in one step, pushed down to SQLite\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nugrc_schools = gpd.read_file(\n    ugrc_school_path,\n    sql=f\"SELECT * FROM ugrc_school WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nugrc_schools.explore()\n\n\n\nNCES public schools\n\n# School year 2023-24\nnces_public_school_path = paths[\"raw\"] / \"geometry\" / \"nces_public_school.gpkg\"\n\nif not nces_public_school_path.exists():\n    all_nces_public_schools = gpd.read_file(\n        \"https://nces.ed.gov/opengis/rest/services/K12_School_Locations/\"\n        \"EDGE_ADMINDATA_PUBLICSCH_2324/MapServer/1/query?where=LSTATE='UT'&outFields=*&f=geojson\"\n    ).to_crs(constants[\"crs\"])\n\n    all_nces_public_schools[\"county_fips\"] = gpd.sjoin(\n        all_nces_public_schools,\n        all_counties[[\"COUNTYFP\", \"geometry\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"COUNTYFP\"]\n\n    all_nces_public_schools.to_file(nces_public_school_path)\n\nnces_public_schools = gpd.read_file(\n    nces_public_school_path,\n    sql=f\"SELECT * FROM nces_public_school WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nnces_public_schools.explore()\n\n\n\nNCES private school\n\n# School year 2023-24\nnces_private_school_path = paths[\"raw\"] / \"geometry\" / \"nces_private_school.gpkg\"\n\nif not nces_private_school_path.exists():\n    all_nces_private_schools = gpd.read_file(\n        \"https://nces.ed.gov/opengis/rest/services/K12_School_Locations/\"\n        \"EDGE_GEOCODE_PRIVATESCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson\"\n    ).to_crs(constants[\"crs\"])\n\n    all_nces_private_schools[\"county_fips\"] = gpd.sjoin(\n        all_nces_private_schools,\n        all_counties[[\"COUNTYFP\", \"geometry\"]],\n        predicate=\"within\",\n        how=\"left\",\n    )[\"COUNTYFP\"]\n\n    all_nces_private_schools.to_file(nces_private_school_path)\n\nnces_private_schools = gpd.read_file(\n    nces_private_school_path,\n    sql=f\"SELECT * FROM nces_private_school WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nnces_private_schools.explore()"
+  },
+  {
+    "objectID": "1_geography.html#college-campus-locations",
+    "href": "1_geography.html#college-campus-locations",
+    "title": "Geography",
+    "section": "7. College campus locations",
+    "text": "7. College campus locations\n\nUGRC higher education\n\nugrc_college_path = paths[\"raw\"] / \"geometry\" / \"ugrc_college.gpkg\"\n\n# 1. Download only if not already cached locally\nif not ugrc_college_path.exists():\n    all_ugrc_colleges = gpd.read_postgis(\n        \"select * from society.schools_higher_education\", opensgid_engine, geom_col=\"shape\"\n    ).to_crs(constants[\"crs\"])\n\n    all_ugrc_colleges[\"county_fips\"] = gpd.sjoin(\n        all_ugrc_colleges, all_counties[[\"COUNTYFP\", \"geometry\"]], predicate=\"within\", how=\"left\"\n    )[\"COUNTYFP\"]\n\n    all_ugrc_colleges.to_file(ugrc_college_path)\n\n# 2. Read + filter in one step, pushed down to SQLite\ncounty_list_sql = \", \".join(f\"'{fips}'\" for fips in county_fips)\n\nugrc_colleges = gpd.read_file(\n    ugrc_college_path,\n    sql=f\"SELECT * FROM ugrc_college WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nugrc_colleges.explore()\n\n\n\nNCES postsecondary (colleges)\n\n# School year 2023-24\nnces_college_path = paths[\"raw\"] / \"geometry\" / \"nces_college.gpkg\"\n\nif not nces_college_path.exists():\n    all_nces_colleges = gpd.read_file(\n        \"https://nces.ed.gov/opengis/rest/services/Postsecondary_School_Locations/\"\n        \"EDGE_GEOCODE_POSTSECONDARYSCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson\"\n    ).to_crs(constants[\"crs\"])\n\n    all_nces_colleges[\"county_fips\"] = gpd.sjoin(\n        all_nces_colleges, all_counties[[\"COUNTYFP\", \"geometry\"]], predicate=\"within\", how=\"left\"\n    )[\"COUNTYFP\"]\n\n    all_nces_colleges.to_file(nces_college_path)\n\nnces_colleges = gpd.read_file(\n    nces_college_path,\n    sql=f\"SELECT * FROM nces_college WHERE county_fips IN ({county_list_sql})\",\n)\n\n\nnces_colleges.explore()"
+  },
+  {
+    "objectID": "1_geography.html#model-mpo-region-boundary",
+    "href": "1_geography.html#model-mpo-region-boundary",
+    "title": "Geography",
+    "section": "8. Model / MPO region boundary",
+    "text": "8. Model / MPO region boundary\n\nmodel_boundary_path = paths[\"raw\"] / \"geometry\" / \"model_boundary.gpkg\"\n\n# 1. Download only if not already cached locally\nif not model_boundary_path.exists():\n    model_boundary = gpd.read_file(\n        \"https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/\"\n        \"WFRC_Administrative_and_Planning_Area_Boundaries/FeatureServer/4/query\"\n        \"?where=1=1&outFields=*&f=geojson\"\n    ).to_crs(constants[\"crs\"])\n    model_boundary.to_file(model_boundary_path)\n\n# 2. Always read from local storage\nbound_model = gpd.read_file(model_boundary_path)\n\n\nbound_model.explore()"
+  },
+  {
+    "objectID": "1_geography.html#generate-crosswalks",
+    "href": "1_geography.html#generate-crosswalks",
+    "title": "Geography",
+    "section": "9. Generate crosswalks",
+    "text": "9. Generate crosswalks\n\nschool_block_match = gpd.sjoin(\n    ugrc_schools[[\"schoolid\", \"geometry\"]],\n    bound_blocks[[\"GEOID20\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[[\"schoolid\", \"GEOID20\"]]\n\ncollege_block_match = gpd.sjoin(\n    ugrc_colleges[[\"xid\", \"geometry\"]],\n    bound_blocks[[\"GEOID20\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[[\"xid\", \"GEOID20\"]].rename(columns={\"xid\": \"College ID\"})\n\nnces_public_block_match = gpd.sjoin(\n    nces_public_schools[[\"NCESSCH\", \"geometry\"]],\n    bound_blocks[[\"GEOID20\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[[\"NCESSCH\", \"GEOID20\"]].rename(columns={\"NCESSCH\": \"NCES School ID\"})\n\nnces_private_block_match = gpd.sjoin(\n    nces_private_schools[[\"PPIN\", \"geometry\"]],\n    bound_blocks[[\"GEOID20\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[[\"PPIN\", \"GEOID20\"]].rename(columns={\"PPIN\": \"NCES Private School ID\"})\n\nnces_college_block_match = gpd.sjoin(\n    nces_colleges[[\"UNITID\", \"geometry\"]],\n    bound_blocks[[\"GEOID20\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[[\"UNITID\", \"GEOID20\"]].rename(columns={\"UNITID\": \"NCES College ID\"})\n\ncrosswalk = (\n    bound_blocks[[\"GEOID20\", \"COUNTYFP20\", \"district_name\", \"TAZID\"]]\n    .merge(school_block_match.rename(columns={\"schoolid\": \"School ID\"}), on=\"GEOID20\", how=\"left\")\n    .merge(college_block_match, on=\"GEOID20\", how=\"left\")\n    .merge(nces_public_block_match, on=\"GEOID20\", how=\"left\")\n    .merge(nces_private_block_match, on=\"GEOID20\", how=\"left\")\n    .merge(nces_college_block_match, on=\"GEOID20\", how=\"left\")\n    .rename(\n        columns={\"GEOID20\": \"GEOID\", \"COUNTYFP20\": \"COUNTYFP\", \"district_name\": \"District Name\"}\n    )\n)\n\ncrosswalk[\"School ID\"] = crosswalk[\"School ID\"].astype(\"Int64\")\ncrosswalk[\"College ID\"] = crosswalk[\"College ID\"].astype(\"Int64\")\ncrosswalk[\"TAZID\"] = crosswalk[\"TAZID\"].astype(\"Int64\")\n\ncrosswalk.to_csv(paths[\"intermediate\"] / \"crosswalk.csv\", index=False)"
+  },
+  {
+    "objectID": "2_enrollment.html",
+    "href": "2_enrollment.html",
+    "title": "Enrollment",
+    "section": "",
+    "text": "This script produces the “real enrollment” half of the validation schema — the numbers PopulationSim’s synthetic population (3_synthetic.qmd) gets compared against.\n\nObjective: get district-level K-12 enrollment and county-level college enrollment from real, non-synthetic sources, joined through the block-level crosswalk built in 1_geography.qmd.\nWhat it pulls: Utah DOE enrollment (public schools only, from UGRC’s own per-school counts) and NCES enrollment by district; USHE (student home ZIP code, not institution location — a different geography than everything else in this project) and NCES/IPEDS enrollment by county.\nKnown gaps: no NCES private-school enrollment yet (would need the separate Private School Survey bulk file); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used everywhere else, not an oversight.\nOutput: one table of district-level enrollment, one table of county-level enrollment, both written to _outputs/."
+  },
+  {
+    "objectID": "2_enrollment.html#overview",
+    "href": "2_enrollment.html#overview",
+    "title": "Enrollment",
+    "section": "",
+    "text": "This script produces the “real enrollment” half of the validation schema — the numbers PopulationSim’s synthetic population (3_synthetic.qmd) gets compared against.\n\nObjective: get district-level K-12 enrollment and county-level college enrollment from real, non-synthetic sources, joined through the block-level crosswalk built in 1_geography.qmd.\nWhat it pulls: Utah DOE enrollment (public schools only, from UGRC’s own per-school counts) and NCES enrollment by district; USHE (student home ZIP code, not institution location — a different geography than everything else in this project) and NCES/IPEDS enrollment by county.\nKnown gaps: no NCES private-school enrollment yet (would need the separate Private School Survey bulk file); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used everywhere else, not an oversight.\nOutput: one table of district-level enrollment, one table of county-level enrollment, both written to _outputs/."
+  },
+  {
+    "objectID": "2_enrollment.html#setup",
+    "href": "2_enrollment.html#setup",
+    "title": "Enrollment",
+    "section": "Setup",
+    "text": "Setup\n\nimport pandas as pd\nimport geopandas as gpd\nfrom pathlib import Path\n\npaths = {\n    \"raw\": Path(\"_data/raw/\"),\n    \"intermediate\": Path(\"_data/intermediate/\"),\n    \"output\": Path(\"_outputs/\"),\n}\n\ncrosswalk = pd.read_csv(paths[\"intermediate\"] / \"crosswalk.csv\")"
+  },
+  {
+    "objectID": "2_enrollment.html#k-12-utah-doe-enrollment-by-district",
+    "href": "2_enrollment.html#k-12-utah-doe-enrollment-by-district",
+    "title": "Enrollment",
+    "section": "1. K-12 — Utah DOE enrollment by district",
+    "text": "1. K-12 — Utah DOE enrollment by district\n\n# Public schools only (Utah DOE administers public education; private counts are self-reported\n# for a different purpose and aren't comparable to NCES public-school enrollment below)\nugrc_school = gpd.read_file(paths[\"raw\"] / \"geometry\" / \"ugrc_school.gpkg\")\nugrc_public_schools = ugrc_school.query(\"privateschool == 'False'\")\n\n# Join school -&gt; district via the crosswalk (block-based, spatial) rather than matching school's\n# own `leaname` text against the district boundary's `name` text -- the two aren't guaranteed to\n# use identical formatting, and the crosswalk's join is already spatially verified.\ndoe_enrollment_by_district = (\n    ugrc_public_schools[[\"schoolid\", \"totalk12\"]]\n    .merge(crosswalk[[\"School ID\", \"District Name\"]], left_on=\"schoolid\", right_on=\"School ID\")\n    .groupby(\"District Name\")[\"totalk12\"]\n    .sum()\n    .rename(\"doe_enrollment\")\n    .reset_index()\n)\ndoe_enrollment_by_district"
+  },
+  {
+    "objectID": "2_enrollment.html#k-12-nces-enrollment-by-district",
+    "href": "2_enrollment.html#k-12-nces-enrollment-by-district",
+    "title": "Enrollment",
+    "section": "2. K-12 — NCES enrollment by district",
+    "text": "2. K-12 — NCES enrollment by district\n\n# School year 2023-24, matching the vintage pulled in 1_geography.qmd\nnces_public_school = gpd.read_file(paths[\"raw\"] / \"geometry\" / \"nces_public_school.gpkg\")\n\nnces_enrollment_by_district = (\n    nces_public_school[[\"NCESSCH\", \"TOTAL\"]]\n    .merge(crosswalk[[\"NCES School ID\", \"District Name\"]], left_on=\"NCESSCH\", right_on=\"NCES School ID\")\n    .groupby(\"District Name\")[\"TOTAL\"]\n    .sum()\n    .rename(\"nces_enrollment\")\n    .reset_index()\n)\nnces_enrollment_by_district\n\n\n# TODO: NCES private-school enrollment isn't in nces_private_school.gpkg (location-only layer).\n#   Would need the actual Private School Survey (PSS) bulk file if/when private enrollment is\n#   wanted from the NCES side specifically -- parking this for now, matching the \"public only\"\n#   DOE scope decided above."
+  },
+  {
+    "objectID": "2_enrollment.html#colleges-ushe-enrollment-by-county",
+    "href": "2_enrollment.html#colleges-ushe-enrollment-by-county",
+    "title": "Enrollment",
+    "section": "3. Colleges — USHE enrollment by county",
+    "text": "3. Colleges — USHE enrollment by county\n\n# NOTE: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic\n#   Year 2020 (Term 2) -- neither is 2023-24. Using AY2025 as the closest available; this is a\n#   real year mismatch against the ~2023 vintage used everywhere else in this project, not an\n#   oversight. Revisit if a genuine 2023-24 USHE data request ever comes back from USHE.\nushe = pd.read_excel(paths[\"raw\"] / \"ushe\" / \"WFRC Data Request_Final.xlsx\")\n\n\n# USHE enrollment is reported by STUDENT HOME ZIP CODE, not institution location -- needs a\n# ZIP -&gt; county crosswalk, unlike everything else in this project so far which is location-based.\nfrom pygris import zctas\n\ncounty_boundary = gpd.read_file(paths[\"raw\"] / \"geometry\" / \"county_boundary.gpkg\")\n\nutah_zctas = zctas(cb=True, starts_with=\"84\", year=2023, cache=True).to_crs(county_boundary.crs)\nutah_zctas[\"county_fips\"] = gpd.sjoin(\n    utah_zctas.set_geometry(utah_zctas.centroid),\n    county_boundary[[\"COUNTYFP\", \"geometry\"]],\n    predicate=\"within\",\n    how=\"left\",\n)[\"COUNTYFP\"]\n\nzip_to_county = utah_zctas[[\"ZCTA5CE20\", \"county_fips\"]]\n\n\nushe_enrollment_by_county = (\n    ushe.assign(ZIPCODE=ushe[\"ZIPCODE\"].astype(str).str.zfill(5))\n    .merge(zip_to_county, left_on=\"ZIPCODE\", right_on=\"ZCTA5CE20\", how=\"left\")\n    .groupby(\"county_fips\")[\"Headcount\"]\n    .sum()\n    .rename(\"ushe_enrollment\")\n    .reset_index()\n)\nushe_enrollment_by_county"
+  },
+  {
+    "objectID": "2_enrollment.html#colleges-ncesipeds-enrollment-by-county",
+    "href": "2_enrollment.html#colleges-ncesipeds-enrollment-by-county",
+    "title": "Enrollment",
+    "section": "4. Colleges — NCES/IPEDS enrollment by county",
+    "text": "4. Colleges — NCES/IPEDS enrollment by county\n\n# 2023-24 IPEDS Fall Enrollment survey component (EF), matching year across the project.\n# NOTE: the correct current URL is nces.ed.gov/ipeds/datacenter/data/... -- the College repo's\n#   \"tablefiles/zipfiles\" path 404s; verified directly before using it here.\nimport requests\nimport zipfile\n\nipeds_dir = paths[\"raw\"] / \"ipeds\"\nipeds_dir.mkdir(parents=True, exist_ok=True)\nipeds_csv_path = ipeds_dir / \"ef2023a.csv\"\n\nif not ipeds_csv_path.exists():\n    zip_path = ipeds_dir / \"EF2023A.zip\"\n    zip_path.write_bytes(\n        requests.get(\"https://nces.ed.gov/ipeds/datacenter/data/EF2023A.zip\").content\n    )\n    with zipfile.ZipFile(zip_path) as z:\n        z.extractall(ipeds_dir)\n\nipeds_ef = pd.read_csv(ipeds_csv_path)\n\n\n# EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total\n# before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)\nipeds_totals = ipeds_ef.query(\"EFALEVEL == 1\")[[\"UNITID\", \"EFTOTLT\"]]\n\nnces_college = gpd.read_file(paths[\"raw\"] / \"geometry\" / \"nces_college.gpkg\")\n\nipeds_enrollment_by_county = (\n    ipeds_totals.merge(\n        crosswalk[[\"NCES College ID\", \"COUNTYFP\"]].drop_duplicates(),\n        left_on=\"UNITID\",\n        right_on=\"NCES College ID\",\n    )\n    .groupby(\"COUNTYFP\")[\"EFTOTLT\"]\n    .sum()\n    .rename(\"ipeds_enrollment\")\n    .reset_index()\n)\nipeds_enrollment_by_county"
+  },
+  {
+    "objectID": "2_enrollment.html#assemble-enrollment-tables",
+    "href": "2_enrollment.html#assemble-enrollment-tables",
+    "title": "Enrollment",
+    "section": "5. Assemble enrollment tables",
+    "text": "5. Assemble enrollment tables\n\n# TODO: merge doe_enrollment_by_district + nces_enrollment_by_district into one per-district\n#   table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into one per-county\n#   table; write both to _outputs/ as the real (non-synthetic) half of the validation schema."
+  },
+  {
+    "objectID": "4_validation.html",
+    "href": "4_validation.html",
+    "title": "Validation",
+    "section": "",
+    "text": "This is the page the site is actually built around — where the real enrollment numbers (2_enrollment.qmd) and PopulationSim’s synthetic estimates (3_synthetic.qmd) get compared.\n\nObjective: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against PopulationSim’s synthetic K-12 student count (the real test, since that’s uncontrolled) and against its synthetic age 5-17 population (a sanity bound, since that’s controlled — not expected to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs. synthetic university-student count and college-age population.\nWhat it reads: the two output tables from 2_enrollment.qmd and the two from 3_synthetic.qmd, all from _outputs/.\nBox Elder: reported separately from the other four counties, since its real and synthetic numbers are both scoped differently there (model region vs. full county) — a single pooled number would misrepresent it either way.\nOutput: this page itself — the published comparison tables and charts, not another intermediate file."
+  },
+  {
+    "objectID": "4_validation.html#overview",
+    "href": "4_validation.html#overview",
+    "title": "Validation",
+    "section": "",
+    "text": "This is the page the site is actually built around — where the real enrollment numbers (2_enrollment.qmd) and PopulationSim’s synthetic estimates (3_synthetic.qmd) get compared.\n\nObjective: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against PopulationSim’s synthetic K-12 student count (the real test, since that’s uncontrolled) and against its synthetic age 5-17 population (a sanity bound, since that’s controlled — not expected to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs. synthetic university-student count and college-age population.\nWhat it reads: the two output tables from 2_enrollment.qmd and the two from 3_synthetic.qmd, all from _outputs/.\nBox Elder: reported separately from the other four counties, since its real and synthetic numbers are both scoped differently there (model region vs. full county) — a single pooled number would misrepresent it either way.\nOutput: this page itself — the published comparison tables and charts, not another intermediate file."
+  },
+  {
+    "objectID": "4_validation.html#setup",
+    "href": "4_validation.html#setup",
+    "title": "Validation",
+    "section": "Setup",
+    "text": "Setup\n\n# TODO: imports; load the four _outputs/ tables from 2_enrollment.qmd and 3_synthetic.qmd"
+  },
+  {
+    "objectID": "4_validation.html#school-validation-by-district",
+    "href": "4_validation.html#school-validation-by-district",
+    "title": "Validation",
+    "section": "1. School validation (by district)",
+    "text": "1. School validation (by district)\n\n# TODO: join real (DOE, NCES) + synthetic (enrolled-status, age-band) by District Name;\n#   compute diff and ratio for both the enrolled-status comparison and the age-band comparison"
+  },
+  {
+    "objectID": "4_validation.html#college-validation-by-county",
+    "href": "4_validation.html#college-validation-by-county",
+    "title": "Validation",
+    "section": "2. College validation (by county)",
+    "text": "2. College validation (by county)\n\n# TODO: join real (USHE, NCES/IPEDS) + synthetic (enrolled-status, age-band) by COUNTYFP;\n#   compute diff and ratio for both comparisons"
+  },
+  {
+    "objectID": "4_validation.html#box-elder",
+    "href": "4_validation.html#box-elder",
+    "title": "Validation",
+    "section": "3. Box Elder",
+    "text": "3. Box Elder\n\n# TODO: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary\n#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own\n#   section rather than folded into the main district/county tables"
+  },
+  {
+    "objectID": "4_validation.html#results",
+    "href": "4_validation.html#results",
+    "title": "Validation",
+    "section": "4. Results",
+    "text": "4. Results\n\n# TODO: ojs_define() the final comparison tables for the charts below"
+  },
+  {
+    "objectID": "4_validation.html#summary",
+    "href": "4_validation.html#summary",
+    "title": "Validation",
+    "section": "5. Summary",
+    "text": "5. Summary"
+  }
+]
