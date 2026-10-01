@@ -455,3 +455,10 @@ crosswalk["TAZID"] = crosswalk["TAZID"].astype("Int64")
 
 crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
 ```
+
+```{python}
+# Not strictly needed for a one-shot Quarto render (the process exit reclaims the connection
+# either way), but matters in an interactive session where re-running Setup without restarting
+# the kernel would otherwise orphan the previous engine's pooled connection to Open SGID.
+opensgid_engine.dispose()
+```
