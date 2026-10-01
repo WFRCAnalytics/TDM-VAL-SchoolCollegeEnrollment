@@ -10,24 +10,25 @@ PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
 
 - **Objective**: get district-level K-12 enrollment and county-level college enrollment from real,
   non-synthetic sources, joined through the block-level crosswalk built in `1_geography.qmd`.
-- **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts)
-  and NCES enrollment by district; USHE (student home ZIP code, not institution location — a
-  different geography than everything else in this project) and NCES/IPEDS enrollment by county.
-- **Known gaps**: no NCES private-school enrollment yet (would need the separate Private School
-  Survey bulk file); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists
-  in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used
-  everywhere else, not an oversight.
+- **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts),
+  NCES enrollment by district (public via CCD, private via the Private School Universe Survey);
+  USHE (student home ZIP code, not institution location — a different geography than everything
+  else in this project) and NCES/IPEDS enrollment by county.
+- **Known gaps**: NCES private-school enrollment is school-location-based, not residence-based, and
+  a handful of statewide online-only private programs still need manual review before being trusted
+  at face value (see section 3); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE
+  extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage
+  used everywhere else, not an oversight.
 - **Output**: one table of district-level enrollment, one table of county-level enrollment, both
   written to `_outputs/`.
-
-<!-- All code cells below are eval: false -- draft/unverified, not yet run as part of a render. -->
 
 ## Setup
 
 ```{python}
-#| eval: false
 import pandas as pd
 import geopandas as gpd
+import requests
+import zipfile
 from pathlib import Path
 
 paths = {
@@ -36,21 +37,28 @@ paths = {
     "output": Path("_outputs/"),
 }
 
+constants = {
+    "data_year": 2023,  # NCES/IPEDS/PSS vintage -- bump this one number in ~4 years
+}
+year_code = f"{str(constants['data_year'])[-2:]}{str(constants['data_year'] + 1)[-2:]}"
+
 crosswalk = pd.read_csv(paths["intermediate"] / "crosswalk.csv")
 ```
 
 ## 1. K-12 — Utah DOE enrollment by district
 
 ```{python}
-#| eval: false
-# Public schools only (Utah DOE administers public education; private counts are self-reported
-# for a different purpose and aren't comparable to NCES public-school enrollment below)
-ugrc_school = gpd.read_file(paths["raw"] / "geometry" / "ugrc_school.gpkg")
-ugrc_public_schools = ugrc_school.query("privateschool == 'False'")
+# Public schools only
+ugrc_public_schools = gpd.read_file(
+    paths["raw"] / "geometry" / "ugrc_school.gpkg",
+    sql="""
+        SELECT * FROM ugrc_school
+        WHERE privateschool = 'False'
+          AND onlineschool IS NOT 'Y'
+    """,
+)
 
-# Join school -> district via the crosswalk (block-based, spatial) rather than matching school's
-# own `leaname` text against the district boundary's `name` text -- the two aren't guaranteed to
-# use identical formatting, and the crosswalk's join is already spatially verified.
+# Join school -> district via the crosswalk (block-based, spatial) rather than matching school's own `leaname` text against the district boundary's `name` text
 doe_enrollment_by_district = (
     ugrc_public_schools[["schoolid", "totalk12"]]
     .merge(crosswalk[["School ID", "District Name"]], left_on="schoolid", right_on="School ID")
@@ -62,33 +70,93 @@ doe_enrollment_by_district = (
 doe_enrollment_by_district
 ```
 
+```{python}
+# Online school enrollment
+gpd.read_file(
+    paths["raw"] / "geometry" / "ugrc_school.gpkg",
+    sql="""
+        SELECT * FROM ugrc_school
+        WHERE privateschool = 'False'
+          AND onlineschool = 'Y'
+    """,
+)["totalk12"].sum()
+```
+
 ## 2. K-12 — NCES enrollment by district
 
 ```{python}
-#| eval: false
-# School year 2023-24, matching the vintage pulled in 1_geography.qmd
+# Matches constants["data_year"] -- the vintage pulled in 1_geography.qmd
 nces_public_school = gpd.read_file(paths["raw"] / "geometry" / "nces_public_school.gpkg")
+
+# Dedup crosswalk for multiple NCES schools at same location
+crosswalk_nces = (
+    crosswalk.dropna(subset=["NCES School ID"])
+    .drop_duplicates(subset=["NCES School ID"])
+    .assign(**{"NCES School ID": lambda df: df["NCES School ID"].astype("Int64").astype(str)})
+)
 
 nces_enrollment_by_district = (
     nces_public_school[["NCESSCH", "TOTAL"]]
-    .merge(crosswalk[["NCES School ID", "District Name"]], left_on="NCESSCH", right_on="NCES School ID")
+    .merge(
+        crosswalk_nces[["NCES School ID", "District Name"]],
+        left_on="NCESSCH",
+        right_on="NCES School ID",
+    )
     .groupby("District Name")["TOTAL"]
     .sum()
     .rename("nces_enrollment")
     .reset_index()
 )
+
 nces_enrollment_by_district
 ```
 
+## 3. K-12 — NCES private-school enrollment by district
+
 ```{python}
-#| eval: false
-# TODO: NCES private-school enrollment isn't in nces_private_school.gpkg (location-only layer).
-#   Would need the actual Private School Survey (PSS) bulk file if/when private enrollment is
-#   wanted from the NCES side specifically -- parking this for now, matching the "public only"
-#   DOE scope decided above.
+# Private School Universe Survey (PSS)
+pss_dir = paths["raw"] / "pss"
+pss_dir.mkdir(parents=True, exist_ok=True)
+pss_csv_path = pss_dir / f"pss{year_code}_pu.csv"
+
+if not pss_csv_path.exists():
+    zip_path = pss_dir / f"pss{year_code}_pu_csv.zip"
+    zip_path.write_bytes(
+        requests.get(f"https://nces.ed.gov/surveys/pss/zip/pss{year_code}_pu_csv.zip").content
+    )
+    with zipfile.ZipFile(zip_path) as z:
+        z.extractall(pss_dir)
+
+# NUMSTUDS = total enrollment (verified 2026-10-01 against NCES's own SIZE bucket breaks for every
+# UT row checked). PPIN is a string -- some IDs are alpha-prefixed (e.g. "A2392167"), don't cast to
+# numeric.
+pss = pd.read_csv(
+    pss_csv_path, usecols=["PPIN", "PSTABB", "PINST", "NUMSTUDS"], dtype={"PPIN": str}
+).query("PSTABB == 'UT'")
 ```
 
-## 3. Colleges — USHE enrollment by county
+```{python}
+# Same duplicate-schools issue as the public crosswalk merge -- dedup on NCES Private School ID first.
+crosswalk_private = crosswalk.dropna(subset=["NCES Private School ID"]).drop_duplicates(
+    subset=["NCES Private School ID"]
+)
+
+nces_private_enrollment_by_district = (
+    pss[["PPIN", "PINST", "NUMSTUDS"]]
+    .merge(
+        crosswalk_private[["NCES Private School ID", "District Name"]],
+        left_on="PPIN",
+        right_on="NCES Private School ID",
+    )
+    .groupby("District Name")["NUMSTUDS"]
+    .sum()
+    .rename("nces_private_enrollment")
+    .reset_index()
+)
+nces_private_enrollment_by_district
+```
+
+## 4. Colleges — USHE enrollment by county
 
 ```{python}
 #| eval: false
@@ -131,24 +199,21 @@ ushe_enrollment_by_county = (
 ushe_enrollment_by_county
 ```
 
-## 4. Colleges — NCES/IPEDS enrollment by county
+## 5. Colleges — NCES/IPEDS enrollment by county
 
 ```{python}
 #| eval: false
-# 2023-24 IPEDS Fall Enrollment survey component (EF), matching year across the project.
+# IPEDS Fall Enrollment survey component (EF) -- matches constants["data_year"] across the project.
 # NOTE: the correct current URL is nces.ed.gov/ipeds/datacenter/data/... -- the College repo's
 #   "tablefiles/zipfiles" path 404s; verified directly before using it here.
-import requests
-import zipfile
-
 ipeds_dir = paths["raw"] / "ipeds"
 ipeds_dir.mkdir(parents=True, exist_ok=True)
-ipeds_csv_path = ipeds_dir / "ef2023a.csv"
+ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a.csv"
 
 if not ipeds_csv_path.exists():
-    zip_path = ipeds_dir / "EF2023A.zip"
+    zip_path = ipeds_dir / f"EF{constants['data_year']}A.zip"
     zip_path.write_bytes(
-        requests.get("https://nces.ed.gov/ipeds/datacenter/data/EF2023A.zip").content
+        requests.get(f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A.zip").content
     )
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(ipeds_dir)
@@ -178,11 +243,12 @@ ipeds_enrollment_by_county = (
 ipeds_enrollment_by_county
 ```
 
-## 5. Assemble enrollment tables
+## 6. Assemble enrollment tables
 
 ```{python}
 #| eval: false
-# TODO: merge doe_enrollment_by_district + nces_enrollment_by_district into one per-district
-#   table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into one per-county
-#   table; write both to _outputs/ as the real (non-synthetic) half of the validation schema.
+# TODO: merge doe_enrollment_by_district + nces_enrollment_by_district + nces_private_enrollment_by_district
+#   into one per-district table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into
+#   one per-county table; write both to _outputs/ as the real (non-synthetic) half of the validation
+#   schema.
 ```

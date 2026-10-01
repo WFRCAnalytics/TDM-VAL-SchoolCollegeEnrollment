@@ -30,6 +30,7 @@ This script builds the geographic crosswalk that every later step in this projec
 ```{python}
 import sqlalchemy
 import geopandas as gpd
+import requests
 from pygris import blocks, counties
 from pygris.helpers import validate_state, validate_county
 from pathlib import Path
@@ -47,6 +48,7 @@ constants = {
     "state": "UT",
     "counties": {"Box Elder", "Davis", "Weber", "Salt Lake", "Utah"},
     "crs": "EPSG:26912",
+    "data_year": 2023,  # NCES/EDGE school year
 }
 ```
 
@@ -67,6 +69,13 @@ fips_codes = [f"{state_fips}{county}" for county in county_fips]
 fips_codes
 ```
 
+```{python}
+# Derive the NCES EDGE/CCD year-code (2023 -> "2324") so a future vintage swap below is a single
+# constants change, not a hunt through every URL in this file.
+year_code = f"{str(constants['data_year'])[-2:]}{str(constants['data_year'] + 1)[-2:]}"
+year_code
+```
+
 ## 1. County boundaries
 
 ```{python}
@@ -77,7 +86,12 @@ if not county_boundary_path.exists():
     all_counties = counties(state=state_fips, year=2023, cache=True).to_crs(constants["crs"])
     all_counties.to_file(county_boundary_path)
 
-# 2. Always read from local storage
+# 2. Always read from local storage -- full state, not just our 5 counties. Every later section
+#    tags its schools/colleges/districts against all_counties so those statewide .gpkg caches carry
+#    a correct county_fips everywhere, not just inside our study area; bound_counties (below) is the
+#    5-county-filtered version used to restrict the crosswalk itself.
+all_counties = gpd.read_file(county_boundary_path)
+
 county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
 
 bound_counties = gpd.read_file(
@@ -253,13 +267,12 @@ ugrc_schools.explore()
 ### NCES public schools
 
 ```{python}
-# School year 2023-24
 nces_public_school_path = paths["raw"] / "geometry" / "nces_public_school.gpkg"
 
 if not nces_public_school_path.exists():
     all_nces_public_schools = gpd.read_file(
         "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/"
-        "EDGE_ADMINDATA_PUBLICSCH_2324/MapServer/1/query?where=LSTATE='UT'&outFields=*&f=geojson"
+        f"EDGE_ADMINDATA_PUBLICSCH_{year_code}/MapServer/1/query?where=LSTATE='UT'&outFields=*&f=geojson"
     ).to_crs(constants["crs"])
 
     all_nces_public_schools["county_fips"] = gpd.sjoin(
@@ -282,17 +295,41 @@ nces_public_schools = gpd.read_file(
 nces_public_schools.explore()
 ```
 
+```{python}
+# TOTAL is documented by NCES as "Total Students (Includes AE)" -- verified 2026-10-01 this has no
+# effect on current Utah data (named adult-ed CCD entries all report 0). Re-check if this ever
+# trips, since it would mean enrollment figures downstream include adult-ed headcounts alongside K-12.
+adult_ed_total = nces_public_schools.query(
+    "SCH_NAME.str.contains('Adult', case=False, na=False)"
+)["TOTAL"].sum()
+assert adult_ed_total == 0, "Adult-ed schools now report nonzero TOTAL -- revisit NCES enrollment sourcing"
+```
+
 ### NCES private school
 
 ```{python}
-# School year 2023-24
 nces_private_school_path = paths["raw"] / "geometry" / "nces_private_school.gpkg"
 
 if not nces_private_school_path.exists():
-    all_nces_private_schools = gpd.read_file(
+    # EDGE_GEOCODE_PRIVATESCH is only published every other school year (confirmed 2026-10-01:
+    # years 15_16, 1718, 1920, 2122, 2324 exist; 1819/2021/2223 don't) -- step back one cycle if
+    # this year's layer isn't published yet.
+    private_year_code = year_code
+    private_url = (
         "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/"
-        "EDGE_GEOCODE_PRIVATESCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
-    ).to_crs(constants["crs"])
+        f"EDGE_GEOCODE_PRIVATESCH_{private_year_code}/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
+    )
+
+    if not requests.get(private_url).json().get("features"):
+        fallback_year = constants["data_year"] - 1
+        private_year_code = f"{str(fallback_year)[-2:]}{str(fallback_year + 1)[-2:]}"
+        print(f"NOTE: {year_code} private-school layer not published, using {private_year_code}")
+        private_url = (
+            "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/"
+            f"EDGE_GEOCODE_PRIVATESCH_{private_year_code}/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
+        )
+
+    all_nces_private_schools = gpd.read_file(private_url).to_crs(constants["crs"])
 
     all_nces_private_schools["county_fips"] = gpd.sjoin(
         all_nces_private_schools,
@@ -350,13 +387,12 @@ ugrc_colleges.explore()
 ### NCES postsecondary (colleges)
 
 ```{python}
-# School year 2023-24
 nces_college_path = paths["raw"] / "geometry" / "nces_college.gpkg"
 
 if not nces_college_path.exists():
     all_nces_colleges = gpd.read_file(
         "https://nces.ed.gov/opengis/rest/services/Postsecondary_School_Locations/"
-        "EDGE_GEOCODE_POSTSECONDARYSCH_2324/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
+        f"EDGE_GEOCODE_POSTSECONDARYSCH_{year_code}/MapServer/0/query?where=STATE='UT'&outFields=*&f=geojson"
     ).to_crs(constants["crs"])
 
     all_nces_colleges["county_fips"] = gpd.sjoin(
@@ -456,7 +492,7 @@ crosswalk["TAZID"] = crosswalk["TAZID"].astype("Int64")
 crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
 ```
 
-```{python}
+``` {python}
 # Not strictly needed for a one-shot Quarto render (the process exit reclaims the connection
 # either way), but matters in an interactive session where re-running Setup without restarting
 # the kernel would otherwise orphan the previous engine's pooled connection to Open SGID.
