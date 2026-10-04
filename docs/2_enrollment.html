@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -116,6 +116,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -383,9 +386,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#k-12-utah-doe-enrollment-by-district" id="toc-k-12-utah-doe-enrollment-by-district" class="nav-link" data-scroll-target="#k-12-utah-doe-enrollment-by-district">1. K-12 — Utah DOE enrollment by district</a></li>
   <li><a href="#k-12-nces-enrollment-by-district" id="toc-k-12-nces-enrollment-by-district" class="nav-link" data-scroll-target="#k-12-nces-enrollment-by-district">2. K-12 — NCES enrollment by district</a></li>
-  <li><a href="#colleges-ushe-enrollment-by-county" id="toc-colleges-ushe-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ushe-enrollment-by-county">3. Colleges — USHE enrollment by county</a></li>
-  <li><a href="#colleges-ncesipeds-enrollment-by-county" id="toc-colleges-ncesipeds-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ncesipeds-enrollment-by-county">4. Colleges — NCES/IPEDS enrollment by county</a></li>
-  <li><a href="#assemble-enrollment-tables" id="toc-assemble-enrollment-tables" class="nav-link" data-scroll-target="#assemble-enrollment-tables">5. Assemble enrollment tables</a></li>
+  <li><a href="#k-12-nces-private-school-enrollment-by-district" id="toc-k-12-nces-private-school-enrollment-by-district" class="nav-link" data-scroll-target="#k-12-nces-private-school-enrollment-by-district">3. K-12 — NCES private-school enrollment by district</a></li>
+  <li><a href="#colleges-ushe-enrollment-by-county" id="toc-colleges-ushe-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ushe-enrollment-by-county">4. Colleges — USHE enrollment by county</a></li>
+  <li><a href="#colleges-ncesipeds-enrollment-by-county" id="toc-colleges-ncesipeds-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</a></li>
+  <li><a href="#assemble-enrollment-tables" id="toc-assemble-enrollment-tables" class="nav-link" data-scroll-target="#assemble-enrollment-tables">6. Assemble enrollment tables</a>
+  <ul class="collapse">
+  <li><a href="#school-enrollment-by-school-districts" id="toc-school-enrollment-by-school-districts" class="nav-link" data-scroll-target="#school-enrollment-by-school-districts">School Enrollment by School Districts</a></li>
+  <li><a href="#college-enrollment-by-counties" id="toc-college-enrollment-by-counties" class="nav-link" data-scroll-target="#college-enrollment-by-counties">College Enrollment by Counties</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -418,164 +426,809 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This script produces the “real enrollment” half of the validation schema — the numbers PopulationSim’s synthetic population (<code>3_synthetic.qmd</code>) gets compared against.</p>
 <ul>
 <li><strong>Objective</strong>: get district-level K-12 enrollment and county-level college enrollment from real, non-synthetic sources, joined through the block-level crosswalk built in <code>1_geography.qmd</code>.</li>
-<li><strong>What it pulls</strong>: Utah DOE enrollment (public schools only, from UGRC’s own per-school counts) and NCES enrollment by district; USHE (student home ZIP code, not institution location — a different geography than everything else in this project) and NCES/IPEDS enrollment by county.</li>
-<li><strong>Known gaps</strong>: no NCES private-school enrollment yet (would need the separate Private School Survey bulk file); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used everywhere else, not an oversight.</li>
+<li><strong>What it pulls</strong>: Utah DOE enrollment (public schools only, from UGRC’s own per-school counts), NCES enrollment by district (public via CCD, private via the Private School Universe Survey); USHE (student home ZIP code, not institution location — a different geography than everything else in this project) and NCES/IPEDS enrollment by county.</li>
+<li><strong>Known gaps</strong>: NCES private-school enrollment is school-location-based, not residence-based, and a handful of statewide online-only private programs still need manual review before being trusted at face value (see section 3); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage used everywhere else, not an oversight.</li>
 <li><strong>Output</strong>: one table of district-level enrollment, one table of county-level enrollment, both written to <code>_outputs/</code>.</li>
 </ul>
-<!-- All code cells below are eval: false -- draft/unverified, not yet run as part of a render. -->
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="1b630246" class="cell" data-execution_count="1">
+<div id="b1a54787" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"raw"</span>: Path(<span class="st">"_data/raw/"</span>),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"intermediate"</span>: Path(<span class="st">"_data/intermediate/"</span>),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"output"</span>: Path(<span class="st">"_outputs/"</span>),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>crosswalk <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"raw"</span>: Path(<span class="st">"_data/raw/"</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"intermediate"</span>: Path(<span class="st">"_data/intermediate/"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"output"</span>: Path(<span class="st">"_outputs/"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>constants <span class="op">=</span> {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data_year"</span>: <span class="dv">2023</span>  <span class="co"># NCES/IPEDS/PSS vintage -- bump this one number in ~4 years</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>year_code <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">str</span>(constants[<span class="st">'data_year'</span>])[<span class="op">-</span><span class="dv">2</span>:]<span class="sc">}{</span><span class="bu">str</span>(constants[<span class="st">'data_year'</span>] <span class="op">+</span> <span class="dv">1</span>)[<span class="op">-</span><span class="dv">2</span>:]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>crosswalk <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk.csv"</span>, dtype<span class="op">=</span>{<span class="st">"COUNTYFP"</span>: <span class="bu">str</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="k-12-utah-doe-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-utah-doe-enrollment-by-district">1. K-12 — Utah DOE enrollment by district</h2>
-<div id="04f30308" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public schools only (Utah DOE administers public education; private counts are self-reported</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for a different purpose and aren't comparable to NCES public-school enrollment below)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ugrc_school <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_school.gpkg"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ugrc_public_schools <span class="op">=</span> ugrc_school.query(<span class="st">"privateschool == 'False'"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Join school -&gt; district via the crosswalk (block-based, spatial) rather than matching school's</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># own `leaname` text against the district boundary's `name` text -- the two aren't guaranteed to</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># use identical formatting, and the crosswalk's join is already spatially verified.</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>doe_enrollment_by_district <span class="op">=</span> (</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    ugrc_public_schools[[<span class="st">"schoolid"</span>, <span class="st">"totalk12"</span>]]</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    .merge(crosswalk[[<span class="st">"School ID"</span>, <span class="st">"District Name"</span>]], left_on<span class="op">=</span><span class="st">"schoolid"</span>, right_on<span class="op">=</span><span class="st">"School ID"</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="st">"totalk12"</span>]</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"doe_enrollment"</span>)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>doe_enrollment_by_district</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cc5bdc58" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public schools only</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ugrc_public_schools <span class="op">=</span> gpd.read_file(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_school.gpkg"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    sql<span class="op">=</span><span class="st">"""</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">        SELECT * FROM ugrc_school</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">        WHERE privateschool = 'False'</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">          AND onlineschool IS NOT 'Y'</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Join school -&gt; district via the crosswalk (block-based, spatial) rather than matching school's own `leaname` text against the district boundary's `name` text</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>doe_enrollment_by_district <span class="op">=</span> (</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ugrc_public_schools[[<span class="st">"schoolid"</span>, <span class="st">"totalk12"</span>]]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    .merge(crosswalk[[<span class="st">"School ID"</span>, <span class="st">"District Name"</span>]], left_on<span class="op">=</span><span class="st">"schoolid"</span>, right_on<span class="op">=</span><span class="st">"School ID"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="st">"totalk12"</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"doe_enrollment"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>doe_enrollment_by_district</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">doe_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>115966.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>12583.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>41153.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>86401.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>78488.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>96436.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>7279.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>44538.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>16679.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>17715.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>23679.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>38171.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="244c584d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Online school enrollment</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gpd.read_file(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_school.gpkg"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    sql<span class="op">=</span><span class="st">"""</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">        SELECT * FROM ugrc_school</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">        WHERE privateschool = 'False'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">          AND onlineschool = 'Y'</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)[<span class="st">"totalk12"</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>np.float64(14402.0)</code></pre>
+</div>
 </div>
 </section>
 <section id="k-12-nces-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-nces-enrollment-by-district">2. K-12 — NCES enrollment by district</h2>
-<div id="769fee5a" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># School year 2023-24, matching the vintage pulled in 1_geography.qmd</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>nces_public_school <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_public_school.gpkg"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>nces_enrollment_by_district <span class="op">=</span> (</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    nces_public_school[[<span class="st">"NCESSCH"</span>, <span class="st">"TOTAL"</span>]]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    .merge(crosswalk[[<span class="st">"NCES School ID"</span>, <span class="st">"District Name"</span>]], left_on<span class="op">=</span><span class="st">"NCESSCH"</span>, right_on<span class="op">=</span><span class="st">"NCES School ID"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="st">"TOTAL"</span>]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"nces_enrollment"</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>nces_enrollment_by_district</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ed4af8a7" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matches constants["data_year"] -- the vintage pulled in 1_geography.qmd</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>nces_public_school <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_public_school.gpkg"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Dedup crosswalk for multiple NCES schools at same location</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>crosswalk_nces <span class="op">=</span> (</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    crosswalk.dropna(subset<span class="op">=</span>[<span class="st">"NCES School ID"</span>])</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    .drop_duplicates(subset<span class="op">=</span>[<span class="st">"NCES School ID"</span>])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    .assign(<span class="op">**</span>{<span class="st">"NCES School ID"</span>: <span class="kw">lambda</span> df: df[<span class="st">"NCES School ID"</span>].astype(<span class="st">"Int64"</span>).astype(<span class="bu">str</span>)})</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>nces_enrollment_by_district <span class="op">=</span> (</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    nces_public_school[[<span class="st">"NCESSCH"</span>, <span class="st">"TOTAL"</span>]]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    .merge(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        crosswalk_nces[[<span class="st">"NCES School ID"</span>, <span class="st">"District Name"</span>]],</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"NCESSCH"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"NCES School ID"</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="st">"TOTAL"</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"nces_enrollment"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>nces_enrollment_by_district</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">nces_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>100766</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>13029</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>37612</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>82003</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>69387</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>71137</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>7465</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>48097</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>14373</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>15984</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>23563</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>35710</td>
+</tr>
+</tbody>
+</table>
+
 </div>
-<div id="9a2e8a52" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: NCES private-school enrollment isn't in nces_private_school.gpkg (location-only layer).</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   Would need the actual Private School Survey (PSS) bulk file if/when private enrollment is</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   wanted from the NCES side specifically -- parking this for now, matching the "public only"</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   DOE scope decided above.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="k-12-nces-private-school-enrollment-by-district" class="level2">
+<h2 class="anchored" data-anchor-id="k-12-nces-private-school-enrollment-by-district">3. K-12 — NCES private-school enrollment by district</h2>
+<div id="80c604a7" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Private School Universe Survey (PSS)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pss_dir <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"pss"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>pss_dir.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>pss_csv_path <span class="op">=</span> pss_dir <span class="op">/</span> <span class="ss">f"pss</span><span class="sc">{</span>year_code<span class="sc">}</span><span class="ss">_pu.csv"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> pss_csv_path.exists():</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    zip_path <span class="op">=</span> pss_dir <span class="op">/</span> <span class="ss">f"pss</span><span class="sc">{</span>year_code<span class="sc">}</span><span class="ss">_pu_csv.zip"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    zip_path.write_bytes(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        requests.get(<span class="ss">f"https://nces.ed.gov/surveys/pss/zip/pss</span><span class="sc">{</span>year_code<span class="sc">}</span><span class="ss">_pu_csv.zip"</span>).content</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> zipfile.ZipFile(zip_path) <span class="im">as</span> z:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        z.extractall(pss_dir)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># NUMSTUDS = total enrollment (verified 2026-10-01 against NCES's own SIZE bucket breaks for every</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># UT row checked). PPIN is a string -- some IDs are alpha-prefixed (e.g. "A2392167"), don't cast to</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># numeric.</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>pss <span class="op">=</span> pd.read_csv(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    pss_csv_path, usecols<span class="op">=</span>[<span class="st">"PPIN"</span>, <span class="st">"PSTABB"</span>, <span class="st">"PINST"</span>, <span class="st">"NUMSTUDS"</span>], dtype<span class="op">=</span>{<span class="st">"PPIN"</span>: <span class="bu">str</span>}</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>).query(<span class="st">"PSTABB == 'UT'"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="99bb6526" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same duplicate-schools issue as the public crosswalk merge -- dedup on NCES Private School ID first.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>crosswalk_private <span class="op">=</span> crosswalk.dropna(subset<span class="op">=</span>[<span class="st">"NCES Private School ID"</span>]).drop_duplicates(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    subset<span class="op">=</span>[<span class="st">"NCES Private School ID"</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>nces_private_enrollment_by_district <span class="op">=</span> (</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    pss[[<span class="st">"PPIN"</span>, <span class="st">"PINST"</span>, <span class="st">"NUMSTUDS"</span>]]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    .merge(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        crosswalk_private[[<span class="st">"NCES Private School ID"</span>, <span class="st">"District Name"</span>]],</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"PPIN"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"NCES Private School ID"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="st">"NUMSTUDS"</span>]</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"nces_private_enrollment"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>nces_private_enrollment_by_district</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">nces_private_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>539</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>94</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>1364</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>1093</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>1649</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>532</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>121</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>646</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>532</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>1316</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>3272</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>218</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="colleges-ushe-enrollment-by-county" class="level2">
-<h2 class="anchored" data-anchor-id="colleges-ushe-enrollment-by-county">3. Colleges — USHE enrollment by county</h2>
-<div id="8a766087" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   Year 2020 (Term 2) -- neither is 2023-24. Using AY2025 as the closest available; this is a</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   real year mismatch against the ~2023 vintage used everywhere else in this project, not an</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   oversight. Revisit if a genuine 2023-24 USHE data request ever comes back from USHE.</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ushe <span class="op">=</span> pd.read_excel(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"ushe"</span> <span class="op">/</span> <span class="st">"WFRC Data Request_Final.xlsx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h2 class="anchored" data-anchor-id="colleges-ushe-enrollment-by-county">4. Colleges — USHE enrollment by county</h2>
+<div id="32251da6" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic Year 2020 (Term 2)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ushe <span class="op">=</span> pd.read_excel(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"ushe"</span> <span class="op">/</span> <span class="st">"WFRC Data Request_Final.xlsx"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ushe_fulltime <span class="op">=</span> ushe.query(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"`Academic Year` == 2025 and Term == 2 and Full_or_Part_Time == 'Full-Time'"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="dba3ef7b" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># USHE enrollment is reported by STUDENT HOME ZIP CODE, not institution location -- needs a</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ZIP -&gt; county crosswalk, unlike everything else in this project so far which is location-based.</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygris <span class="im">import</span> zctas</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>county_boundary <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"county_boundary.gpkg"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>utah_zctas <span class="op">=</span> zctas(cb<span class="op">=</span><span class="va">True</span>, starts_with<span class="op">=</span><span class="st">"84"</span>, year<span class="op">=</span><span class="dv">2023</span>, cache<span class="op">=</span><span class="va">True</span>).to_crs(county_boundary.crs)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>utah_zctas[<span class="st">"county_fips"</span>] <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    utah_zctas.set_geometry(utah_zctas.centroid),</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    county_boundary[[<span class="st">"COUNTYFP"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)[<span class="st">"COUNTYFP"</span>]</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>zip_to_county <span class="op">=</span> utah_zctas[[<span class="st">"ZCTA5CE20"</span>, <span class="st">"county_fips"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ded0d918" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scoped to WFRC region institutions/sites only (constants["counties"] in 1_geography.qmd) --</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># USHE has no surrogate ID, so (Institution, Site) is the natural key; UGRC's unique ID is `xid`.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A few sites have no UGRC point of their own and are reassigned to a same-county campus instead --</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># "USU - Ogden Center" goes to Weber State's Main Campus xid, NOT USU's own (Cache County) Main</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Campus, since the reassignment target has to match the real site's county, not its institution.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ushe_to_ugrc_xid <span class="op">=</span> {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"Correctional Facility--West Valley City"</span>): <span class="dv">52</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"Main Campus"</span>): <span class="dv">4</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - Airport Center"</span>): <span class="dv">4</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - Jordan Campus"</span>): <span class="dv">51</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - Larry H. Miller Campus"</span>): <span class="dv">50</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - South City Center"</span>): <span class="dv">46</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - West Point Center"</span>): <span class="dv">78</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC - West Valley City"</span>): <span class="dv">52</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Salt Lake Community College"</span>, <span class="st">"SLCC-UU Juniper building at Herriman Campus"</span>): <span class="dv">4</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"University Of Utah"</span>, <span class="st">"Main Campus"</span>): <span class="dv">7</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"University Of Utah"</span>, <span class="st">"SLCC-UU Juniper building at Herriman Campus"</span>): <span class="dv">7</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"University Of Utah"</span>, <span class="st">"UU - Sandy Center"</span>): <span class="dv">7</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah State University"</span>, <span class="st">"USU - Brigham Center"</span>): <span class="dv">14</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah State University"</span>, <span class="st">"USU - Ogden Center"</span>): <span class="dv">1</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah State University"</span>, <span class="st">"USU - Orem Center"</span>): <span class="dv">28</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah State University"</span>, <span class="st">"USU - Salt Lake Center"</span>): <span class="dv">32</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah State University"</span>, <span class="st">"USU - Tremonton Center"</span>): <span class="dv">31</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Utah Valley University"</span>, <span class="st">"Main Campus"</span>): <span class="dv">5</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"Main Campus"</span>): <span class="dv">1</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"Technical College Campus--Davis"</span>): <span class="dv">56</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"Technical College Campus--Ogden-Weber"</span>): <span class="dv">69</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"University Center--SLCC"</span>): <span class="dv">4</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"WSU - Davis Center"</span>): <span class="dv">37</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Weber State University"</span>, <span class="st">"WSU - Farmington Station"</span>): <span class="dv">42</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Everything not in the dict is out-of-region or a non-geographic site (online, other-site, etc.)</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>ushe_in_region <span class="op">=</span> ushe_fulltime[</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    ushe_fulltime.set_index([<span class="st">"Institution"</span>, <span class="st">"Site"</span>]).index.isin(ushe_to_ugrc_xid)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>].assign(xid<span class="op">=</span><span class="kw">lambda</span> df: df.set_index([<span class="st">"Institution"</span>, <span class="st">"Site"</span>]).index.<span class="bu">map</span>(ushe_to_ugrc_xid))</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>ugrc_colleges <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_college.gpkg"</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>ushe_enrollment_by_county <span class="op">=</span> (</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    ushe_in_region.merge(ugrc_colleges[[<span class="st">"xid"</span>, <span class="st">"county_fips"</span>]], on<span class="op">=</span><span class="st">"xid"</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"county_fips"</span>)[<span class="st">"Headcount"</span>]</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"ushe_enrollment"</span>)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>ushe_enrollment_by_county</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">county_fips</th>
+<th data-quarto-table-cell-role="th">ushe_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>003</td>
+<td>273</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>011</td>
+<td>1535</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>035</td>
+<td>31331</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>049</td>
+<td>14780</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>057</td>
+<td>7998</td>
+</tr>
+</tbody>
+</table>
+
 </div>
-<div id="389ddd09" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ushe_enrollment_by_county <span class="op">=</span> (</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    ushe.assign(ZIPCODE<span class="op">=</span>ushe[<span class="st">"ZIPCODE"</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">5</span>))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .merge(zip_to_county, left_on<span class="op">=</span><span class="st">"ZIPCODE"</span>, right_on<span class="op">=</span><span class="st">"ZCTA5CE20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"county_fips"</span>)[<span class="st">"Headcount"</span>]</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"ushe_enrollment"</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ushe_enrollment_by_county</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="colleges-ncesipeds-enrollment-by-county" class="level2">
-<h2 class="anchored" data-anchor-id="colleges-ncesipeds-enrollment-by-county">4. Colleges — NCES/IPEDS enrollment by county</h2>
-<div id="50d08d39" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2023-24 IPEDS Fall Enrollment survey component (EF), matching year across the project.</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the correct current URL is nces.ed.gov/ipeds/datacenter/data/... -- the College repo's</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   "tablefiles/zipfiles" path 404s; verified directly before using it here.</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ipeds_dir <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"ipeds"</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ipeds_dir.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ipeds_csv_path <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="st">"ef2023a.csv"</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> ipeds_csv_path.exists():</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    zip_path <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="st">"EF2023A.zip"</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    zip_path.write_bytes(</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        requests.get(<span class="st">"https://nces.ed.gov/ipeds/datacenter/data/EF2023A.zip"</span>).content</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> zipfile.ZipFile(zip_path) <span class="im">as</span> z:</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        z.extractall(ipeds_dir)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>ipeds_ef <span class="op">=</span> pd.read_csv(ipeds_csv_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h2 class="anchored" data-anchor-id="colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</h2>
+<div id="e42077f4" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS Fall Enrollment survey component (EF) -- matches constants["data_year"] across the project.</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ipeds_dir <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"ipeds"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ipeds_dir.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ipeds_csv_path <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"ef</span><span class="sc">{</span>constants[<span class="st">'data_year'</span>]<span class="sc">}</span><span class="ss">a.csv"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> ipeds_csv_path.exists():</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    zip_path <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"EF</span><span class="sc">{</span>constants[<span class="st">'data_year'</span>]<span class="sc">}</span><span class="ss">A.zip"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    zip_path.write_bytes(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        requests.get(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"https://nces.ed.gov/ipeds/datacenter/data/EF</span><span class="sc">{</span>constants[<span class="st">'data_year'</span>]<span class="sc">}</span><span class="ss">A.zip"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        ).content</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> zipfile.ZipFile(zip_path) <span class="im">as</span> z:</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        z.extractall(ipeds_dir)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ipeds_ef <span class="op">=</span> pd.read_csv(ipeds_csv_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="2cae283c" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ipeds_totals <span class="op">=</span> ipeds_ef.query(<span class="st">"EFALEVEL == 1"</span>)[[<span class="st">"UNITID"</span>, <span class="st">"EFTOTLT"</span>]]</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>nces_college <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_college.gpkg"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county <span class="op">=</span> (</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ipeds_totals.merge(</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        crosswalk[[<span class="st">"NCES College ID"</span>, <span class="st">"COUNTYFP"</span>]].drop_duplicates(),</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"UNITID"</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"NCES College ID"</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"COUNTYFP"</span>)[<span class="st">"EFTOTLT"</span>]</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"ipeds_enrollment"</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6d84a5d0" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ipeds_totals <span class="op">=</span> ipeds_ef.query(<span class="st">"EFALEVEL == 1"</span>)[[<span class="st">"UNITID"</span>, <span class="st">"EFTOTLT"</span>]]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>nces_college <span class="op">=</span> gpd.read_file(paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_college.gpkg"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county <span class="op">=</span> (</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    ipeds_totals.merge(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        crosswalk[[<span class="st">"NCES College ID"</span>, <span class="st">"COUNTYFP"</span>]].drop_duplicates(),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"UNITID"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"NCES College ID"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"COUNTYFP"</span>)[<span class="st">"EFTOTLT"</span>]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"ipeds_enrollment"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">ipeds_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>011</td>
+<td>4281</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>035</td>
+<td>264026</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>049</td>
+<td>86736</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>057</td>
+<td>33690</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="assemble-enrollment-tables" class="level2">
-<h2 class="anchored" data-anchor-id="assemble-enrollment-tables">5. Assemble enrollment tables</h2>
-<div id="7e15b993" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: merge doe_enrollment_by_district + nces_enrollment_by_district into one per-district</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into one per-county</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   table; write both to _outputs/ as the real (non-synthetic) half of the validation schema.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h2 class="anchored" data-anchor-id="assemble-enrollment-tables">6. Assemble enrollment tables</h2>
+<section id="school-enrollment-by-school-districts" class="level3">
+<h3 class="anchored" data-anchor-id="school-enrollment-by-school-districts">School Enrollment by School Districts</h3>
+<div id="b5bdce6b" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Canonical district list -- every district the block-level crosswalk covers, regardless of</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># whether a given source has a school in it (left-merging onto this keeps a real data gap visible</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># as NaN instead of silently dropping the row via an inner join)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>district_list <span class="op">=</span> crosswalk[[<span class="st">"District Name"</span>]].dropna().drop_duplicates()</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>school_enrollment <span class="op">=</span> (</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    district_list.merge(doe_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    .merge(nces_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    .merge(nces_private_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># No private schools in a district is a real zero, not a gap</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>school_enrollment[<span class="st">"nces_private_enrollment"</span>] <span class="op">=</span> school_enrollment[<span class="st">"nces_private_enrollment"</span>].fillna(</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>school_enrollment</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">doe_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_private_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>WEBER COUNTY</td>
+<td>38171.0</td>
+<td>35710</td>
+<td>218</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>OGDEN CITY</td>
+<td>16679.0</td>
+<td>14373</td>
+<td>532</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>BOX ELDER</td>
+<td>12583.0</td>
+<td>13029</td>
+<td>94</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>86401.0</td>
+<td>82003</td>
+<td>1093</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>NEBO</td>
+<td>44538.0</td>
+<td>48097</td>
+<td>646</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>ALPINE</td>
+<td>115966.0</td>
+<td>100766</td>
+<td>539</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>PROVO CITY</td>
+<td>17715.0</td>
+<td>15984</td>
+<td>1316</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>CANYONS</td>
+<td>41153.0</td>
+<td>37612</td>
+<td>1364</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>GRANITE</td>
+<td>78488.0</td>
+<td>69387</td>
+<td>1649</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>JORDAN</td>
+<td>96436.0</td>
+<td>71137</td>
+<td>532</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>MURRAY CITY</td>
+<td>7279.0</td>
+<td>7465</td>
+<td>121</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>SALT LAKE CITY</td>
+<td>23679.0</td>
+<td>23563</td>
+<td>3272</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="574f7586" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># an actual join problem (e.g. a school missing from the crosswalk), not an expected gap</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>school_enrollment[school_enrollment[[<span class="st">"doe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">doe_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_private_enrollment</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="college-enrollment-by-counties" class="level3">
+<h3 class="anchored" data-anchor-id="college-enrollment-by-counties">College Enrollment by Counties</h3>
+<div id="0310c2c7" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>county_list <span class="op">=</span> crosswalk[[<span class="st">"COUNTYFP"</span>]].dropna().drop_duplicates()</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>college_enrollment <span class="op">=</span> county_list.merge(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    ushe_enrollment_by_county.rename(columns<span class="op">=</span>{<span class="st">"county_fips"</span>: <span class="st">"COUNTYFP"</span>}), on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>).merge(ipeds_enrollment_by_county, on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>college_enrollment</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">ushe_enrollment</th>
+<th data-quarto-table-cell-role="th">ipeds_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>057</td>
+<td>7998</td>
+<td>33690.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>003</td>
+<td>273</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>011</td>
+<td>1535</td>
+<td>4281.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>049</td>
+<td>14780</td>
+<td>86736.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>035</td>
+<td>31331</td>
+<td>264026.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="4e5c75af" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same sanity check, county side</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>college_enrollment[college_enrollment[[<span class="st">"ushe_enrollment"</span>, <span class="st">"ipeds_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">ushe_enrollment</th>
+<th data-quarto-table-cell-role="th">ipeds_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1</th>
+<td>003</td>
+<td>273</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="65ef8226" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>paths[<span class="st">"output"</span>].mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>school_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>college_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

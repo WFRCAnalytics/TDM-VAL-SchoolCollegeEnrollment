@@ -29,6 +29,7 @@ This script builds the geographic crosswalk that every later step in this projec
 
 ```{python}
 import sqlalchemy
+import pandas as pd
 import geopandas as gpd
 import requests
 from pygris import blocks, counties
@@ -151,17 +152,29 @@ taz_boundary_path = paths["raw"] / "geometry" / "taz_boundary.gpkg"
 
 # 1. Download only if not already cached locally
 if not taz_boundary_path.exists():
-    all_taz = gpd.read_file(
+    taz_url = (
         "https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/"
-        "WasatchFrontTAZ/FeatureServer/0/query?where=1=1&outFields=*&f=geojson"
-    ).to_crs(constants["crs"])
+        "WasatchFrontTAZ/FeatureServer/0/query"
+    )
+    taz_pages = []
+    offset = 0
+    while True:
+        page = gpd.read_file(
+            f"{taz_url}?where=1=1&outFields=*&f=geojson"
+            f"&orderByFields=FID&resultOffset={offset}&resultRecordCount=2000"
+        )
+        if page.empty:
+            break
+        taz_pages.append(page)
+        offset += len(page)
+        if len(page) < 2000:
+            break
+    all_taz = pd.concat(taz_pages, ignore_index=True).to_crs(constants["crs"])
 
-    all_taz["county_fips"] = gpd.sjoin(
-        all_taz.set_geometry(all_taz.centroid),
-        all_counties[["COUNTYFP", "geometry"]],
-        predicate="within",
-        how="left",
-    )["COUNTYFP"]
+    count_resp = requests.get(f"{taz_url}?where=1=1&returnCountOnly=true&f=json").json()
+    assert len(all_taz) == count_resp["count"], (len(all_taz), count_resp["count"])
+
+    all_taz["county_fips"] = all_taz["CO_FIPS"].astype(int).astype(str).str.zfill(3)
 
     all_taz.to_file(taz_boundary_path)
 
