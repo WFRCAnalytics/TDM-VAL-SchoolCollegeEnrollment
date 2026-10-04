@@ -3,6 +3,16 @@ title: "Enrollment"
 subtitle: "Real K-12 (Utah DOE + NCES) and college (USHE + IPEDS) enrollment, by district and county"
 ---
 
+```{ojs}
+//| echo: false
+html`<style>
+  .cell-output-display svg text { font-size: 15px !important; }
+  .cell-output-display table { font-size: 16px; }
+  /* Tooltip box is white, so its text must stay dark in dark mode */
+  [aria-label="tip"] text { fill: #374151 !important; }
+</style>`
+```
+
 ## Overview
 
 This script produces the "real enrollment" half of the validation schema — the numbers
@@ -58,11 +68,28 @@ ugrc_public_schools = gpd.read_file(
     """,
 )
 
-# Join school -> district via the crosswalk (block-based, spatial) rather than matching school's own `leaname` text against the district boundary's `name` text
+# Join school -> district via the crosswalk (block-based, spatial) rather than matching the
+# school's own `leaname` text against the district boundary's `name` text. Dedup on School ID first:
+# the block-level crosswalk repeats 144 schools 2-5 times, which would double-count their enrollment.
+crosswalk_schools = crosswalk.dropna(subset=["School ID"]).drop_duplicates(subset=["School ID"])
+
+# Left join, so schools with no crosswalk match are kept visible instead of silently dropped
+doe_schools = ugrc_public_schools[["schoolid", "totalk12"]].merge(
+    crosswalk_schools[["School ID", "District Name"]],
+    how="left",
+    left_on="schoolid",
+    right_on="School ID",
+)
+
+unmatched_doe_schools = doe_schools[doe_schools["District Name"].isna()]
+print(
+    f"DOE schools with no district match: {len(unmatched_doe_schools)} "
+    f"({unmatched_doe_schools['totalk12'].sum():,.0f} students, excluded from district totals)"
+)
+
+# groupby drops the unmatched rows (NaN district), so they are excluded from the totals below
 doe_enrollment_by_district = (
-    ugrc_public_schools[["schoolid", "totalk12"]]
-    .merge(crosswalk[["School ID", "District Name"]], left_on="schoolid", right_on="School ID")
-    .groupby("District Name")["totalk12"]
+    doe_schools.groupby("District Name")["totalk12"]
     .sum()
     .rename("doe_enrollment")
     .reset_index()
@@ -71,8 +98,13 @@ doe_enrollment_by_district
 ```
 
 ```{python}
-# Online school enrollment
-gpd.read_file(
+# Public DOE schools that did not get a district from the block-level crosswalk
+unmatched_doe_schools[["schoolid", "totalk12"]]
+```
+
+```{python}
+# Online school enrollment (reported separately; not included in the district totals above)
+online_enrollment = gpd.read_file(
     paths["raw"] / "geometry" / "ugrc_school.gpkg",
     sql="""
         SELECT * FROM ugrc_school
@@ -80,6 +112,7 @@ gpd.read_file(
           AND onlineschool = 'Y'
     """,
 )["totalk12"].sum()
+online_enrollment
 ```
 
 ## 2. K-12 — NCES enrollment by district
@@ -160,11 +193,12 @@ nces_private_enrollment_by_district
 
 ```{python}
 # NOTE: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic Year 2020 (Term 2)
+# USHE covers Utah's PUBLIC institutions only. Private institutions (e.g., BYU, Westminster, Ensign)
+# are not in USHE and only appear in the IPEDS county totals, so county comparisons are not like-for-like.
+# Both full-time and part-time students are kept, matching the WF-TDM college repo (6-CollegeControlTotals.qmd).
 ushe = pd.read_excel(paths["raw"] / "ushe" / "WFRC Data Request_Final.xlsx")
 
-ushe_fulltime = ushe.query(
-    "`Academic Year` == 2025 and Term == 2 and Full_or_Part_Time == 'Full-Time'"
-)
+ushe_2025_fall = ushe.query("`Academic Year` == 2025 and Term == 2")
 ```
 
 ```{python}
@@ -201,8 +235,8 @@ ushe_to_ugrc_xid = {
 }
 
 # Everything not in the dict is out-of-region or a non-geographic site (online, other-site, etc.)
-ushe_in_region = ushe_fulltime[
-    ushe_fulltime.set_index(["Institution", "Site"]).index.isin(ushe_to_ugrc_xid)
+ushe_in_region = ushe_2025_fall[
+    ushe_2025_fall.set_index(["Institution", "Site"]).index.isin(ushe_to_ugrc_xid)
 ].assign(xid=lambda df: df.set_index(["Institution", "Site"]).index.map(ushe_to_ugrc_xid))
 
 ugrc_colleges = gpd.read_file(paths["raw"] / "geometry" / "ugrc_college.gpkg")
@@ -220,38 +254,71 @@ ushe_enrollment_by_county
 ## 5. Colleges — NCES/IPEDS enrollment by county
 
 ```{python}
-# IPEDS Fall Enrollment survey component (EF) -- matches constants["data_year"] across the project.
+# IPEDS Fall Enrollment distance-education component (EF{year}A_DIST). In-person enrollment is
+# students in no distance-ed courses (EFDENON) plus students in some distance-ed / hybrid courses
+# (EFDESOM); exclusively online students are excluded because they generate no campus trips.
+# Same source and method as the WF-TDM college enrollment repo (5-CollegeEnrollmentIPEDS.qmd).
 ipeds_dir = paths["raw"] / "ipeds"
 ipeds_dir.mkdir(parents=True, exist_ok=True)
-ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a.csv"
+ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a_dist.csv"
 
 if not ipeds_csv_path.exists():
-    zip_path = ipeds_dir / f"EF{constants['data_year']}A.zip"
-    zip_path.write_bytes(
-        requests.get(
-            f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A.zip"
-        ).content
+    zip_path = ipeds_dir / f"EF{constants['data_year']}A_DIST.zip"
+    # The datacenter/data path serves 2023; the tablefiles/zipfiles path used in the WF-TDM repo returns 404
+    response = requests.get(
+        f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A_DIST.zip"
     )
+    response.raise_for_status()
+    zip_path.write_bytes(response.content)
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(ipeds_dir)
 
-ipeds_ef = pd.read_csv(ipeds_csv_path)
+ipeds_dist = pd.read_csv(ipeds_csv_path)
 ```
 
 ```{python}
-# EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total
-# before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)
-ipeds_totals = ipeds_ef.query("EFALEVEL == 1")[["UNITID", "EFTOTLT"]]
+# EFDELEV == 1 is the grand-total row for each institution (the other levels are breakdowns)
+ipeds_in_person = ipeds_dist.query("EFDELEV == 1").assign(
+    in_person=lambda df: df["EFDENON"].fillna(0) + df["EFDESOM"].fillna(0)
+)[["UNITID", "in_person"]]
 
-nces_college = gpd.read_file(paths["raw"] / "geometry" / "nces_college.gpkg")
+# The seven target colleges from the WF-TDM college repo (6-CollegeControlTotals.qmd), each assigned
+# to its county. The other institutions in the crosswalk are left out to match that snapshot.
+target_county = {
+    230764: "035",  # University of Utah (Salt Lake)
+    230746: "035",  # Salt Lake Community College (all five campuses are in Salt Lake County)
+    230418: "035",  # Ensign College
+    230807: "035",  # Westminster University
+    230038: "049",  # Brigham Young University (Utah County)
+    230737: "049",  # Utah Valley University (Utah County)
+    230782: "057",  # Weber State University (Main campus, Weber County)
+}
+
+ipeds_targets = ipeds_in_person[ipeds_in_person["UNITID"].isin(target_county)].assign(
+    COUNTYFP=lambda df: df["UNITID"].map(target_county)
+)
+
+# Weber State's Davis campus is counted in Davis County, using its share of USHE headcount among
+# the two WSU campuses in the repo's split (Main campus and WSU - Davis Center)
+wsu_sites = ushe_2025_fall[
+    (ushe_2025_fall["Institution"] == "Weber State University")
+    & ushe_2025_fall["Site"].isin(["Main Campus", "WSU - Davis Center"])
+].groupby("Site")["Headcount"].sum()
+wsu_davis_share = wsu_sites["WSU - Davis Center"] / wsu_sites.sum()
+
+wsu_total = ipeds_targets.loc[ipeds_targets["UNITID"] == 230782, "in_person"].item()
+wsu_davis_students = round(wsu_total * wsu_davis_share)
+ipeds_targets.loc[ipeds_targets["UNITID"] == 230782, "in_person"] = wsu_total - wsu_davis_students
+ipeds_targets = pd.concat(
+    [
+        ipeds_targets,
+        pd.DataFrame({"UNITID": [230782], "in_person": [wsu_davis_students], "COUNTYFP": ["011"]}),
+    ],
+    ignore_index=True,
+)
 
 ipeds_enrollment_by_county = (
-    ipeds_totals.merge(
-        crosswalk[["NCES College ID", "COUNTYFP"]].drop_duplicates(),
-        left_on="UNITID",
-        right_on="NCES College ID",
-    )
-    .groupby("COUNTYFP")["EFTOTLT"]
+    ipeds_targets.groupby("COUNTYFP")["in_person"]
     .sum()
     .rename("ipeds_enrollment")
     .reset_index()
@@ -278,13 +345,20 @@ school_enrollment = (
 school_enrollment["nces_private_enrollment"] = school_enrollment["nces_private_enrollment"].fillna(
     0
 )
-school_enrollment
 ```
 
 ```{python}
 # Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means
 # an actual join problem (e.g. a school missing from the crosswalk), not an expected gap
 school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
+```
+
+*K-12 enrollment by school district: Utah DOE (UGRC school counts), NCES public (CCD) and NCES private (PSS). Blank cells are gaps in the source, not zeros.*
+
+```{ojs}
+districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
+
+Inputs.table(districts_table, {rows: 25})
 ```
 
 ### College Enrollment by Counties
@@ -295,7 +369,6 @@ county_list = crosswalk[["COUNTYFP"]].dropna().drop_duplicates()
 college_enrollment = county_list.merge(
     ushe_enrollment_by_county.rename(columns={"county_fips": "COUNTYFP"}), on="COUNTYFP", how="left"
 ).merge(ipeds_enrollment_by_county, on="COUNTYFP", how="left")
-college_enrollment
 ```
 
 ```{python}
@@ -303,8 +376,211 @@ college_enrollment
 college_enrollment[college_enrollment[["ushe_enrollment", "ipeds_enrollment"]].isna().any(axis=1)]
 ```
 
+*College enrollment by county: USHE (Academic Year 2025, Term 2, full-time and part-time) and IPEDS in-person (fall 2023). USHE covers public institutions only; private institutions such as BYU appear only in IPEDS. The IPEDS column covers the seven target colleges, with Weber State's Davis campus split out by USHE share. The sources also differ in year and method, so compare them with care.*
+
+```{ojs}
+// COUNTYFP is numeric once typed, so map it back to names here (3 = Box Elder, not "003")
+counties_table = FileAttachment("_data/intermediate/real_enrollment_by_county.csv").csv({typed: true}).then(rows => rows.map(d => ({
+  County: ({3: "Box Elder", 11: "Davis", 35: "Salt Lake", 49: "Utah", 57: "Weber"})[d.COUNTYFP],
+  "USHE (AY 2025)": d.ushe_enrollment,
+  "IPEDS in-person (fall 2023)": d.ipeds_enrollment
+})))
+
+Inputs.table(counties_table)
+```
+
 ```{python}
 paths["output"].mkdir(parents=True, exist_ok=True)
 school_enrollment.to_csv(paths["intermediate"] / "real_enrollment_by_district.csv", index=False)
 college_enrollment.to_csv(paths["intermediate"] / "real_enrollment_by_county.csv", index=False)
 ```
+
+## 7. Compare the sources
+
+The two charts below read the CSVs written in section 6 directly, so they update on every render.
+Hover over a point or bar to see its values.
+
+```{ojs}
+//| label: fig-district-compare
+//| fig-cap: "Public K-12 enrollment by district: Utah DOE (UGRC school counts) against NCES (CCD). Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most."
+//| fig-alt: "Scatter plot with Utah DOE enrollment on the horizontal axis and NCES enrollment on the vertical axis, one point per school district, with a dashed diagonal line marking equal counts; points above the line have higher NCES counts and points below have higher DOE counts."
+
+districts = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
+
+max_district = d3.max(districts, d => Math.max(d.doe_enrollment ?? 0, d.nces_enrollment ?? 0))
+
+Plot.plot({
+  width: 720,
+  height: 520,
+  grid: true,
+  marginLeft: 90,
+  marginBottom: 70,
+  marginTop: 20,
+  marginRight: 20,
+  style: {background: "transparent", color: "inherit"},
+  x: {label: "DOE enrollment (UGRC school counts)"},
+  y: {label: "NCES enrollment (CCD)"},
+  marks: [
+    Plot.line([[0, 0], [max_district, max_district]], {stroke: "#999", strokeDasharray: "4 4"}),
+    Plot.dot(districts, {
+      x: "doe_enrollment",
+      y: "nces_enrollment",
+      fill: "#1f78b4",
+      r: 4,
+      title: d => d["District Name"],
+      tip: {
+        fill: "white",
+        stroke: "#374151",
+        format: {
+          x: d => `DOE: ${d.toLocaleString()}`,
+          y: d => `NCES: ${d.toLocaleString()}`
+        }
+      }
+    })
+  ]
+})
+```
+
+```{ojs}
+//| label: fig-county-compare
+//| fig-cap: "College headcount by county from USHE (Academic Year 2025, full-time and part-time, public institutions only) and IPEDS in-person (fall 2023, seven target colleges as in the WF-TDM college repo). Sources and years differ, so read the pattern across counties rather than the gap between bars."
+//| fig-alt: "Grouped bar chart with one group per county (Box Elder, Davis, Salt Lake, Utah, Weber), each showing two bars: USHE headcount and IPEDS headcount. Bar height shows headcount, and each source is colored separately."
+
+college_long = counties_table.flatMap(d => [
+  {county: d.County, source: "USHE (AY 2025)", headcount: d["USHE (AY 2025)"]},
+  {county: d.County, source: "IPEDS in-person (fall 2023)", headcount: d["IPEDS in-person (fall 2023)"]}
+])
+
+Plot.plot({
+  width: 720,
+  height: 420,
+  grid: true,
+  marginLeft: 90,
+  marginBottom: 70,
+  marginTop: 20,
+  marginRight: 20,
+  style: {background: "transparent", color: "inherit"},
+  fx: {label: null},
+  x: {axis: null},
+  y: {label: "Headcount", grid: true},
+  color: {legend: true, label: "Source"},
+  marks: [
+    Plot.barY(college_long, {
+      fx: "county",
+      x: "source",
+      y: "headcount",
+      fill: "source",
+      title: d => `${d.county}, ${d.source}`,
+      tip: {
+        fill: "white",
+        stroke: "#374151",
+        format: {
+          fx: false,
+          x: false,
+          fill: false,
+          y: d => `Headcount: ${d.toLocaleString()}`
+        }
+      }
+    })
+  ]
+})
+```
+
+## 8. Universities: USHE vs IPEDS by modality
+
+```{python}
+university_names = {
+    230764: "University of Utah",
+    230746: "Salt Lake Community College",
+    230782: "Weber State University",
+    230737: "Utah Valley University",
+    230038: "Brigham Young University",
+    230418: "Ensign College",
+    230807: "Westminster University",
+}
+ushe_names = {
+    "University Of Utah": "University of Utah",
+    "Salt Lake Community College": "Salt Lake Community College",
+    "Weber State University": "Weber State University",
+    "Utah Valley University": "Utah Valley University",
+}
+
+# IPEDS, fall 2023 (same definitions as section 5)
+ipeds_long = (
+    ipeds_dist[ipeds_dist["EFDELEV"] == 1]
+    .loc[lambda df: df["UNITID"].isin(list(university_names))]
+    .assign(
+        Institution=lambda df: df["UNITID"].map(university_names),
+        **{
+            "In-person only": lambda df: df["EFDENON"].fillna(0),
+            "Hybrid (some DE)": lambda df: df["EFDESOM"].fillna(0),
+            "Online only": lambda df: df["EFDEEXC"].fillna(0),
+        },
+    )
+    .melt(
+        id_vars=["Institution"],
+        value_vars=["In-person only", "Hybrid (some DE)", "Online only"],
+        var_name="Segment",
+        value_name="Students",
+    )
+    .assign(Source="IPEDS")
+)
+
+# USHE, Academic Year 2025 Term 2 (full- and part-time). The "taught online" rows are the hybrid
+# portion; USHE has no online-only category.
+ushe_long = (
+    ushe_2025_fall[ushe_2025_fall["Institution"].isin(list(ushe_names))]
+    .assign(
+        Institution=lambda df: df["Institution"].map(ushe_names),
+        Segment=lambda df: df["Site"].eq("This portion of the course is taught online").map(
+            {True: "Hybrid (some DE)", False: "In-person only"}
+        ),
+    )
+    .groupby(["Institution", "Segment"], as_index=False)["Headcount"]
+    .sum()
+    .rename(columns={"Headcount": "Students"})
+    .assign(Source="USHE")
+)
+
+modality_compare = pd.concat([ipeds_long, ushe_long], ignore_index=True)[
+    ["Institution", "Source", "Segment", "Students"]
+]
+modality_compare.to_csv(paths["intermediate"] / "university_modality_compare.csv", index=False)
+modality_compare
+```
+
+```{ojs}
+uni_modality_compare = FileAttachment("_data/intermediate/university_modality_compare.csv").csv({typed: true})
+```
+
+```{ojs}
+//| label: fig-university-modality
+//| fig-cap: "USHE vs IPEDS enrollment by modality. IPEDS is fall 2023 and includes private institutions. USHE is Academic Year 2025 Term 2, full- and part-time, public institutions only; its hybrid bar is the 'taught online' portion of courses."
+//| fig-alt: "Horizontal stacked bars, one row per university, with an IPEDS bar and, where USHE reports the institution, a USHE bar. Segments show in-person only, hybrid, and online only."
+
+Plot.plot({
+  width: 760,
+  height: 110 * new Set(uni_modality_compare.map(d => d.Institution)).size + 60,
+  marginLeft: 200,
+  marginRight: 30,
+  marginBottom: 50,
+  grid: true,
+  style: {background: "transparent", color: "inherit"},
+  fy: {label: null},
+  x: {label: "Students", grid: true},
+  y: {label: null},
+  color: {legend: true, domain: ["In-person only", "Hybrid (some DE)", "Online only"], range: ["#1f78b4", "#f59e0b", "#9ca3af"]},
+  marks: [
+    Plot.barX(uni_modality_compare, {
+      fy: "Institution",
+      y: "Source",
+      x: "Students",
+      fill: "Segment",
+      title: d => `${d.Institution}, ${d.Source}, ${d.Segment}: ${d.Students.toLocaleString()}`,
+      tip: {fill: "white", stroke: "#374151"}
+    })
+  ]
+})
+```
+
+*IPEDS and USHE are not the same definition. USHE counts a student once per campus site they use, so its totals can run higher than the institution's headcount.*

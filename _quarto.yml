@@ -58,6 +58,8 @@ format:
     grid:
       sidebar-width: 350px
     toc: true
+    code-fold: true
+    code-summary: "Show code"
     respect-user-color-scheme: true
     highlight-style:
       light: github

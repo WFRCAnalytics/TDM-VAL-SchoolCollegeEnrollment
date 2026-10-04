@@ -3,6 +3,14 @@ title: "Geography"
 subtitle: "School district, county, and college-location crosswalks used by every later step"
 ---
 
+```{ojs}
+//| echo: false
+html`<style>
+  .cell-output-display svg text { font-size: 15px !important; }
+  .cell-output-display table { font-size: 16px; }
+</style>`
+```
+
 ## Overview
 
 This script builds the geographic crosswalk that every later step in this project joins against.
@@ -23,7 +31,9 @@ This script builds the geographic crosswalk that every later step in this projec
   resolves `3_synthetic.qmd`'s open question of how to join PopulationSim's MAZ/TAZ-keyed output to
   this block-level crosswalk.
 - **Output**: a single block-level crosswalk (`_data/intermediate/crosswalk.csv`) carrying each
-  block's county, district, TAZ, and matched school/college IDs from every source.
+  block's county, district, TAZ, and matched school/college IDs from every source. Section 10
+  checks how well each field matched (the coverage table in Section 10) and maps the study area
+  (@fig-study-area).
 
 ## Setup
 
@@ -244,7 +254,7 @@ if not block_boundary_path.exists():
     all_blocks.to_file(block_boundary_path)
     block_counties_path.write_text("\n".join(current_counties))
 
-# 2. Read + filter in one ste
+# 2. Read + filter in one step, pushed down to SQLite
 county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
 
 bound_blocks = gpd.read_file(
@@ -518,9 +528,78 @@ crosswalk["TAZID"] = crosswalk["TAZID"].astype("Int64")
 crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
 ```
 
-``` {python}
+```{python}
 # Not strictly needed for a one-shot Quarto render (the process exit reclaims the connection
 # either way), but matters in an interactive session where re-running Setup without restarting
 # the kernel would otherwise orphan the previous engine's pooled connection to Open SGID.
 opensgid_engine.dispose()
 ```
+
+## 10. Check the crosswalk
+
+Every later join depends on these match rates, so coverage is checked here before anything
+downstream uses the crosswalk.
+
+The map and the coverage table are drawn in OJS. Python first writes the map layers as GeoJSON
+(WGS84, which is what browsers expect) so OJS can read them.
+
+```{python}
+# OJS reads GeoJSON, not GeoDataFrames, so export each map layer in WGS84 for the {ojs} map below
+map_layers = {
+    "counties": bound_counties,
+    "districts": bound_districts,
+    "schools": ugrc_schools,
+    "colleges": ugrc_colleges,
+}
+for layer_name, layer in map_layers.items():
+    layer.to_crs("EPSG:4326").to_file(
+        paths["intermediate"] / f"map_{layer_name}.geojson", driver="GeoJSON"
+    )
+```
+
+```{ojs}
+//| label: fig-study-area
+//| fig-cap: "Study area. Gray fill is school district boundaries, black lines are county boundaries, blue dots are K-12 schools and red dots are colleges (all from UGRC)."
+//| fig-alt: "Map of Box Elder, Davis, Weber, Salt Lake and Utah counties in northern Utah. School district boundaries are shaded light gray, with blue dots for K-12 schools and red dots for colleges."
+
+study_counties = FileAttachment("_data/intermediate/map_counties.geojson").json()
+study_districts = FileAttachment("_data/intermediate/map_districts.geojson").json()
+study_schools = FileAttachment("_data/intermediate/map_schools.geojson").json()
+study_colleges = FileAttachment("_data/intermediate/map_colleges.geojson").json()
+
+Plot.plot({
+  width: 640,
+  height: 720,
+  projection: "mercator",
+  style: {background: "transparent", color: "inherit"},
+  marks: [
+    Plot.geo(study_districts, {fill: "#eeeeee", stroke: "#bbbbbb", strokeWidth: 0.5}),
+    Plot.geo(study_counties, {stroke: "black", strokeWidth: 1.2}),
+    Plot.geo(study_schools, {r: 1.8, fill: "#1f78b4", stroke: "none"}),
+    Plot.geo(study_colleges, {r: 4, fill: "#e31a1c", stroke: "none"})
+  ]
+})
+```
+
+```{ojs}
+crosswalk_rows = FileAttachment("_data/intermediate/crosswalk.csv").csv({typed: true})
+
+coverage_fields = [
+  "District Name", "TAZID", "School ID", "College ID",
+  "NCES School ID", "NCES Private School ID", "NCES College ID"
+]
+
+coverage_table = coverage_fields.map(field => {
+  const matched = crosswalk_rows.filter(d => d[field] != null && d[field] !== "");
+  return {
+    Field: field,
+    "Rows with a match": matched.length,
+    "Unique matches": new Set(matched.map(d => d[field])).size,
+    "Share of rows (%)": Math.round(1000 * matched.length / crosswalk_rows.length) / 10
+  };
+})
+
+Inputs.table(coverage_table)
+```
+
+*Crosswalk coverage by field. Rows are block-to-school pairs, so one block can appear several times.*
