@@ -195,6 +195,18 @@ bound_taz.explore()
 
 ```{python}
 block_boundary_path = paths["raw"] / "geometry" / "block_boundary.gpkg"
+block_counties_path = paths["raw"] / "geometry" / "block_boundary.counties.txt"
+
+# Auto-invalidate the cache if constants["counties"] has changed since it was built -- pygris'
+# blocks() call below is scoped to the CURRENT county list at fetch time (unlike every other
+# cached layer in this file, which fetches statewide and filters at read-time), so a stale cache
+# here would silently miss any newly-added county's blocks instead of erroring.
+current_counties = sorted(county_fips)
+cached_counties = (
+    block_counties_path.read_text().splitlines() if block_counties_path.exists() else []
+)
+if block_boundary_path.exists() and current_counties != cached_counties:
+    block_boundary_path.unlink()
 
 # 1. Download only if not already cached locally
 if not block_boundary_path.exists():
@@ -204,7 +216,7 @@ if not block_boundary_path.exists():
 
     all_blocks["district_name"] = gpd.sjoin(
         all_blocks.set_geometry(all_blocks.centroid),
-        all_districts[["name", "shape"]],
+        bound_districts[["name", "geometry"]],
         predicate="within",
         how="left",
     )["name"]
@@ -217,12 +229,13 @@ if not block_boundary_path.exists():
     )["TAZID"]
 
     all_blocks.to_file(block_boundary_path)
+    block_counties_path.write_text("\n".join(current_counties))
 
-# 2. Read + filter in one step, pushed down to SQLite
+# 2. Read + filter in one ste
 county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
 
 bound_blocks = gpd.read_file(
-    block_boundary_path, sql=f"SELECT * FROM block_boundary WHERE COUNTYFP20 IN ({county_list_sql})"
+    block_boundary_path, sql=f"SELECT * FROM block_boundary  WHERE COUNTYFP20 IN({county_list_sql})"
 )
 ```
 

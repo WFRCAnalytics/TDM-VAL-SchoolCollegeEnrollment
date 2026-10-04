@@ -38,11 +38,11 @@ paths = {
 }
 
 constants = {
-    "data_year": 2023,  # NCES/IPEDS/PSS vintage -- bump this one number in ~4 years
+    "data_year": 2023  # NCES/IPEDS/PSS vintage -- bump this one number in ~4 years
 }
 year_code = f"{str(constants['data_year'])[-2:]}{str(constants['data_year'] + 1)[-2:]}"
 
-crosswalk = pd.read_csv(paths["intermediate"] / "crosswalk.csv")
+crosswalk = pd.read_csv(paths["intermediate"] / "crosswalk.csv", dtype={"COUNTYFP": str})
 ```
 
 ## 1. K-12 — Utah DOE enrollment by district
@@ -159,38 +159,56 @@ nces_private_enrollment_by_district
 ## 4. Colleges — USHE enrollment by county
 
 ```{python}
-#| eval: false
-# NOTE: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic
-#   Year 2020 (Term 2) -- neither is 2023-24. Using AY2025 as the closest available; this is a
-#   real year mismatch against the ~2023 vintage used everywhere else in this project, not an
-#   oversight. Revisit if a genuine 2023-24 USHE data request ever comes back from USHE.
+# NOTE: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic Year 2020 (Term 2)
 ushe = pd.read_excel(paths["raw"] / "ushe" / "WFRC Data Request_Final.xlsx")
+
+ushe_fulltime = ushe.query(
+    "`Academic Year` == 2025 and Term == 2 and Full_or_Part_Time == 'Full-Time'"
+)
 ```
 
 ```{python}
-#| eval: false
-# USHE enrollment is reported by STUDENT HOME ZIP CODE, not institution location -- needs a
-# ZIP -> county crosswalk, unlike everything else in this project so far which is location-based.
-from pygris import zctas
+# Scoped to WFRC region institutions/sites only (constants["counties"] in 1_geography.qmd) --
+# USHE has no surrogate ID, so (Institution, Site) is the natural key; UGRC's unique ID is `xid`.
+# A few sites have no UGRC point of their own and are reassigned to a same-county campus instead --
+# "USU - Ogden Center" goes to Weber State's Main Campus xid, NOT USU's own (Cache County) Main
+# Campus, since the reassignment target has to match the real site's county, not its institution.
+ushe_to_ugrc_xid = {
+    ("Salt Lake Community College", "Correctional Facility--West Valley City"): 52,
+    ("Salt Lake Community College", "Main Campus"): 4,
+    ("Salt Lake Community College", "SLCC - Airport Center"): 4,
+    ("Salt Lake Community College", "SLCC - Jordan Campus"): 51,
+    ("Salt Lake Community College", "SLCC - Larry H. Miller Campus"): 50,
+    ("Salt Lake Community College", "SLCC - South City Center"): 46,
+    ("Salt Lake Community College", "SLCC - West Point Center"): 78,
+    ("Salt Lake Community College", "SLCC - West Valley City"): 52,
+    ("Salt Lake Community College", "SLCC-UU Juniper building at Herriman Campus"): 4,
+    ("University Of Utah", "Main Campus"): 7,
+    ("University Of Utah", "SLCC-UU Juniper building at Herriman Campus"): 7,
+    ("University Of Utah", "UU - Sandy Center"): 7,
+    ("Utah State University", "USU - Brigham Center"): 14,
+    ("Utah State University", "USU - Ogden Center"): 1,
+    ("Utah State University", "USU - Orem Center"): 28,
+    ("Utah State University", "USU - Salt Lake Center"): 32,
+    ("Utah State University", "USU - Tremonton Center"): 31,
+    ("Utah Valley University", "Main Campus"): 5,
+    ("Weber State University", "Main Campus"): 1,
+    ("Weber State University", "Technical College Campus--Davis"): 56,
+    ("Weber State University", "Technical College Campus--Ogden-Weber"): 69,
+    ("Weber State University", "University Center--SLCC"): 4,
+    ("Weber State University", "WSU - Davis Center"): 37,
+    ("Weber State University", "WSU - Farmington Station"): 42,
+}
 
-county_boundary = gpd.read_file(paths["raw"] / "geometry" / "county_boundary.gpkg")
+# Everything not in the dict is out-of-region or a non-geographic site (online, other-site, etc.)
+ushe_in_region = ushe_fulltime[
+    ushe_fulltime.set_index(["Institution", "Site"]).index.isin(ushe_to_ugrc_xid)
+].assign(xid=lambda df: df.set_index(["Institution", "Site"]).index.map(ushe_to_ugrc_xid))
 
-utah_zctas = zctas(cb=True, starts_with="84", year=2023, cache=True).to_crs(county_boundary.crs)
-utah_zctas["county_fips"] = gpd.sjoin(
-    utah_zctas.set_geometry(utah_zctas.centroid),
-    county_boundary[["COUNTYFP", "geometry"]],
-    predicate="within",
-    how="left",
-)["COUNTYFP"]
+ugrc_colleges = gpd.read_file(paths["raw"] / "geometry" / "ugrc_college.gpkg")
 
-zip_to_county = utah_zctas[["ZCTA5CE20", "county_fips"]]
-```
-
-```{python}
-#| eval: false
 ushe_enrollment_by_county = (
-    ushe.assign(ZIPCODE=ushe["ZIPCODE"].astype(str).str.zfill(5))
-    .merge(zip_to_county, left_on="ZIPCODE", right_on="ZCTA5CE20", how="left")
+    ushe_in_region.merge(ugrc_colleges[["xid", "county_fips"]], on="xid")
     .groupby("county_fips")["Headcount"]
     .sum()
     .rename("ushe_enrollment")
@@ -202,10 +220,7 @@ ushe_enrollment_by_county
 ## 5. Colleges — NCES/IPEDS enrollment by county
 
 ```{python}
-#| eval: false
 # IPEDS Fall Enrollment survey component (EF) -- matches constants["data_year"] across the project.
-# NOTE: the correct current URL is nces.ed.gov/ipeds/datacenter/data/... -- the College repo's
-#   "tablefiles/zipfiles" path 404s; verified directly before using it here.
 ipeds_dir = paths["raw"] / "ipeds"
 ipeds_dir.mkdir(parents=True, exist_ok=True)
 ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a.csv"
@@ -213,7 +228,9 @@ ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a.csv"
 if not ipeds_csv_path.exists():
     zip_path = ipeds_dir / f"EF{constants['data_year']}A.zip"
     zip_path.write_bytes(
-        requests.get(f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A.zip").content
+        requests.get(
+            f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A.zip"
+        ).content
     )
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(ipeds_dir)
@@ -222,7 +239,6 @@ ipeds_ef = pd.read_csv(ipeds_csv_path)
 ```
 
 ```{python}
-#| eval: false
 # EFALEVEL == 1 is the grand-total-headcount row (verified against a known institution's total
 # before relying on it); every other EFALEVEL value is a breakdown (undergrad/grad/level/etc.)
 ipeds_totals = ipeds_ef.query("EFALEVEL == 1")[["UNITID", "EFTOTLT"]]
@@ -245,10 +261,50 @@ ipeds_enrollment_by_county
 
 ## 6. Assemble enrollment tables
 
+### School Enrollment by School Districts
+
 ```{python}
-#| eval: false
-# TODO: merge doe_enrollment_by_district + nces_enrollment_by_district + nces_private_enrollment_by_district
-#   into one per-district table; merge ushe_enrollment_by_county + ipeds_enrollment_by_county into
-#   one per-county table; write both to _outputs/ as the real (non-synthetic) half of the validation
-#   schema.
+# Canonical district list -- every district the block-level crosswalk covers, regardless of
+# whether a given source has a school in it (left-merging onto this keeps a real data gap visible
+# as NaN instead of silently dropping the row via an inner join)
+district_list = crosswalk[["District Name"]].dropna().drop_duplicates()
+
+school_enrollment = (
+    district_list.merge(doe_enrollment_by_district, on="District Name", how="left")
+    .merge(nces_enrollment_by_district, on="District Name", how="left")
+    .merge(nces_private_enrollment_by_district, on="District Name", how="left")
+)
+# No private schools in a district is a real zero, not a gap
+school_enrollment["nces_private_enrollment"] = school_enrollment["nces_private_enrollment"].fillna(
+    0
+)
+school_enrollment
+```
+
+```{python}
+# Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means
+# an actual join problem (e.g. a school missing from the crosswalk), not an expected gap
+school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
+```
+
+### College Enrollment by Counties
+
+```{python}
+county_list = crosswalk[["COUNTYFP"]].dropna().drop_duplicates()
+
+college_enrollment = county_list.merge(
+    ushe_enrollment_by_county.rename(columns={"county_fips": "COUNTYFP"}), on="COUNTYFP", how="left"
+).merge(ipeds_enrollment_by_county, on="COUNTYFP", how="left")
+college_enrollment
+```
+
+```{python}
+# Same sanity check, county side
+college_enrollment[college_enrollment[["ushe_enrollment", "ipeds_enrollment"]].isna().any(axis=1)]
+```
+
+```{python}
+paths["output"].mkdir(parents=True, exist_ok=True)
+school_enrollment.to_csv(paths["intermediate"] / "real_enrollment_by_district.csv", index=False)
+college_enrollment.to_csv(paths["intermediate"] / "real_enrollment_by_county.csv", index=False)
 ```
