@@ -152,11 +152,6 @@ bound_districts.explore()
 
 ## 3. Travel Analysis Zone (TAZ) boundaries
 
-<!-- Source: WFRC's WasatchFrontTAZ feature service (preferred over pulling the shapefile from
-     https://github.com/WFRCAnalytics/TDM-GEO-AnalysisZones directly, since the REST endpoint stays
-     current without needing to track that repo's releases). Needed to resolve 3_synthetic.qmd's
-     open question of how PopulationSim's MAZ/TAZ-keyed output joins to this block-level crosswalk. -->
-
 ```{python}
 taz_boundary_path = paths["raw"] / "geometry" / "taz_boundary.gpkg"
 
@@ -203,15 +198,35 @@ bound_taz.explore()
 
 ## 4. Micro Analysis Zone (MAZ) boundaries
 
-<!-- Placeholder. MAZ doesn't have a published source yet -- checked TDM-GEO-AnalysisZones directly
-     and its own README says "data/maz/ (Populated when MAZ is introduced)"; only data/taz/ exists
-     today. Fill this in once WFRC publishes MAZ, following the same pattern as TAZ above (download
-     once, tag blocks with MAZID, add to the crosswalk) -- only needed if PopulationSim's output
-     turns out to be keyed at MAZ rather than TAZ. -->
+```{python}
+maz_boundary_path = paths["raw"] / "geometry" / "maz_boundary.gpkg"
+
+# 1. Build the cache once from the local zip (no download -- it's a draft Andy supplied)
+if not maz_boundary_path.exists():
+    all_maz = gpd.read_file(
+        "zip://_data/raw/geometry/microzones_draft_20260610Andyaddedmaz_idforUtah.zip"
+    ).to_crs(constants["crs"])
+    all_maz = all_maz[all_maz.geometry.notna()].copy()
+    all_maz = all_maz.set_geometry(all_maz.geometry.buffer(0))
+
+    all_maz["county_fips"] = gpd.sjoin(
+        all_maz.set_geometry(all_maz.centroid),
+        all_counties[["COUNTYFP", "geometry"]],
+        predicate="within",
+        how="left",
+    )["COUNTYFP"]
+
+    all_maz.to_file(maz_boundary_path)
+
+# 2. Read + filter in one step, pushed down to SQLite
+bound_maz = gpd.read_file(
+    maz_boundary_path, sql=f"SELECT * FROM maz_boundary WHERE county_fips IN ({county_list_sql})"
+)
+```
 
 ```{python}
-# TODO: once a MAZ source exists -- download/cache to _data/raw/geometry/maz_boundary.gpkg,
-#   tag all_blocks with MAZID the same way TAZID is tagged above, add MAZID to the crosswalk
+#| eval: false
+bound_maz.explore()
 ```
 
 ## 5. Census blocks
@@ -246,10 +261,17 @@ if not block_boundary_path.exists():
 
     all_blocks["TAZID"] = gpd.sjoin(
         all_blocks.set_geometry(all_blocks.centroid),
-        all_taz[["TAZID", "geometry"]],
+        bound_taz[["TAZID", "geometry"]],
         predicate="within",
         how="left",
     )["TAZID"]
+
+    all_blocks["maz_id"] = gpd.sjoin(
+        all_blocks.set_geometry(all_blocks.centroid),
+        bound_maz[["maz_id", "geometry"]],
+        predicate="within",
+        how="left",
+    )["maz_id"]
 
     all_blocks.to_file(block_boundary_path)
     block_counties_path.write_text("\n".join(current_counties))
@@ -510,7 +532,7 @@ nces_college_block_match = gpd.sjoin(
 )[["UNITID", "GEOID20"]].rename(columns={"UNITID": "NCES College ID"})
 
 crosswalk = (
-    bound_blocks[["GEOID20", "COUNTYFP20", "district_name", "TAZID"]]
+    bound_blocks[["GEOID20", "COUNTYFP20", "district_name", "TAZID", "maz_id"]]
     .merge(school_block_match.rename(columns={"schoolid": "School ID"}), on="GEOID20", how="left")
     .merge(college_block_match, on="GEOID20", how="left")
     .merge(nces_public_block_match, on="GEOID20", how="left")
@@ -524,6 +546,7 @@ crosswalk = (
 crosswalk["School ID"] = crosswalk["School ID"].astype("Int64")
 crosswalk["College ID"] = crosswalk["College ID"].astype("Int64")
 crosswalk["TAZID"] = crosswalk["TAZID"].astype("Int64")
+crosswalk["maz_id"] = crosswalk["maz_id"].astype("Int64")
 
 crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
 ```
@@ -585,7 +608,7 @@ Plot.plot({
 crosswalk_rows = FileAttachment("_data/intermediate/crosswalk.csv").csv({typed: true})
 
 coverage_fields = [
-  "District Name", "TAZID", "School ID", "College ID",
+  "District Name", "TAZID", "maz_id", "School ID", "College ID",
   "NCES School ID", "NCES Private School ID", "NCES College ID"
 ]
 
