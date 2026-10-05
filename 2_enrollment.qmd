@@ -19,7 +19,7 @@ This script produces the "real enrollment" half of the validation schema — the
 PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
 
 - **Objective**: get district-level K-12 enrollment and county-level college enrollment from real,
-  non-synthetic sources, joined through the block-level crosswalk built in `1_geography.qmd`.
+  non-synthetic sources, joined through the school and college crosswalks built in `1_geography.qmd`.
 - **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts),
   NCES enrollment by district (public via CCD, private via the Private School Universe Survey);
   USHE (student home ZIP code, not institution location — a different geography than everything
@@ -52,7 +52,12 @@ constants = {
 }
 year_code = f"{str(constants['data_year'])[-2:]}{str(constants['data_year'] + 1)[-2:]}"
 
-crosswalk = pd.read_csv(paths["intermediate"] / "crosswalk.csv", dtype={"COUNTYFP": str})
+school_crosswalk = pd.read_csv(
+    paths["intermediate"] / "crosswalk_school.csv", dtype={"ID": str, "COUNTYFP": str}
+)
+college_crosswalk = pd.read_csv(
+    paths["intermediate"] / "crosswalk_college.csv", dtype={"ID": str, "COUNTYFP": str}
+)
 ```
 
 ## 1. K-12 — Utah DOE enrollment by district
@@ -68,28 +73,41 @@ ugrc_public_schools = gpd.read_file(
     """,
 )
 
-# Join school -> district via the crosswalk (block-based, spatial) rather than matching the
-# school's own `leaname` text against the district boundary's `name` text. Dedup on School ID first:
-# the block-level crosswalk repeats 144 schools 2-5 times, which would double-count their enrollment.
-crosswalk_schools = crosswalk.dropna(subset=["School ID"]).drop_duplicates(subset=["School ID"])
+# Join school -> district via the school crosswalk (point-in-polygon, one row per school) rather than
+# matching the school's own `leaname` text against the district boundary's `name` text.
+doe_crosswalk = school_crosswalk[
+    (school_crosswalk["Unit"] == "school") & (school_crosswalk["Source"] == "UGRC")
+]
+assert (doe_crosswalk.groupby("ID")["District Name"].nunique() <= 1).all(), (
+    "UGRC school ID maps to two districts"
+)
+doe_crosswalk = doe_crosswalk.drop_duplicates(subset=["ID"])
+
+# The UGRC layer repeats some school IDs. Exact copies (Minersville, 201, is listed twice with the same
+# count) are dropped so they are not double-counted. Separate records that share an ID (Grouse Creek,
+# 218, an elementary and a secondary with different counts) are both kept and summed.
+ugrc_unique = (
+    ugrc_public_schools[["schoolid", "schoolname", "totalk12", "preschool"]]
+    .drop_duplicates()
+    .assign(doe_students=lambda df: df["totalk12"] + df["preschool"].fillna(0))
+)
 
 # Left join, so schools with no crosswalk match are kept visible instead of silently dropped
-doe_schools = ugrc_public_schools[["schoolid", "totalk12"]].merge(
-    crosswalk_schools[["School ID", "District Name"]],
-    how="left",
-    left_on="schoolid",
-    right_on="School ID",
+doe_schools = (
+    ugrc_unique.assign(schoolid=lambda df: df["schoolid"].astype("Int64").astype(str))
+    .merge(doe_crosswalk[["ID", "District Name"]], how="left", left_on="schoolid", right_on="ID")
 )
+assert len(doe_schools) == len(ugrc_unique), "school join changed the row count"
 
 unmatched_doe_schools = doe_schools[doe_schools["District Name"].isna()]
 print(
     f"DOE schools with no district match: {len(unmatched_doe_schools)} "
-    f"({unmatched_doe_schools['totalk12'].sum():,.0f} students, excluded from district totals)"
+    f"({unmatched_doe_schools['doe_students'].sum():,.0f} students, excluded from district totals)"
 )
 
 # groupby drops the unmatched rows (NaN district), so they are excluded from the totals below
 doe_enrollment_by_district = (
-    doe_schools.groupby("District Name")["totalk12"]
+    doe_schools.groupby("District Name")["doe_students"]
     .sum()
     .rename("doe_enrollment")
     .reset_index()
@@ -98,7 +116,7 @@ doe_enrollment_by_district
 ```
 
 ```{python}
-# Public DOE schools that did not get a district from the block-level crosswalk
+# Public DOE schools that did not get a district from the school crosswalk
 unmatched_doe_schools[["schoolid", "totalk12"]]
 ```
 
@@ -121,21 +139,35 @@ online_enrollment
 # Matches constants["data_year"] -- the vintage pulled in 1_geography.qmd
 nces_public_school = gpd.read_file(paths["raw"] / "geometry" / "nces_public_school.gpkg")
 
-# Dedup crosswalk for multiple NCES schools at same location
-crosswalk_nces = (
-    crosswalk.dropna(subset=["NCES School ID"])
-    .drop_duplicates(subset=["NCES School ID"])
-    .assign(**{"NCES School ID": lambda df: df["NCES School ID"].astype("Int64").astype(str)})
+nces_crosswalk = school_crosswalk[school_crosswalk["Source"] == "NCES public"]
+assert (nces_crosswalk.groupby("ID")["District Name"].nunique() <= 1).all(), (
+    "NCES public ID maps to two districts"
 )
+nces_crosswalk = nces_crosswalk.drop_duplicates(subset=["ID"])
+
+# DOE totalk12 is K-12 only: it equals the sum of k and grades 1-12 on every public, non-online row, and
+# it excludes preschool. NCES TOTAL includes PreK, plus other codes (UG, AE, G13), so NCES is summed
+# over KG-G12 to match the DOE definition. NCES codes a grade the school doesn't offer as -2; those
+# cells count as zero students.
+nces_k12_grades = ["KG"] + [f"G{i:02d}" for i in range(1, 13)]
+assert (nces_public_school[nces_k12_grades] >= -2).all().all(), "NCES K-12 grade has an unexpected code"
+nces_public_school["K12"] = nces_public_school[nces_k12_grades].clip(lower=0).fillna(0).sum(axis=1)
+
+# PK (preschool) uses the same -2 "not offered" rule as the grades, so negative codes count as zero
+assert (nces_public_school["PK"] >= -2).all(), "NCES PK has an unexpected code"
+nces_public_school["PK_students"] = nces_public_school["PK"].clip(lower=0).fillna(0)
+nces_public_school["nces_students"] = nces_public_school["K12"] + nces_public_school["PK_students"]
 
 nces_enrollment_by_district = (
-    nces_public_school[["NCESSCH", "TOTAL"]]
+    nces_public_school[["NCESSCH", "nces_students"]]
+    .drop_duplicates()
+    .assign(NCESSCH=lambda df: df["NCESSCH"].astype(str))
     .merge(
-        crosswalk_nces[["NCES School ID", "District Name"]],
+        nces_crosswalk[["ID", "District Name"]],
         left_on="NCESSCH",
-        right_on="NCES School ID",
+        right_on="ID",
     )
-    .groupby("District Name")["TOTAL"]
+    .groupby("District Name")["nces_students"]
     .sum()
     .rename("nces_enrollment")
     .reset_index()
@@ -169,17 +201,18 @@ pss = pd.read_csv(
 ```
 
 ```{python}
-# Same duplicate-schools issue as the public crosswalk merge -- dedup on NCES Private School ID first.
-crosswalk_private = crosswalk.dropna(subset=["NCES Private School ID"]).drop_duplicates(
-    subset=["NCES Private School ID"]
+crosswalk_private = school_crosswalk[school_crosswalk["Source"] == "NCES private"]
+assert (crosswalk_private.groupby("ID")["District Name"].nunique() <= 1).all(), (
+    "NCES private ID maps to two districts"
 )
+crosswalk_private = crosswalk_private.drop_duplicates(subset=["ID"])
 
 nces_private_enrollment_by_district = (
     pss[["PPIN", "PINST", "NUMSTUDS"]]
     .merge(
-        crosswalk_private[["NCES Private School ID", "District Name"]],
+        crosswalk_private[["ID", "District Name"]],
         left_on="PPIN",
-        right_on="NCES Private School ID",
+        right_on="ID",
     )
     .groupby("District Name")["NUMSTUDS"]
     .sum()
@@ -318,7 +351,7 @@ ipeds_targets = pd.concat(
 ipeds_enrollment_by_county = (
     ipeds_targets.groupby("COUNTYFP")["in_person"]
     .sum()
-    .rename("ipeds_enrollment")
+    .rename("nces_enrollment")
     .reset_index()
 )
 ipeds_enrollment_by_county
@@ -329,10 +362,10 @@ ipeds_enrollment_by_county
 ### School Enrollment by School Districts
 
 ```{python}
-# Canonical district list -- every district the block-level crosswalk covers, regardless of
-# whether a given source has a school in it (left-merging onto this keeps a real data gap visible
-# as NaN instead of silently dropping the row via an inner join)
-district_list = crosswalk[["District Name"]].dropna().drop_duplicates()
+# Canonical district list -- every district the school crosswalk covers (school points and MAZ rows),
+# regardless of whether a given source has a school in it (left-merging onto this keeps a real data
+# gap visible as NaN instead of silently dropping the row via an inner join)
+district_list = school_crosswalk[["District Name"]].dropna().drop_duplicates()
 
 school_enrollment = (
     district_list.merge(doe_enrollment_by_district, on="District Name", how="left")
@@ -351,7 +384,7 @@ school_enrollment["nces_private_enrollment"] = school_enrollment["nces_private_e
 school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
 ```
 
-*K-12 enrollment by school district: Utah DOE (UGRC school counts), NCES public (CCD) and NCES private (PSS). Blank cells are gaps in the source, not zeros.*
+*K-12 and preschool enrollment by school district: Utah DOE (UGRC school counts, K-12 plus preschool), NCES public (CCD, K-12 plus PK) and NCES private (PSS). Blank cells are gaps in the source, not zeros.*
 
 ```{ojs}
 districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
@@ -362,7 +395,7 @@ Inputs.table(districts_table, {rows: 25})
 ### College Enrollment by Counties
 
 ```{python}
-county_list = crosswalk[["COUNTYFP"]].dropna().drop_duplicates()
+county_list = college_crosswalk[["COUNTYFP"]].dropna().drop_duplicates()
 
 college_enrollment = county_list.merge(
     ushe_enrollment_by_county.rename(columns={"county_fips": "COUNTYFP"}), on="COUNTYFP", how="left"
@@ -371,7 +404,7 @@ college_enrollment = county_list.merge(
 
 ```{python}
 # Same sanity check, county side
-college_enrollment[college_enrollment[["ushe_enrollment", "ipeds_enrollment"]].isna().any(axis=1)]
+college_enrollment[college_enrollment[["ushe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
 ```
 
 *College enrollment by county: USHE (Academic Year 2025, Term 2, full-time and part-time) and IPEDS in-person (fall 2023). USHE covers public institutions only; private institutions such as BYU appear only in IPEDS. The IPEDS column covers the seven target colleges, with Weber State's Davis campus split out by USHE share. The sources also differ in year and method, so compare them with care.*
@@ -381,7 +414,7 @@ college_enrollment[college_enrollment[["ushe_enrollment", "ipeds_enrollment"]].i
 counties_table = FileAttachment("_data/intermediate/real_enrollment_by_county.csv").csv({typed: true}).then(rows => rows.map(d => ({
   County: ({3: "Box Elder", 11: "Davis", 35: "Salt Lake", 49: "Utah", 57: "Weber"})[d.COUNTYFP],
   "USHE (AY 2025)": d.ushe_enrollment,
-  "IPEDS in-person (fall 2023)": d.ipeds_enrollment
+  "IPEDS in-person (fall 2023)": d.nces_enrollment
 })))
 
 Inputs.table(counties_table)
@@ -400,7 +433,7 @@ Hover over a point or bar to see its values.
 
 ```{ojs}
 //| label: fig-district-compare
-//| fig-cap: "Public K-12 enrollment by district: Utah DOE (UGRC school counts) against NCES (CCD). Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most."
+//| fig-cap: "Public K-12 and preschool enrollment by district: Utah DOE (UGRC school counts) against NCES (CCD). Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most."
 //| fig-alt: "Scatter plot with Utah DOE enrollment on the horizontal axis and NCES enrollment on the vertical axis, one point per school district, with a dashed diagonal line marking equal counts; points above the line have higher NCES counts and points below have higher DOE counts."
 
 districts = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})

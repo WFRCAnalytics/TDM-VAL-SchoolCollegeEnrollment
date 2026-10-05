@@ -28,12 +28,12 @@ This script builds the geographic crosswalk that every later step in this projec
   [WasatchFrontTAZ feature service](https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0)
   rather than the [TDM-GEO-AnalysisZones](https://github.com/WFRCAnalytics/TDM-GEO-AnalysisZones)
   repo directly, so the pull stays current without tracking that repo's releases — TAZID is what
-  resolves `3_synthetic.qmd`'s open question of how to join PopulationSim's MAZ/TAZ-keyed output to
-  this block-level crosswalk.
-- **Output**: a single block-level crosswalk (`_data/intermediate/crosswalk.csv`) carrying each
-  block's county, district, TAZ, and matched school/college IDs from every source. Section 10
-  checks how well each field matched (the coverage table in Section 10) and maps the study area
-  (@fig-study-area).
+  is kept as a reference layer. The synthetic join uses MAZ, not TAZ.
+- **Output**: two crosswalks, one per use. `_data/intermediate/crosswalk_school.csv` maps each K-12
+  school (UGRC, NCES public, NCES private) and each MAZ to its district. `_data/intermediate/crosswalk_college.csv`
+  maps each college (UGRC, NCES) and each MAZ to its county. MAZ rows appear in both files, so
+  PopulationSim output rolls up through MAZ rather than through blocks. Section 10 checks coverage
+  and maps the study area (@fig-study-area).
 
 ## Setup
 
@@ -259,20 +259,6 @@ if not block_boundary_path.exists():
         how="left",
     )["name"]
 
-    all_blocks["TAZID"] = gpd.sjoin(
-        all_blocks.set_geometry(all_blocks.centroid),
-        bound_taz[["TAZID", "geometry"]],
-        predicate="within",
-        how="left",
-    )["TAZID"]
-
-    all_blocks["maz_id"] = gpd.sjoin(
-        all_blocks.set_geometry(all_blocks.centroid),
-        bound_maz[["maz_id", "geometry"]],
-        predicate="within",
-        how="left",
-    )["maz_id"]
-
     all_blocks.to_file(block_boundary_path)
     block_counties_path.write_text("\n".join(current_counties))
 
@@ -496,79 +482,53 @@ bound_model.explore()
 ## 9. Generate crosswalks
 
 ```{python}
-school_block_match = gpd.sjoin(
-    ugrc_schools[["schoolid", "geometry"]],
-    bound_blocks[["GEOID20", "geometry"]],
-    predicate="within",
-    how="left",
-)[["schoolid", "GEOID20"]]
+district_polys = bound_districts[["name", "geometry"]]
+county_polys = bound_counties[["COUNTYFP", "geometry"]]
 
-college_block_match = gpd.sjoin(
-    ugrc_colleges[["xid", "geometry"]],
-    bound_blocks[["GEOID20", "geometry"]],
-    predicate="within",
-    how="left",
-)[["xid", "GEOID20"]].rename(columns={"xid": "College ID"})
+# Point sources join directly to polygons, so no blocks are involved
+point_sources = [
+    ("school", "UGRC", ugrc_schools, "schoolid"),
+    ("school", "NCES public", nces_public_schools, "NCESSCH"),
+    ("school", "NCES private", nces_private_schools, "PPIN"),
+    ("college", "UGRC", ugrc_colleges, "xid"),
+    ("college", "NCES", nces_colleges, "UNITID"),
+]
 
-nces_public_block_match = gpd.sjoin(
-    nces_public_schools[["NCESSCH", "geometry"]],
-    bound_blocks[["GEOID20", "geometry"]],
-    predicate="within",
-    how="left",
-)[["NCESSCH", "GEOID20"]].rename(columns={"NCESSCH": "NCES School ID"})
+rows = []
+for unit, source, pts, id_col in point_sources:
+    point_district = gpd.sjoin(pts[[id_col, "geometry"]], district_polys, predicate="within", how="left")
+    point_county = gpd.sjoin(pts[[id_col, "geometry"]], county_polys, predicate="within", how="left")
+    assert len(point_district) == len(pts) == len(point_county), f"{source} {unit}: duplicate matches"
+    rows.append(pd.DataFrame({
+        "Unit": unit,
+        "Source": source,
+        "ID": pts[id_col].astype(str).values,
+        "District Name": point_district["name"].values,
+        "COUNTYFP": point_county["COUNTYFP"].values,
+    }))
 
-nces_private_block_match = gpd.sjoin(
-    nces_private_schools[["PPIN", "geometry"]],
-    bound_blocks[["GEOID20", "geometry"]],
-    predicate="within",
-    how="left",
-)[["PPIN", "GEOID20"]].rename(columns={"PPIN": "NCES Private School ID"})
+# MAZ rows: district and county from the MAZ centroid, so MAZs with no blocks are covered
+maz_points = bound_maz.set_geometry(bound_maz.centroid)[["maz_id", "geometry"]]
+maz_district = gpd.sjoin(maz_points, district_polys, predicate="within", how="left")
+maz_county = gpd.sjoin(maz_points, county_polys, predicate="within", how="left")
+assert len(maz_district) == len(maz_points) == len(maz_county), "MAZ centroid matches more than one polygon"
+rows.append(pd.DataFrame({
+    "Unit": "maz",
+    "Source": "PopulationSim",
+    "ID": maz_points["maz_id"].astype(str).values,
+    "District Name": maz_district["name"].values,
+    "COUNTYFP": maz_county["COUNTYFP"].values,
+}))
 
-nces_college_block_match = gpd.sjoin(
-    nces_colleges[["UNITID", "geometry"]],
-    bound_blocks[["GEOID20", "geometry"]],
-    predicate="within",
-    how="left",
-)[["UNITID", "GEOID20"]].rename(columns={"UNITID": "NCES College ID"})
+long = pd.concat(rows, ignore_index=True)
+school_crosswalk = long[long["Unit"].isin(["school", "maz"])].copy()
+college_crosswalk = long[long["Unit"].isin(["college", "maz"])].copy()
 
-maz_district = gpd.sjoin(
-    bound_maz.set_geometry(bound_maz.centroid)[["maz_id", "geometry"]],
-    bound_districts[["name", "geometry"]],
-    predicate="within",
-    how="left",
-)[["maz_id", "name"]].rename(columns={"name": "MAZ District Name"})
+for name, df in [("school", school_crosswalk), ("college", college_crosswalk)]:
+    print(name, "rows:", len(df), "duplicate (Source, ID):", df.duplicated(["Source", "ID"]).sum())
 
-maz_county = gpd.sjoin(
-    bound_maz.set_geometry(bound_maz.centroid)[["maz_id", "geometry"]],
-    bound_counties[["COUNTYFP", "geometry"]],
-    predicate="within",
-    how="left",
-)[["maz_id", "COUNTYFP"]].rename(columns={"COUNTYFP": "MAZ COUNTYFP"})
-
-maz_attrs = maz_district.merge(maz_county, on="maz_id", how="outer")
-assert maz_attrs["maz_id"].is_unique, "MAZ centroid falls in more than one district or county"
-```
-
-```{python}
-crosswalk = (
-    bound_blocks[["GEOID20", "COUNTYFP20", "district_name", "TAZID", "maz_id"]]
-    .merge(school_block_match.rename(columns={"schoolid": "School ID"}), on="GEOID20", how="left")
-    .merge(college_block_match, on="GEOID20", how="left")
-    .merge(nces_public_block_match, on="GEOID20", how="left")
-    .merge(nces_private_block_match, on="GEOID20", how="left")
-    .merge(nces_college_block_match, on="GEOID20", how="left")
-    .merge(maz_attrs, on="maz_id", how="left")
-    .rename(
-        columns={"GEOID20": "GEOID", "COUNTYFP20": "COUNTYFP", "district_name": "District Name"}
-    )
-)
-
-crosswalk["School ID"] = crosswalk["School ID"].astype("Int64")
-crosswalk["College ID"] = crosswalk["College ID"].astype("Int64")
-crosswalk["TAZID"] = crosswalk["TAZID"].astype("Int64")
-crosswalk["maz_id"] = crosswalk["maz_id"].astype("Int64")
-
-crosswalk.to_csv(paths["intermediate"] / "crosswalk.csv", index=False)
+school_crosswalk.to_csv(paths["intermediate"] / "crosswalk_school.csv", index=False)
+college_crosswalk.to_csv(paths["intermediate"] / "crosswalk_college.csv", index=False)
 ```
 
 ```{python}
@@ -583,8 +543,8 @@ opensgid_engine.dispose()
 Every later join depends on these match rates, so coverage is checked here before anything
 downstream uses the crosswalk.
 
-The map and the coverage table are drawn in OJS. Python first writes the map layers as GeoJSON
-(WGS84, which is what browsers expect) so OJS can read them.
+The map is drawn in OJS, and the coverage summary is printed by Python. Python first writes the map
+layers as GeoJSON (WGS84, which is what browsers expect) so OJS can read them.
 
 ```{python}
 # OJS reads GeoJSON, not GeoDataFrames, so export each map layer in WGS84 for the {ojs} map below
@@ -624,25 +584,16 @@ Plot.plot({
 })
 ```
 
-```{ojs}
-crosswalk_rows = FileAttachment("_data/intermediate/crosswalk.csv").csv({typed: true})
-
-coverage_fields = [
-  "District Name", "TAZID", "maz_id", "School ID", "College ID",
-  "NCES School ID", "NCES Private School ID", "NCES College ID"
-]
-
-coverage_table = coverage_fields.map(field => {
-  const matched = crosswalk_rows.filter(d => d[field] != null && d[field] !== "");
-  return {
-    Field: field,
-    "Rows with a match": matched.length,
-    "Unique matches": new Set(matched.map(d => d[field])).size,
-    "Share of rows (%)": Math.round(1000 * matched.length / crosswalk_rows.length) / 10
-  };
-})
-
-Inputs.table(coverage_table)
+```{python}
+for name in ["school", "college"]:
+    df = pd.read_csv(paths["intermediate"] / f"crosswalk_{name}.csv", dtype=str)
+    cov = df.groupby(["Unit", "Source"]).agg(
+        rows=("ID", "size"),
+        with_district=("District Name", "count"),
+        with_county=("COUNTYFP", "count"),
+    )
+    print(f"--- crosswalk_{name} ---")
+    print(cov.to_string())
 ```
 
-*Crosswalk coverage by field. Rows are block-to-school pairs, so one block can appear several times.*
+*Crosswalk coverage by unit and source. Rows are school and college points plus MAZs; MAZ rows appear in both files.*

@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -118,6 +118,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -419,59 +422,430 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>This is the page the site is actually built around — where the real enrollment numbers (<code>2_enrollment.qmd</code>) and PopulationSim’s synthetic estimates (<code>3_synthetic.qmd</code>) get compared.</p>
 <ul>
-<li><strong>Objective</strong>: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against PopulationSim’s synthetic K-12 student count (the real test, since that’s uncontrolled) and against its synthetic age 5-17 population (a sanity bound, since that’s controlled — not expected to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs.&nbsp;synthetic university-student count and college-age population.</li>
-<li><strong>What it reads</strong>: the two output tables from <code>2_enrollment.qmd</code> and the two from <code>3_synthetic.qmd</code>, all from <code>_outputs/</code>.</li>
+<li><strong>Objective</strong>: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against PopulationSim’s synthetic K-12 student count (the real test, since that’s uncontrolled) and against its synthetic age 3-18 population (a sanity bound, since that’s controlled — not expected to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs.&nbsp;synthetic sch_grade count (SCHG 15 and higher) and age 18-24 population.</li>
+<li><strong>What it reads</strong>: the real district and county tables from <code>2_enrollment.qmd</code> and the synthetic district and county tables from <code>3_synthetic.qmd</code>, all in <code>_data/intermediate/</code>.</li>
 <li><strong>Box Elder</strong>: reported separately from the other four counties, since its real and synthetic numbers are both scoped differently there (model region vs.&nbsp;full county) — a single pooled number would misrepresent it either way.</li>
 <li><strong>Output</strong>: this page itself — the published comparison tables and charts, not another intermediate file.</li>
 </ul>
-<!-- All code cells below are eval: false -- nothing here is implemented yet, just TODO outlines. -->
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="eb046c9f" class="cell" data-execution_count="1">
+<div id="14724b78" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: imports; load the four _outputs/ tables from 2_enrollment.qmd and 3_synthetic.qmd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {<span class="st">"intermediate"</span>: Path(<span class="st">"_data/intermediate/"</span>)}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="school-validation-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="school-validation-by-district">1. School validation (by district)</h2>
-<div id="b0989edd" class="cell" data-execution_count="2">
+<div id="46a188c2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: join real (DOE, NCES) + synthetic (enrolled-status, age-band) by District Name;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   compute diff and ratio for both the enrolled-status comparison and the age-band comparison</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>real_district <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_district.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>synthetic_district <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>school_validation <span class="op">=</span> real_district.merge(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    synthetic_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"outer"</span>, indicator<span class="op">=</span><span class="va">True</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Every district should be in both tables; anything else is a join problem to fix before reading ratios</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"districts only in one table:"</span>, (school_validation[<span class="st">"_merge"</span>] <span class="op">!=</span> <span class="st">"both"</span>).<span class="bu">sum</span>())</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>school_validation <span class="op">=</span> school_validation.drop(columns<span class="op">=</span><span class="st">"_merge"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Real enrollment already includes preschool (DOE totalk12 + preschool, NCES K-12 + PK), matching sch_grade</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> [<span class="st">"sch_grade"</span>, <span class="st">"age_3_18"</span>]:</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    school_validation[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_vs_doe"</span>] <span class="op">=</span> school_validation[col] <span class="op">/</span> school_validation[<span class="st">"doe_enrollment"</span>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    school_validation[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_vs_nces"</span>] <span class="op">=</span> school_validation[col] <span class="op">/</span> school_validation[<span class="st">"nces_enrollment"</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>school_counts <span class="op">=</span> school_validation[</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"District Name"</span>, <span class="st">"sch_grade"</span>, <span class="st">"age_3_18"</span>, <span class="st">"doe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>].sort_values(<span class="st">"doe_enrollment"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>school_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>districts only in one table: 0</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">age_3_18</th>
+<th data-quarto-table-cell-role="th">doe_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_enrollment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>120162</td>
+<td>140251</td>
+<td>102014.0</td>
+<td>100770</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>91690</td>
+<td>106713</td>
+<td>79021.0</td>
+<td>82003</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>85360</td>
+<td>92126</td>
+<td>68705.0</td>
+<td>71141</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>85374</td>
+<td>97352</td>
+<td>67269.0</td>
+<td>69389</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>46391</td>
+<td>52687</td>
+<td>39217.0</td>
+<td>48097</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>46008</td>
+<td>51456</td>
+<td>37099.0</td>
+<td>37612</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>39324</td>
+<td>45357</td>
+<td>34947.0</td>
+<td>35716</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>25695</td>
+<td>31346</td>
+<td>21633.0</td>
+<td>23563</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>15538</td>
+<td>21858</td>
+<td>15425.0</td>
+<td>15984</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>14278</td>
+<td>16778</td>
+<td>13647.0</td>
+<td>14375</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>7743</td>
+<td>8971</td>
+<td>12818.0</td>
+<td>13029</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>6495</td>
+<td>7237</td>
+<td>7403.0</td>
+<td>7465</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="ffc47841" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratios: synthetic / real. 1.00 means the synthetic count equals the real one.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>school_ratios <span class="op">=</span> school_validation[</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"District Name"</span>] <span class="op">+</span> [c <span class="cf">for</span> c <span class="kw">in</span> school_validation.columns <span class="cf">if</span> c.endswith((<span class="st">"_vs_doe"</span>, <span class="st">"_vs_nces"</span>))]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>].sort_values(<span class="st">"District Name"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>school_ratios.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">sch_grade_vs_doe</th>
+<th data-quarto-table-cell-role="th">sch_grade_vs_nces</th>
+<th data-quarto-table-cell-role="th">age_3_18_vs_doe</th>
+<th data-quarto-table-cell-role="th">age_3_18_vs_nces</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>1.178</td>
+<td>1.192</td>
+<td>1.375</td>
+<td>1.392</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>0.604</td>
+<td>0.594</td>
+<td>0.700</td>
+<td>0.689</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>1.240</td>
+<td>1.223</td>
+<td>1.387</td>
+<td>1.368</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>1.160</td>
+<td>1.118</td>
+<td>1.350</td>
+<td>1.301</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>1.269</td>
+<td>1.230</td>
+<td>1.447</td>
+<td>1.403</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>1.242</td>
+<td>1.200</td>
+<td>1.341</td>
+<td>1.295</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>0.877</td>
+<td>0.870</td>
+<td>0.978</td>
+<td>0.969</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>1.183</td>
+<td>0.965</td>
+<td>1.343</td>
+<td>1.095</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>1.046</td>
+<td>0.993</td>
+<td>1.229</td>
+<td>1.167</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>1.007</td>
+<td>0.972</td>
+<td>1.417</td>
+<td>1.367</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>1.188</td>
+<td>1.090</td>
+<td>1.449</td>
+<td>1.330</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>1.125</td>
+<td>1.101</td>
+<td>1.298</td>
+<td>1.270</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="college-validation-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="college-validation-by-county">2. College validation (by county)</h2>
-<div id="ae648160" class="cell" data-execution_count="3">
+<div id="b60d5eba" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: join real (USHE, NCES/IPEDS) + synthetic (enrolled-status, age-band) by COUNTYFP;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   compute diff and ratio for both comparisons</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>real_county <span class="op">=</span> pd.read_csv(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_county.csv"</span>, dtype<span class="op">=</span>{<span class="st">"COUNTYFP"</span>: <span class="bu">str</span>}</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>synthetic_county <span class="op">=</span> pd.read_csv(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_college_by_county.csv"</span>, dtype<span class="op">=</span>{<span class="st">"COUNTYFP"</span>: <span class="bu">str</span>}</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>college_validation <span class="op">=</span> real_county.merge(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    synthetic_county, on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"outer"</span>, indicator<span class="op">=</span><span class="va">True</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Every county should be in both tables; anything else is a join problem to fix before reading ratios</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"counties only in one table:"</span>, (college_validation[<span class="st">"_merge"</span>] <span class="op">!=</span> <span class="st">"both"</span>).<span class="bu">sum</span>())</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>college_validation <span class="op">=</span> college_validation.drop(columns<span class="op">=</span><span class="st">"_merge"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> [<span class="st">"sch_grade"</span>, <span class="st">"age_18_24"</span>]:</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    college_validation[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_vs_ushe"</span>] <span class="op">=</span> college_validation[col] <span class="op">/</span> college_validation[<span class="st">"ushe_enrollment"</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    college_validation[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_vs_nces"</span>] <span class="op">=</span> college_validation[col] <span class="op">/</span> college_validation[<span class="st">"nces_enrollment"</span>]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>college_validation.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>counties only in one table: 0</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">ushe_enrollment</th>
+<th data-quarto-table-cell-role="th">nces_enrollment</th>
+<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">age_18_24</th>
+<th data-quarto-table-cell-role="th">sch_grade_vs_ushe</th>
+<th data-quarto-table-cell-role="th">sch_grade_vs_nces</th>
+<th data-quarto-table-cell-role="th">age_18_24_vs_ushe</th>
+<th data-quarto-table-cell-role="th">age_18_24_vs_nces</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>003</td>
+<td>366</td>
+<td>NaN</td>
+<td>1304</td>
+<td>2705</td>
+<td>3.563</td>
+<td>NaN</td>
+<td>7.391</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>011</td>
+<td>2347</td>
+<td>4308.0</td>
+<td>19639</td>
+<td>35640</td>
+<td>8.368</td>
+<td>4.559</td>
+<td>15.185</td>
+<td>8.273</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>035</td>
+<td>51556</td>
+<td>57601.0</td>
+<td>81728</td>
+<td>121371</td>
+<td>1.585</td>
+<td>1.419</td>
+<td>2.354</td>
+<td>2.107</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>049</td>
+<td>21489</td>
+<td>72628.0</td>
+<td>91395</td>
+<td>123869</td>
+<td>4.253</td>
+<td>1.258</td>
+<td>5.764</td>
+<td>1.706</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>057</td>
+<td>10577</td>
+<td>21467.0</td>
+<td>15728</td>
+<td>26652</td>
+<td>1.487</td>
+<td>0.733</td>
+<td>2.520</td>
+<td>1.242</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="box-elder" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder">3. Box Elder</h2>
-<div id="48b1bccd" class="cell" data-execution_count="4">
+<div id="17a10793" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   section rather than folded into the main district/county tables</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   section rather than folded into the main district/county tables</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">4. Results</h2>
-<div id="dd1e6f31" class="cell" data-execution_count="5">
+<div id="4dbbd48f" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: ojs_define() the final comparison tables for the charts below</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: ojs_define() the final comparison tables for the charts below</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <!-- TODO: Observable Plot charts -- real vs. synthetic by district (K-12) and by county (college),

@@ -448,13 +448,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This script builds the geographic crosswalk that every later step in this project joins against.</p>
 <ul>
 <li><strong>Objective</strong>: tie every Census block in the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties) to the school district and county it falls in, and to the K-12 school(s) and college(s) located in it — so that PopulationSim’s synthetic population (<code>3_synthetic.qmd</code>) and real enrollment data (<code>2_enrollment.qmd</code>) can both be rolled up to district/county level as exact joins, with no area-weighting or estimation involved.</li>
-<li><strong>What it pulls</strong>: county, school district, Travel Analysis Zone (TAZ), and Census block boundaries; K-12 school and college locations from both UGRC/SGID (the state-preferred source) and NCES (kept alongside, not as a replacement, so schools and colleges can also be joined back to federal CCD/IPEDS data by ID); and the WFRC/MAG travel demand model boundary, used later to handle Box Elder County’s partial coverage in that model. TAZ boundaries come from WFRC’s <a href="https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0">WasatchFrontTAZ feature service</a> rather than the <a href="https://github.com/WFRCAnalytics/TDM-GEO-AnalysisZones">TDM-GEO-AnalysisZones</a> repo directly, so the pull stays current without tracking that repo’s releases — TAZID is what resolves <code>3_synthetic.qmd</code>’s open question of how to join PopulationSim’s MAZ/TAZ-keyed output to this block-level crosswalk.</li>
-<li><strong>Output</strong>: a single block-level crosswalk (<code>_data/intermediate/crosswalk.csv</code>) carrying each block’s county, district, TAZ, and matched school/college IDs from every source. Section 10 checks how well each field matched (the coverage table in Section 10) and maps the study area (<a href="#fig-study-area" class="quarto-xref">Figure&nbsp;1</a>).</li>
+<li><strong>What it pulls</strong>: county, school district, Travel Analysis Zone (TAZ), and Census block boundaries; K-12 school and college locations from both UGRC/SGID (the state-preferred source) and NCES (kept alongside, not as a replacement, so schools and colleges can also be joined back to federal CCD/IPEDS data by ID); and the WFRC/MAG travel demand model boundary, used later to handle Box Elder County’s partial coverage in that model. TAZ boundaries come from WFRC’s <a href="https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0">WasatchFrontTAZ feature service</a> rather than the <a href="https://github.com/WFRCAnalytics/TDM-GEO-AnalysisZones">TDM-GEO-AnalysisZones</a> repo directly, so the pull stays current without tracking that repo’s releases — TAZID is what is kept as a reference layer. The synthetic join uses MAZ, not TAZ.</li>
+<li><strong>Output</strong>: two crosswalks, one per use. <code>_data/intermediate/crosswalk_school.csv</code> maps each K-12 school (UGRC, NCES public, NCES private) and each MAZ to its district. <code>_data/intermediate/crosswalk_college.csv</code> maps each college (UGRC, NCES) and each MAZ to its county. MAZ rows appear in both files, so PopulationSim output rolls up through MAZ rather than through blocks. Section 10 checks coverage and maps the study area (<a href="#fig-study-area" class="quarto-xref">Figure&nbsp;1</a>).</li>
 </ul>
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="a13ee2e6" class="cell" data-execution_count="1">
+<div id="a92af000" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlalchemy</span>
@@ -466,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="879f9c60" class="cell" data-execution_count="2">
+<div id="20271a94" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {</span>
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="6bc4a721" class="cell" data-execution_count="3">
+<div id="62c3142f" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opensgid_engine <span class="op">=</span> sqlalchemy.create_engine(</span>
@@ -491,7 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="3013f0db" class="cell" data-execution_count="4">
+<div id="b4a6a1f1" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive FIPS codes via pygris instead of hardcoding them</span></span>
@@ -505,17 +505,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using FIPS code '49' for input 'UT'
-Using FIPS code '049' for input 'Utah'
-Using FIPS code '003' for input 'Box Elder'
 Using FIPS code '057' for input 'Weber'
-Using FIPS code '011' for input 'Davis'
-Using FIPS code '035' for input 'Salt Lake'</code></pre>
+Using FIPS code '035' for input 'Salt Lake'
+Using FIPS code '003' for input 'Box Elder'
+Using FIPS code '049' for input 'Utah'
+Using FIPS code '011' for input 'Davis'</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>['49049', '49003', '49057', '49011', '49035']</code></pre>
+<pre><code>['49057', '49035', '49003', '49049', '49011']</code></pre>
 </div>
 </div>
-<div id="b4193c14" class="cell" data-execution_count="5">
+<div id="79af26c9" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive the NCES EDGE/CCD year-code (2023 -&gt; "2324") so a future vintage swap below is a single</span></span>
@@ -530,7 +530,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="county-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="county-boundaries">1. County boundaries</h2>
-<div id="a005847c" class="cell" data-execution_count="6">
+<div id="78d9030d" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>county_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"county_boundary.gpkg"</span></span>
@@ -553,7 +553,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="1531b166" class="cell" data-execution_count="7">
+<div id="69a57f23" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bound_counties.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -562,7 +562,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="school-district-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="school-district-boundaries">2. School district boundaries</h2>
-<div id="b54a2717" class="cell" data-execution_count="8">
+<div id="6bb69c0d" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>district_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"school_district_boundary.gpkg"</span></span>
@@ -591,7 +591,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="8efea5da" class="cell" data-execution_count="9">
+<div id="446f716e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bound_districts.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -600,7 +600,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="travel-analysis-zone-taz-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="travel-analysis-zone-taz-boundaries">3. Travel Analysis Zone (TAZ) boundaries</h2>
-<div id="99f2d4c1" class="cell" data-execution_count="10">
+<div id="0c870bfe" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>taz_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"taz_boundary.gpkg"</span></span>
@@ -641,7 +641,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="45ada995" class="cell" data-execution_count="11">
+<div id="bb13593a" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bound_taz.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -650,7 +650,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="micro-analysis-zone-maz-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="micro-analysis-zone-maz-boundaries">4. Micro Analysis Zone (MAZ) boundaries</h2>
-<div id="79a36a7b" class="cell" data-execution_count="12">
+<div id="7aa85e29" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>maz_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"maz_boundary.gpkg"</span></span>
@@ -678,7 +678,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="55352479" class="cell" data-execution_count="13">
+<div id="26835aa9" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bound_maz.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -687,7 +687,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="census-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="census-blocks">5. Census blocks</h2>
-<div id="900f414d" class="cell" data-execution_count="14">
+<div id="e9547c70" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>block_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"block_boundary.gpkg"</span></span>
@@ -717,32 +717,18 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"left"</span>,</span>
 <span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    )[<span class="st">"name"</span>]</span>
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    all_blocks[<span class="st">"TAZID"</span>] <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        all_blocks.set_geometry(all_blocks.centroid),</span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        bound_taz[[<span class="st">"TAZID"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>        predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    )[<span class="st">"TAZID"</span>]</span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    all_blocks[<span class="st">"maz_id"</span>] <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        all_blocks.set_geometry(all_blocks.centroid),</span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>        bound_maz[[<span class="st">"maz_id"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>        predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    )[<span class="st">"maz_id"</span>]</span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>    all_blocks.to_file(block_boundary_path)</span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    block_counties_path.write_text(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(current_counties))</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Read + filter in one step, pushed down to SQLite</span></span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>county_list_sql <span class="op">=</span> <span class="st">", "</span>.join(<span class="ss">f"'</span><span class="sc">{</span>fips<span class="sc">}</span><span class="ss">'"</span> <span class="cf">for</span> fips <span class="kw">in</span> county_fips)</span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>bound_blocks <span class="op">=</span> gpd.read_file(</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    block_boundary_path, sql<span class="op">=</span><span class="ss">f"SELECT * FROM block_boundary  WHERE COUNTYFP20 IN(</span><span class="sc">{</span>county_list_sql<span class="sc">}</span><span class="ss">)"</span></span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    all_blocks.to_file(block_boundary_path)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    block_counties_path.write_text(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(current_counties))</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Read + filter in one step, pushed down to SQLite</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>county_list_sql <span class="op">=</span> <span class="st">", "</span>.join(<span class="ss">f"'</span><span class="sc">{</span>fips<span class="sc">}</span><span class="ss">'"</span> <span class="cf">for</span> fips <span class="kw">in</span> county_fips)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>bound_blocks <span class="op">=</span> gpd.read_file(</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    block_boundary_path, sql<span class="op">=</span><span class="ss">f"SELECT * FROM block_boundary  WHERE COUNTYFP20 IN(</span><span class="sc">{</span>county_list_sql<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="09db8650" class="cell" data-execution_count="15">
+<div id="9a7ad407" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bound_blocks.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -753,7 +739,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <h2 class="anchored" data-anchor-id="pre-k-to-12-school-locations">6. Pre-K to 12 school locations</h2>
 <section id="ugrc-pre-k-to-12" class="level3">
 <h3 class="anchored" data-anchor-id="ugrc-pre-k-to-12">UGRC Pre-K to 12</h3>
-<div id="22abc2c0" class="cell" data-execution_count="16">
+<div id="e4d19d1e" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ugrc_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_school.gpkg"</span></span>
@@ -779,7 +765,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="fb595498" class="cell" data-execution_count="17">
+<div id="ee8d9cd1" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ugrc_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -788,7 +774,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="nces-public-schools" class="level3">
 <h3 class="anchored" data-anchor-id="nces-public-schools">NCES public schools</h3>
-<div id="1c353977" class="cell" data-execution_count="18">
+<div id="c65f8ce4" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nces_public_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_public_school.gpkg"</span></span>
@@ -814,13 +800,13 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b9706079" class="cell" data-execution_count="19">
+<div id="800923b5" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nces_public_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="86de2cb2" class="cell" data-execution_count="20">
+<div id="1ead4e68" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TOTAL is documented by NCES as "Total Students (Includes AE)" -- verified 2026-10-01 this has no</span></span>
@@ -835,7 +821,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="nces-private-school" class="level3">
 <h3 class="anchored" data-anchor-id="nces-private-school">NCES private school</h3>
-<div id="cdd761c3" class="cell" data-execution_count="21">
+<div id="62400c23" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nces_private_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_private_school.gpkg"</span></span>
@@ -876,7 +862,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="df2ccf83" class="cell" data-execution_count="22">
+<div id="87ea4104" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nces_private_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -888,7 +874,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <h2 class="anchored" data-anchor-id="college-campus-locations">7. College campus locations</h2>
 <section id="ugrc-higher-education" class="level3">
 <h3 class="anchored" data-anchor-id="ugrc-higher-education">UGRC higher education</h3>
-<div id="5ab10b17" class="cell" data-execution_count="23">
+<div id="9e250f53" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ugrc_college_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_college.gpkg"</span></span>
@@ -914,7 +900,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="8c315dac" class="cell" data-execution_count="24">
+<div id="1f067b67" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ugrc_colleges.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -923,7 +909,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="nces-postsecondary-colleges" class="level3">
 <h3 class="anchored" data-anchor-id="nces-postsecondary-colleges">NCES postsecondary (colleges)</h3>
-<div id="1901c8e2" class="cell" data-execution_count="25">
+<div id="640f90a5" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nces_college_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_college.gpkg"</span></span>
@@ -946,7 +932,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="f709dc03" class="cell" data-execution_count="26">
+<div id="27a2a644" class="cell" data-execution_count="26">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nces_colleges.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -956,7 +942,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="model-mpo-region-boundary" class="level2">
 <h2 class="anchored" data-anchor-id="model-mpo-region-boundary">8. Model / MPO region boundary</h2>
-<div id="fa2be468" class="cell" data-execution_count="27">
+<div id="662f6148" class="cell" data-execution_count="27">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"model_boundary.gpkg"</span></span>
@@ -974,7 +960,7 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>bound_model <span class="op">=</span> gpd.read_file(model_boundary_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="472ea545" class="cell" data-execution_count="28">
+<div id="f2dbf61f" class="cell" data-execution_count="28">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>bound_model.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -983,87 +969,63 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 </section>
 <section id="generate-crosswalks" class="level2">
 <h2 class="anchored" data-anchor-id="generate-crosswalks">9. Generate crosswalks</h2>
-<div id="de30363c" class="cell" data-execution_count="29">
+<div id="285a02cb" class="cell" data-execution_count="29">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>school_block_match <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    ugrc_schools[[<span class="st">"schoolid"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"schoolid"</span>, <span class="st">"GEOID20"</span>]]</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>college_block_match <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    ugrc_colleges[[<span class="st">"xid"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"xid"</span>, <span class="st">"GEOID20"</span>]].rename(columns<span class="op">=</span>{<span class="st">"xid"</span>: <span class="st">"College ID"</span>})</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>nces_public_block_match <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    nces_public_schools[[<span class="st">"NCESSCH"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"NCESSCH"</span>, <span class="st">"GEOID20"</span>]].rename(columns<span class="op">=</span>{<span class="st">"NCESSCH"</span>: <span class="st">"NCES School ID"</span>})</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>nces_private_block_match <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    nces_private_schools[[<span class="st">"PPIN"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"PPIN"</span>, <span class="st">"GEOID20"</span>]].rename(columns<span class="op">=</span>{<span class="st">"PPIN"</span>: <span class="st">"NCES Private School ID"</span>})</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>nces_college_block_match <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>    nces_colleges[[<span class="st">"UNITID"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"UNITID"</span>, <span class="st">"GEOID20"</span>]].rename(columns<span class="op">=</span>{<span class="st">"UNITID"</span>: <span class="st">"NCES College ID"</span>})</span>
-<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>maz_district <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>    bound_maz.set_geometry(bound_maz.centroid)[[<span class="st">"maz_id"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>    bound_districts[[<span class="st">"name"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"maz_id"</span>, <span class="st">"name"</span>]].rename(columns<span class="op">=</span>{<span class="st">"name"</span>: <span class="st">"MAZ District Name"</span>})</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>district_polys <span class="op">=</span> bound_districts[[<span class="st">"name"</span>, <span class="st">"geometry"</span>]]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>county_polys <span class="op">=</span> bound_counties[[<span class="st">"COUNTYFP"</span>, <span class="st">"geometry"</span>]]</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point sources join directly to polygons, so no blocks are involved</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>point_sources <span class="op">=</span> [</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"school"</span>, <span class="st">"UGRC"</span>, ugrc_schools, <span class="st">"schoolid"</span>),</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"school"</span>, <span class="st">"NCES public"</span>, nces_public_schools, <span class="st">"NCESSCH"</span>),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"school"</span>, <span class="st">"NCES private"</span>, nces_private_schools, <span class="st">"PPIN"</span>),</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"college"</span>, <span class="st">"UGRC"</span>, ugrc_colleges, <span class="st">"xid"</span>),</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"college"</span>, <span class="st">"NCES"</span>, nces_colleges, <span class="st">"UNITID"</span>),</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> unit, source, pts, id_col <span class="kw">in</span> point_sources:</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    point_district <span class="op">=</span> gpd.sjoin(pts[[id_col, <span class="st">"geometry"</span>]], district_polys, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    point_county <span class="op">=</span> gpd.sjoin(pts[[id_col, <span class="st">"geometry"</span>]], county_polys, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(point_district) <span class="op">==</span> <span class="bu">len</span>(pts) <span class="op">==</span> <span class="bu">len</span>(point_county), <span class="ss">f"</span><span class="sc">{</span>source<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>unit<span class="sc">}</span><span class="ss">: duplicate matches"</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    rows.append(pd.DataFrame({</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Unit"</span>: unit,</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Source"</span>: source,</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ID"</span>: pts[id_col].astype(<span class="bu">str</span>).values,</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"District Name"</span>: point_district[<span class="st">"name"</span>].values,</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"COUNTYFP"</span>: point_county[<span class="st">"COUNTYFP"</span>].values,</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    }))</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="co"># MAZ rows: district and county from the MAZ centroid, so MAZs with no blocks are covered</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>maz_points <span class="op">=</span> bound_maz.set_geometry(bound_maz.centroid)[[<span class="st">"maz_id"</span>, <span class="st">"geometry"</span>]]</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>maz_district <span class="op">=</span> gpd.sjoin(maz_points, district_polys, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>maz_county <span class="op">=</span> gpd.sjoin(maz_points, county_polys, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(maz_district) <span class="op">==</span> <span class="bu">len</span>(maz_points) <span class="op">==</span> <span class="bu">len</span>(maz_county), <span class="st">"MAZ centroid matches more than one polygon"</span></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>rows.append(pd.DataFrame({</span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unit"</span>: <span class="st">"maz"</span>,</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Source"</span>: <span class="st">"PopulationSim"</span>,</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ID"</span>: maz_points[<span class="st">"maz_id"</span>].astype(<span class="bu">str</span>).values,</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"District Name"</span>: maz_district[<span class="st">"name"</span>].values,</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"COUNTYFP"</span>: maz_county[<span class="st">"COUNTYFP"</span>].values,</span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="bu">long</span> <span class="op">=</span> pd.concat(rows, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>school_crosswalk <span class="op">=</span> <span class="bu">long</span>[<span class="bu">long</span>[<span class="st">"Unit"</span>].isin([<span class="st">"school"</span>, <span class="st">"maz"</span>])].copy()</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>college_crosswalk <span class="op">=</span> <span class="bu">long</span>[<span class="bu">long</span>[<span class="st">"Unit"</span>].isin([<span class="st">"college"</span>, <span class="st">"maz"</span>])].copy()</span>
 <span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a>maz_county <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>    bound_maz.set_geometry(bound_maz.centroid)[[<span class="st">"maz_id"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>    bound_counties[[<span class="st">"COUNTYFP"</span>, <span class="st">"geometry"</span>]],</span>
-<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>    predicate<span class="op">=</span><span class="st">"within"</span>,</span>
-<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
-<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"maz_id"</span>, <span class="st">"COUNTYFP"</span>]].rename(columns<span class="op">=</span>{<span class="st">"COUNTYFP"</span>: <span class="st">"MAZ COUNTYFP"</span>})</span>
-<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a>maz_attrs <span class="op">=</span> maz_district.merge(maz_county, on<span class="op">=</span><span class="st">"maz_id"</span>, how<span class="op">=</span><span class="st">"outer"</span>)</span>
-<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> maz_attrs[<span class="st">"maz_id"</span>].is_unique, <span class="st">"MAZ centroid falls in more than one district or county"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, df <span class="kw">in</span> [(<span class="st">"school"</span>, school_crosswalk), (<span class="st">"college"</span>, college_crosswalk)]:</span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(name, <span class="st">"rows:"</span>, <span class="bu">len</span>(df), <span class="st">"duplicate (Source, ID):"</span>, df.duplicated([<span class="st">"Source"</span>, <span class="st">"ID"</span>]).<span class="bu">sum</span>())</span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>school_crosswalk.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_school.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>college_crosswalk.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_college.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>school rows: 26324 duplicate (Source, ID): 11
+college rows: 24620 duplicate (Source, ID): 0</code></pre>
 </div>
-<div id="27879163" class="cell" data-execution_count="30">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>crosswalk <span class="op">=</span> (</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    bound_blocks[[<span class="st">"GEOID20"</span>, <span class="st">"COUNTYFP20"</span>, <span class="st">"district_name"</span>, <span class="st">"TAZID"</span>, <span class="st">"maz_id"</span>]]</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    .merge(school_block_match.rename(columns<span class="op">=</span>{<span class="st">"schoolid"</span>: <span class="st">"School ID"</span>}), on<span class="op">=</span><span class="st">"GEOID20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    .merge(college_block_match, on<span class="op">=</span><span class="st">"GEOID20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    .merge(nces_public_block_match, on<span class="op">=</span><span class="st">"GEOID20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    .merge(nces_private_block_match, on<span class="op">=</span><span class="st">"GEOID20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    .merge(nces_college_block_match, on<span class="op">=</span><span class="st">"GEOID20"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    .merge(maz_attrs, on<span class="op">=</span><span class="st">"maz_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    .rename(</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        columns<span class="op">=</span>{<span class="st">"GEOID20"</span>: <span class="st">"GEOID"</span>, <span class="st">"COUNTYFP20"</span>: <span class="st">"COUNTYFP"</span>, <span class="st">"district_name"</span>: <span class="st">"District Name"</span>}</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>crosswalk[<span class="st">"School ID"</span>] <span class="op">=</span> crosswalk[<span class="st">"School ID"</span>].astype(<span class="st">"Int64"</span>)</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>crosswalk[<span class="st">"College ID"</span>] <span class="op">=</span> crosswalk[<span class="st">"College ID"</span>].astype(<span class="st">"Int64"</span>)</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>crosswalk[<span class="st">"TAZID"</span>] <span class="op">=</span> crosswalk[<span class="st">"TAZID"</span>].astype(<span class="st">"Int64"</span>)</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>crosswalk[<span class="st">"maz_id"</span>] <span class="op">=</span> crosswalk[<span class="st">"maz_id"</span>].astype(<span class="st">"Int64"</span>)</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>crosswalk.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
-<div id="cc6bbb7b" class="cell" data-execution_count="31">
+<div id="fc526dd2" class="cell" data-execution_count="30">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Not strictly needed for a one-shot Quarto render (the process exit reclaims the connection</span></span>
@@ -1076,8 +1038,8 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <section id="check-the-crosswalk" class="level2">
 <h2 class="anchored" data-anchor-id="check-the-crosswalk">10. Check the crosswalk</h2>
 <p>Every later join depends on these match rates, so coverage is checked here before anything downstream uses the crosswalk.</p>
-<p>The map and the coverage table are drawn in OJS. Python first writes the map layers as GeoJSON (WGS84, which is what browsers expect) so OJS can read them.</p>
-<div id="832e6b36" class="cell" data-execution_count="32">
+<p>The map is drawn in OJS, and the coverage summary is printed by Python. Python first writes the map layers as GeoJSON (WGS84, which is what browsers expect) so OJS can read them.</p>
+<div id="c8e431bf" class="cell" data-execution_count="31">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OJS reads GeoJSON, not GeoDataFrames, so export each map layer in WGS84 for the {ojs} map below</span></span>
@@ -1096,23 +1058,23 @@ Using FIPS code '035' for input 'Salt Lake'</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37" data-startfrom="608" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 607;"><span id="cb37-608"><a href="#cb37-608" aria-hidden="true" tabindex="-1"></a>study_counties <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_counties.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb37-609"><a href="#cb37-609" aria-hidden="true" tabindex="-1"></a>study_districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_districts.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb37-610"><a href="#cb37-610" aria-hidden="true" tabindex="-1"></a>study_schools <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_schools.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb37-611"><a href="#cb37-611" aria-hidden="true" tabindex="-1"></a>study_colleges <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_colleges.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb37-612"><a href="#cb37-612" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-613"><a href="#cb37-613" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb37-614"><a href="#cb37-614" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">640</span><span class="op">,</span></span>
-<span id="cb37-615"><a href="#cb37-615" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
-<span id="cb37-616"><a href="#cb37-616" aria-hidden="true" tabindex="-1"></a>  <span class="dt">projection</span><span class="op">:</span> <span class="st">"mercator"</span><span class="op">,</span></span>
-<span id="cb37-617"><a href="#cb37-617" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb37-618"><a href="#cb37-618" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb37-619"><a href="#cb37-619" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_districts<span class="op">,</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"#eeeeee"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#bbbbbb"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">0.5</span>})<span class="op">,</span></span>
-<span id="cb37-620"><a href="#cb37-620" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_counties<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">1.2</span>})<span class="op">,</span></span>
-<span id="cb37-621"><a href="#cb37-621" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_schools<span class="op">,</span> {<span class="dt">r</span><span class="op">:</span> <span class="fl">1.8</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"none"</span>})<span class="op">,</span></span>
-<span id="cb37-622"><a href="#cb37-622" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_colleges<span class="op">,</span> {<span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#e31a1c"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"none"</span>})</span>
-<span id="cb37-623"><a href="#cb37-623" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb37-624"><a href="#cb37-624" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37" data-startfrom="568" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 567;"><span id="cb37-568"><a href="#cb37-568" aria-hidden="true" tabindex="-1"></a>study_counties <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_counties.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb37-569"><a href="#cb37-569" aria-hidden="true" tabindex="-1"></a>study_districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_districts.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb37-570"><a href="#cb37-570" aria-hidden="true" tabindex="-1"></a>study_schools <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_schools.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb37-571"><a href="#cb37-571" aria-hidden="true" tabindex="-1"></a>study_colleges <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/map_colleges.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb37-572"><a href="#cb37-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-573"><a href="#cb37-573" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb37-574"><a href="#cb37-574" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">640</span><span class="op">,</span></span>
+<span id="cb37-575"><a href="#cb37-575" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
+<span id="cb37-576"><a href="#cb37-576" aria-hidden="true" tabindex="-1"></a>  <span class="dt">projection</span><span class="op">:</span> <span class="st">"mercator"</span><span class="op">,</span></span>
+<span id="cb37-577"><a href="#cb37-577" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb37-578"><a href="#cb37-578" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb37-579"><a href="#cb37-579" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_districts<span class="op">,</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"#eeeeee"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#bbbbbb"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">0.5</span>})<span class="op">,</span></span>
+<span id="cb37-580"><a href="#cb37-580" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_counties<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">1.2</span>})<span class="op">,</span></span>
+<span id="cb37-581"><a href="#cb37-581" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_schools<span class="op">,</span> {<span class="dt">r</span><span class="op">:</span> <span class="fl">1.8</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"none"</span>})<span class="op">,</span></span>
+<span id="cb37-582"><a href="#cb37-582" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(study_colleges<span class="op">,</span> {<span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#e31a1c"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"none"</span>})</span>
+<span id="cb37-583"><a href="#cb37-583" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb37-584"><a href="#cb37-584" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-study-area" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1194,65 +1156,43 @@ Figure&nbsp;1: Study area. Gray fill is school district boundaries, black lines 
 </figure>
 </div>
 </div>
-<div class="cell">
+<div id="ca491678" class="cell" data-execution_count="32">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38" data-startfrom="628" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 627;"><span id="cb38-628"><a href="#cb38-628" aria-hidden="true" tabindex="-1"></a>crosswalk_rows <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/crosswalk.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb38-629"><a href="#cb38-629" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-630"><a href="#cb38-630" aria-hidden="true" tabindex="-1"></a>coverage_fields <span class="op">=</span> [</span>
-<span id="cb38-631"><a href="#cb38-631" aria-hidden="true" tabindex="-1"></a>  <span class="st">"District Name"</span><span class="op">,</span> <span class="st">"TAZID"</span><span class="op">,</span> <span class="st">"maz_id"</span><span class="op">,</span> <span class="st">"School ID"</span><span class="op">,</span> <span class="st">"College ID"</span><span class="op">,</span></span>
-<span id="cb38-632"><a href="#cb38-632" aria-hidden="true" tabindex="-1"></a>  <span class="st">"NCES School ID"</span><span class="op">,</span> <span class="st">"NCES Private School ID"</span><span class="op">,</span> <span class="st">"NCES College ID"</span></span>
-<span id="cb38-633"><a href="#cb38-633" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb38-634"><a href="#cb38-634" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-635"><a href="#cb38-635" aria-hidden="true" tabindex="-1"></a>coverage_table <span class="op">=</span> coverage_fields<span class="op">.</span><span class="fu">map</span>(field <span class="kw">=&gt;</span> {</span>
-<span id="cb38-636"><a href="#cb38-636" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> matched <span class="op">=</span> crosswalk_rows<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d[field] <span class="op">!=</span> <span class="kw">null</span> <span class="op">&amp;&amp;</span> d[field] <span class="op">!==</span> <span class="st">""</span>)<span class="op">;</span></span>
-<span id="cb38-637"><a href="#cb38-637" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
-<span id="cb38-638"><a href="#cb38-638" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Field</span><span class="op">:</span> field<span class="op">,</span></span>
-<span id="cb38-639"><a href="#cb38-639" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Rows with a match"</span><span class="op">:</span> matched<span class="op">.</span><span class="at">length</span><span class="op">,</span></span>
-<span id="cb38-640"><a href="#cb38-640" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unique matches"</span><span class="op">:</span> <span class="kw">new</span> <span class="bu">Set</span>(matched<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d[field]))<span class="op">.</span><span class="at">size</span><span class="op">,</span></span>
-<span id="cb38-641"><a href="#cb38-641" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Share of rows (%)"</span><span class="op">:</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(<span class="dv">1000</span> <span class="op">*</span> matched<span class="op">.</span><span class="at">length</span> <span class="op">/</span> crosswalk_rows<span class="op">.</span><span class="at">length</span>) <span class="op">/</span> <span class="dv">10</span></span>
-<span id="cb38-642"><a href="#cb38-642" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb38-643"><a href="#cb38-643" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb38-644"><a href="#cb38-644" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-645"><a href="#cb38-645" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(coverage_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> [<span class="st">"school"</span>, <span class="st">"college"</span>]:</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="ss">f"crosswalk_</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.csv"</span>, dtype<span class="op">=</span><span class="bu">str</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    cov <span class="op">=</span> df.groupby([<span class="st">"Unit"</span>, <span class="st">"Source"</span>]).agg(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>        rows<span class="op">=</span>(<span class="st">"ID"</span>, <span class="st">"size"</span>),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>        with_district<span class="op">=</span>(<span class="st">"District Name"</span>, <span class="st">"count"</span>),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>        with_county<span class="op">=</span>(<span class="st">"COUNTYFP"</span>, <span class="st">"count"</span>),</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"--- crosswalk_</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> ---"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cov.to_string())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-3-1" data-nodetype="declaration">
-
+<div class="cell-output cell-output-stdout">
+<pre><code>--- crosswalk_school ---
+                       rows  with_district  with_county
+Unit   Source                                          
+maz    PopulationSim  24531          24531        24531
+school NCES private     105            105          105
+       NCES public      742            742          742
+       UGRC             946            946          946
+--- crosswalk_college ---
+                        rows  with_district  with_county
+Unit    Source                                          
+college NCES              47             47           47
+        UGRC              42             42           42
+maz     PopulationSim  24531          24531        24531</code></pre>
 </div>
 </div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-3-2" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-3-3" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-3-4" data-nodetype="expression">
-
-</div>
-</div>
-</div>
-</div>
-<p><em>Crosswalk coverage by field. Rows are block-to-school pairs, so one block can appear several times.</em></p>
+<p><em>Crosswalk coverage by unit and source. Rows are school and college points plus MAZs; MAZ rows appear in both files.</em></p>
 
 
 </section>
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG48L3N0eWxlPmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxuc3R1ZHlfY291bnRpZXMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfY291bnRpZXMuZ2VvanNvblwiKS5qc29uKClcbnN0dWR5X2Rpc3RyaWN0cyA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL21hcF9kaXN0cmljdHMuZ2VvanNvblwiKS5qc29uKClcbnN0dWR5X3NjaG9vbHMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfc2Nob29scy5nZW9qc29uXCIpLmpzb24oKVxuc3R1ZHlfY29sbGVnZXMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfY29sbGVnZXMuZ2VvanNvblwiKS5qc29uKClcblxuUGxvdC5wbG90KHtcbiAgd2lkdGg6IDY0MCxcbiAgaGVpZ2h0OiA3MjAsXG4gIHByb2plY3Rpb246IFwibWVyY2F0b3JcIixcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5nZW8oc3R1ZHlfZGlzdHJpY3RzLCB7ZmlsbDogXCIjZWVlZWVlXCIsIHN0cm9rZTogXCIjYmJiYmJiXCIsIHN0cm9rZVdpZHRoOiAwLjV9KSxcbiAgICBQbG90LmdlbyhzdHVkeV9jb3VudGllcywge3N0cm9rZTogXCJibGFja1wiLCBzdHJva2VXaWR0aDogMS4yfSksXG4gICAgUGxvdC5nZW8oc3R1ZHlfc2Nob29scywge3I6IDEuOCwgZmlsbDogXCIjMWY3OGI0XCIsIHN0cm9rZTogXCJub25lXCJ9KSxcbiAgICBQbG90LmdlbyhzdHVkeV9jb2xsZWdlcywge3I6IDQsIGZpbGw6IFwiI2UzMWExY1wiLCBzdHJva2U6IFwibm9uZVwifSlcbiAgXVxufSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImNyb3Nzd2Fsa19yb3dzID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvY3Jvc3N3YWxrLmNzdlwiKS5jc3Yoe3R5cGVkOiB0cnVlfSlcblxuY292ZXJhZ2VfZmllbGRzID0gW1xuICBcIkRpc3RyaWN0IE5hbWVcIiwgXCJUQVpJRFwiLCBcIm1hel9pZFwiLCBcIlNjaG9vbCBJRFwiLCBcIkNvbGxlZ2UgSURcIixcbiAgXCJOQ0VTIFNjaG9vbCBJRFwiLCBcIk5DRVMgUHJpdmF0ZSBTY2hvb2wgSURcIiwgXCJOQ0VTIENvbGxlZ2UgSURcIlxuXVxuXG5jb3ZlcmFnZV90YWJsZSA9IGNvdmVyYWdlX2ZpZWxkcy5tYXAoZmllbGQgPT4ge1xuICBjb25zdCBtYXRjaGVkID0gY3Jvc3N3YWxrX3Jvd3MuZmlsdGVyKGQgPT4gZFtmaWVsZF0gIT0gbnVsbCAmJiBkW2ZpZWxkXSAhPT0gXCJcIik7XG4gIHJldHVybiB7XG4gICAgRmllbGQ6IGZpZWxkLFxuICAgIFwiUm93cyB3aXRoIGEgbWF0Y2hcIjogbWF0Y2hlZC5sZW5ndGgsXG4gICAgXCJVbmlxdWUgbWF0Y2hlc1wiOiBuZXcgU2V0KG1hdGNoZWQubWFwKGQgPT4gZFtmaWVsZF0pKS5zaXplLFxuICAgIFwiU2hhcmUgb2Ygcm93cyAoJSlcIjogTWF0aC5yb3VuZCgxMDAwICogbWF0Y2hlZC5sZW5ndGggLyBjcm9zc3dhbGtfcm93cy5sZW5ndGgpIC8gMTBcbiAgfTtcbn0pXG5cbklucHV0cy50YWJsZShjb3ZlcmFnZV90YWJsZSlcbiJ9XX0=
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG48L3N0eWxlPmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxuc3R1ZHlfY291bnRpZXMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfY291bnRpZXMuZ2VvanNvblwiKS5qc29uKClcbnN0dWR5X2Rpc3RyaWN0cyA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL21hcF9kaXN0cmljdHMuZ2VvanNvblwiKS5qc29uKClcbnN0dWR5X3NjaG9vbHMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfc2Nob29scy5nZW9qc29uXCIpLmpzb24oKVxuc3R1ZHlfY29sbGVnZXMgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9tYXBfY29sbGVnZXMuZ2VvanNvblwiKS5qc29uKClcblxuUGxvdC5wbG90KHtcbiAgd2lkdGg6IDY0MCxcbiAgaGVpZ2h0OiA3MjAsXG4gIHByb2plY3Rpb246IFwibWVyY2F0b3JcIixcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5nZW8oc3R1ZHlfZGlzdHJpY3RzLCB7ZmlsbDogXCIjZWVlZWVlXCIsIHN0cm9rZTogXCIjYmJiYmJiXCIsIHN0cm9rZVdpZHRoOiAwLjV9KSxcbiAgICBQbG90LmdlbyhzdHVkeV9jb3VudGllcywge3N0cm9rZTogXCJibGFja1wiLCBzdHJva2VXaWR0aDogMS4yfSksXG4gICAgUGxvdC5nZW8oc3R1ZHlfc2Nob29scywge3I6IDEuOCwgZmlsbDogXCIjMWY3OGI0XCIsIHN0cm9rZTogXCJub25lXCJ9KSxcbiAgICBQbG90LmdlbyhzdHVkeV9jb2xsZWdlcywge3I6IDQsIGZpbGw6IFwiI2UzMWExY1wiLCBzdHJva2U6IFwibm9uZVwifSlcbiAgXVxufSlcbiJ9XX0=
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

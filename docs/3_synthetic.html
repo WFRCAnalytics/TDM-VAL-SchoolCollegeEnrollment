@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -116,6 +116,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -382,12 +385,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#load-synthetic-persons" id="toc-load-synthetic-persons" class="nav-link" data-scroll-target="#load-synthetic-persons">1. Load synthetic persons</a></li>
-  <li><a href="#classify-k-12-students" id="toc-classify-k-12-students" class="nav-link" data-scroll-target="#classify-k-12-students">2. Classify K-12 students</a></li>
-  <li><a href="#classify-college-students" id="toc-classify-college-students" class="nav-link" data-scroll-target="#classify-college-students">3. Classify college students</a></li>
-  <li><a href="#join-persons-to-district-county" id="toc-join-persons-to-district-county" class="nav-link" data-scroll-target="#join-persons-to-district-county">4. Join persons to district / county</a></li>
-  <li><a href="#aggregate-to-district-and-county" id="toc-aggregate-to-district-and-county" class="nav-link" data-scroll-target="#aggregate-to-district-and-county">5. Aggregate to district and county</a></li>
-  <li><a href="#box-elder-clipping" id="toc-box-elder-clipping" class="nav-link" data-scroll-target="#box-elder-clipping">6. Box Elder clipping</a></li>
-  <li><a href="#write-output" id="toc-write-output" class="nav-link" data-scroll-target="#write-output">7. Write output</a></li>
+  <li><a href="#classify-students" id="toc-classify-students" class="nav-link" data-scroll-target="#classify-students">2. Classify students</a></li>
+  <li><a href="#join-persons-to-district-and-county" id="toc-join-persons-to-district-and-county" class="nav-link" data-scroll-target="#join-persons-to-district-and-county">3. Join persons to district and county</a></li>
+  <li><a href="#aggregate-to-district-and-county" id="toc-aggregate-to-district-and-county" class="nav-link" data-scroll-target="#aggregate-to-district-and-county">4. Aggregate to district and county</a></li>
+  <li><a href="#box-elder-clipping" id="toc-box-elder-clipping" class="nav-link" data-scroll-target="#box-elder-clipping">5. Box Elder clipping</a></li>
+  <li><a href="#write-output" id="toc-write-output" class="nav-link" data-scroll-target="#write-output">6. Write output</a></li>
   </ul>
 </nav>
     </div>
@@ -417,91 +419,285 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>This script produces the “synthetic” half of the validation schema — PopulationSim’s estimate of how many K-12 students and college students live in each district/county, to compare against the real enrollment numbers from <code>2_enrollment.qmd</code>.</p>
+<p>This script produces the “synthetic” half of the validation schema: PopulationSim’s estimate of how many K-12 students and college students live in each district and county, to compare against the real enrollment numbers from <code>2_enrollment.qmd</code>.</p>
 <ul>
-<li><strong>Objective</strong>: for each district, count synthetic persons two ways — by enrollment status (<code>PersonType_Label == "K-12 student"</code>, <strong>uncontrolled</strong> in PopulationSim, so this is the real test) and by age band (5-17, a <strong>controlled</strong> variable, so a sanity bound rather than an exact match). Same two-way count for colleges by county, using <code>"University student"</code> and a college-age band, combining PopulationSim’s regular household persons with its separate dorm/group-quarters student file.</li>
-<li><strong>What it reads</strong>: PopulationSim’s synthetic person/household output (local-only — gitignored in the <code>TDM-INP-PopulationSim</code> repo, so this script needs a local path to wherever that output actually lives on this machine, not a repo-relative path) and the block-level crosswalk from <code>1_geography.qmd</code>.</li>
-<li><strong>MAZ/TAZ join</strong>: PopulationSim’s output is keyed at MAZ/TAZ level, not Census block. The crosswalk from <code>1_geography.qmd</code> now carries <code>TAZID</code> per block (sourced from WFRC’s <a href="https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0">WasatchFrontTAZ</a> feature service), so district/county rollup can go through TAZID rather than needing a direct MAZ-to-block join — still need to confirm PopulationSim’s output is keyed at this same TAZID (not a different internal MAZ id) before relying on it.</li>
-<li><strong>Box Elder</strong>: handled last — the MPO/TDM model region only partially covers the county, so its synthetic counts need to be clipped to the model boundary (<code>1_geography.qmd</code>’s <code>model_boundary</code> layer) rather than compared at full-county scope like the other four counties.</li>
-<li><strong>Output</strong>: synthetic enrollment-status and age-band counts, by district and by county, written to <code>_outputs/</code>.</li>
+<li><strong>Objective</strong>: count synthetic persons by school district and by county, to compare with DOE and NCES. By district: <code>sch_grade</code> (every person with <code>SCHG</code> 1-14, at any age, matching DOE’s totalk12 + preschool and NCES’s K-12 + PK) and <code>age_3_18</code> (every person aged 3-18, counted independently, a sanity bound since age is controlled in PopulationSim). By county: <code>sch_grade</code> (<code>SCHG</code> 15 or higher, any age) and <code>age_18_24</code> (population aged 18-24, a sanity bound).</li>
+<li><strong>What it reads</strong>: PopulationSim’s synthetic person output (local-only, under <code>_data/raw/populationsim/ABM/1_Inputs/ScenarioBaseSample/1_PopulationSim/output/</code>, gitignored). The dorm and group-quarters students are in the same file, so no second file is needed. It also reads the school and college crosswalks from <code>1_geography.qmd</code>.</li>
+<li><strong>MAZ join</strong>: each person has a <code>maz_id</code>. The MAZ rows in <code>crosswalk_school.csv</code> give each person a school district, and the MAZ rows in <code>crosswalk_college.csv</code> give each person a county.</li>
+<li><strong>Known gaps</strong>: college counts are residence-based and include every enrolled resident, while IPEDS counts by institution location and USHE counts public institutions only. The two sides differ in definition, not only in data.</li>
+<li><strong>Box Elder</strong>: handled last. The MPO/TDM model region only partly covers the county, so its synthetic counts need to be clipped to the model boundary (<code>1_geography.qmd</code>’s <code>model_boundary</code> layer) before comparison. This is still a TODO.</li>
+<li><strong>Output</strong>: district persons (<code>sch_grade</code>, <code>age_3_18</code>) and county persons (<code>sch_grade</code>, <code>age_18_24</code>), written to <code>_data/intermediate/</code>.</li>
 </ul>
-<!-- All code cells below are eval: false -- nothing here is implemented yet, just TODO outlines. -->
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="07ed9bb3" class="cell" data-execution_count="1">
+<div id="22fa9f04" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: imports; path to local PopulationSim output (likely via .env, machine-specific, not a</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   repo-relative path since that data is gitignored in TDM-INP-PopulationSim); load crosswalk.csv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"raw"</span>: Path(<span class="st">"_data/raw/"</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"intermediate"</span>: Path(<span class="st">"_data/intermediate/"</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"output"</span>: Path(<span class="st">"_outputs/"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>synthetic_dir <span class="op">=</span> (</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"populationsim"</span> <span class="op">/</span> <span class="st">"ABM"</span> <span class="op">/</span> <span class="st">"1_Inputs"</span> <span class="op">/</span> <span class="st">"ScenarioBaseSample"</span> <span class="op">/</span> <span class="st">"1_PopulationSim"</span> <span class="op">/</span> <span class="st">"output"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="load-synthetic-persons" class="level2">
 <h2 class="anchored" data-anchor-id="load-synthetic-persons">1. Load synthetic persons</h2>
-<div id="717db3c2" class="cell" data-execution_count="2">
+<div id="91c349b9" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: load PopulationSim's synthetic NonGQ persons + dorm/GQ student persons, concat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every person's household is in the households file, and res_type 3 marks group-quarters (dorm)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># households, so the dorm students are already in this one file.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>persons <span class="op">=</span> pd.read_csv(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    synthetic_dir <span class="op">/</span> <span class="st">"Persons_Output4ABMwithStudentsInDorm.csv"</span>, usecols<span class="op">=</span>[<span class="st">"maz_id"</span>, <span class="st">"age"</span>, <span class="st">"sch_grade"</span>]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
-<section id="classify-k-12-students" class="level2">
-<h2 class="anchored" data-anchor-id="classify-k-12-students">2. Classify K-12 students</h2>
-<div id="4a0ee1e4" class="cell" data-execution_count="3">
+<section id="classify-students" class="level2">
+<h2 class="anchored" data-anchor-id="classify-students">2. Classify students</h2>
+<div id="ef57d36d" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: PersonType_Label == "K-12 student" (uncontrolled) and age 5-17 (controlled) -- two</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   separate boolean columns, not one, since they answer different questions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rules as PopulationSim's PersonType_Label (2_InputPreperation_Seed2.ipynb, person-type rules):</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SCHG 1-14 is pre-college and SCHG 15 or higher is college. K-12 is pre-college at ages 6-18;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># University student is college at age 16 or older.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># College: SCHG 15 (undergraduate) and 16 (beyond bachelor's), at any age. Age is counted separately.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"grade_15_plus"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].ge(<span class="dv">15</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_18_24"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">18</span>, <span class="dv">24</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Nursery/preschool (SCHG 1) through grade 12 (SCHG 14), at any age. Matches DOE's totalk12 + preschool</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># and NCES's K-12 + PK. Age is counted separately below, so this flag has no age condition.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"grade_1_14"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].between(<span class="dv">1</span>, <span class="dv">14</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_3_18"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">3</span>, <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
-<section id="classify-college-students" class="level2">
-<h2 class="anchored" data-anchor-id="classify-college-students">3. Classify college students</h2>
-<div id="d49626b9" class="cell" data-execution_count="4">
+<section id="join-persons-to-district-and-county" class="level2">
+<h2 class="anchored" data-anchor-id="join-persons-to-district-and-county">3. Join persons to district and county</h2>
+<div id="9ebc8709" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: PersonType_Label == "University student" (uncontrolled) and college-age band (controlled)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   -- combine NonGQ + dorm/GQ persons first</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>crosswalk_school <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_school.csv"</span>, dtype<span class="op">=</span>{<span class="st">"ID"</span>: <span class="bu">str</span>})</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>crosswalk_college <span class="op">=</span> pd.read_csv(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_college.csv"</span>, dtype<span class="op">=</span>{<span class="st">"ID"</span>: <span class="bu">str</span>, <span class="st">"COUNTYFP"</span>: <span class="bu">str</span>}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>maz_district <span class="op">=</span> crosswalk_school[crosswalk_school[<span class="st">"Unit"</span>] <span class="op">==</span> <span class="st">"maz"</span>].set_index(<span class="st">"ID"</span>)[<span class="st">"District Name"</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>maz_county <span class="op">=</span> crosswalk_college[crosswalk_college[<span class="st">"Unit"</span>] <span class="op">==</span> <span class="st">"maz"</span>].set_index(<span class="st">"ID"</span>)[<span class="st">"COUNTYFP"</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"maz_id"</span>] <span class="op">=</span> persons[<span class="st">"maz_id"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"District Name"</span>] <span class="op">=</span> persons[<span class="st">"maz_id"</span>].<span class="bu">map</span>(maz_district)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"COUNTYFP"</span>] <span class="op">=</span> persons[<span class="st">"maz_id"</span>].<span class="bu">map</span>(maz_county)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"persons with no district:"</span>, persons[<span class="st">"District Name"</span>].isna().<span class="bu">sum</span>(),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| persons with no county:"</span>, persons[<span class="st">"COUNTYFP"</span>].isna().<span class="bu">sum</span>(),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>persons with no district: 0 | persons with no county: 0</code></pre>
 </div>
-</section>
-<section id="join-persons-to-district-county" class="level2">
-<h2 class="anchored" data-anchor-id="join-persons-to-district-county">4. Join persons to district / county</h2>
-<div id="c74821f6" class="cell" data-execution_count="5">
-<details class="code-fold">
-<summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: resolve the MAZ/TAZ-vs-block join-key question (see Overview), then join to crosswalk.csv</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   to get each person's District Name (K-12) and COUNTYFP (college)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 </section>
 <section id="aggregate-to-district-and-county" class="level2">
-<h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">5. Aggregate to district and county</h2>
-<div id="5a618fbd" class="cell" data-execution_count="6">
+<h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">4. Aggregate to district and county</h2>
+<div id="f6689394" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: groupby District Name -&gt; K-12 enrolled count, age 5-17 count</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   groupby COUNTYFP -&gt; University-student count, college-age count</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each column counts persons in that district (summing a boolean counts the True rows)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>district_persons <span class="op">=</span> (</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    persons.groupby(<span class="st">"District Name"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        sch_grade<span class="op">=</span>(<span class="st">"grade_1_14"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        age_3_18<span class="op">=</span>(<span class="st">"age_3_18"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>district_persons</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">age_3_18</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>120162</td>
+<td>140251</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>7743</td>
+<td>8971</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>46008</td>
+<td>51456</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>91690</td>
+<td>106713</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>85374</td>
+<td>97352</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>85360</td>
+<td>92126</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>6495</td>
+<td>7237</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>46391</td>
+<td>52687</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>14278</td>
+<td>16778</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>15538</td>
+<td>21858</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>25695</td>
+<td>31346</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>39324</td>
+<td>45357</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="265e69b1" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>college_persons <span class="op">=</span> (</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    persons.groupby(<span class="st">"COUNTYFP"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        sch_grade<span class="op">=</span>(<span class="st">"grade_15_plus"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        age_18_24<span class="op">=</span>(<span class="st">"age_18_24"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>college_persons</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">age_18_24</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>003</td>
+<td>1304</td>
+<td>2705</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>011</td>
+<td>19639</td>
+<td>35640</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>035</td>
+<td>81728</td>
+<td>121371</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>049</td>
+<td>91395</td>
+<td>123869</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>057</td>
+<td>15728</td>
+<td>26652</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="box-elder-clipping" class="level2">
-<h2 class="anchored" data-anchor-id="box-elder-clipping">6. Box Elder clipping</h2>
-<div id="7ddbdcd7" class="cell" data-execution_count="7">
+<h2 class="anchored" data-anchor-id="box-elder-clipping">5. Box Elder clipping</h2>
+<div id="684e51b8" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder blocks/persons fall</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   inside vs. outside the actual MPO/TDM model domain; handle separately from the other 4 counties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder MAZs fall inside vs.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   outside the MPO/TDM model domain, and handle Box Elder separately from the other 4 counties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="write-output" class="level2">
-<h2 class="anchored" data-anchor-id="write-output">7. Write output</h2>
-<div id="824d3d18" class="cell" data-execution_count="8">
+<h2 class="anchored" data-anchor-id="write-output">6. Write output</h2>
+<div id="e7b70966" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: write both synthetic tables to _outputs/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>district_persons.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>college_persons.to_csv(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_college_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 

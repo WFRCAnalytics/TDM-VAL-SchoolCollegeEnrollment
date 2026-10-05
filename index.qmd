@@ -33,7 +33,7 @@ flowchart TD
     CENSUS --> GEO
     TAZSRC --> GEO
     MAZSRC -.-> GEO
-    GEO["1_geography.qmd\nblock-level crosswalk"] --> XWALK[("crosswalk.csv")]
+    GEO["1_geography.qmd\nschool and college crosswalks"] --> XWALK[("crosswalk_school.csv\ncrosswalk_college.csv")]
 
     XWALK --> ENR
     USHE --> ENR
@@ -51,9 +51,9 @@ flowchart TD
     VAL["4_validation.qmd\nreal vs. synthetic comparison"]
 ```
 
-- [**Geography**](1_geography.qmd) — builds the block-level crosswalk (county, district, TAZ, and
-  matched school/college IDs) that every later step joins against. MAZ is a placeholder for now —
-  WFRC hasn't published it yet.
+- [**Geography**](1_geography.qmd) — builds two crosswalks that every later step joins against: schools
+  to districts and colleges to counties. Both include MAZ rows, so PopulationSim output rolls up
+  through MAZ. Blocks are no longer used for these joins.
 - [**Enrollment**](2_enrollment.qmd) — real K-12 and college enrollment, from state and federal
   sources.
 - [**Synthetic Population**](3_synthetic.qmd) — PopulationSim's synthetic enrollment estimates,

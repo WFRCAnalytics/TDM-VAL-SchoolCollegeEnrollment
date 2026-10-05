@@ -400,7 +400,7 @@ ul.task-list li input[type="checkbox"] {
     CENSUS --&gt; GEO
     TAZSRC --&gt; GEO
     MAZSRC -.-&gt; GEO
-    GEO["1_geography.qmd\nblock-level crosswalk"] --&gt; XWALK[("crosswalk.csv")]
+    GEO["1_geography.qmd\nschool and college crosswalks"] --&gt; XWALK[("crosswalk_school.csv\ncrosswalk_college.csv")]
 
     XWALK --&gt; ENR
     USHE --&gt; ENR
@@ -423,7 +423,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <ul>
-<li><a href="./1_geography.html"><strong>Geography</strong></a> — builds the block-level crosswalk (county, district, TAZ, and matched school/college IDs) that every later step joins against. MAZ is a placeholder for now — WFRC hasn’t published it yet.</li>
+<li><a href="./1_geography.html"><strong>Geography</strong></a> — builds two crosswalks that every later step joins against: schools to districts and colleges to counties. Both include MAZ rows, so PopulationSim output rolls up through MAZ. Blocks are no longer used for these joins.</li>
 <li><a href="./2_enrollment.html"><strong>Enrollment</strong></a> — real K-12 and college enrollment, from state and federal sources.</li>
 <li><a href="./3_synthetic.html"><strong>Synthetic Population</strong></a> — PopulationSim’s synthetic enrollment estimates, rolled up to the same district/county geography.</li>
 <li><a href="./4_validation.html"><strong>Validation</strong></a> — the comparison itself.</li>

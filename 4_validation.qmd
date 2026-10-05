@@ -10,40 +10,80 @@ This is the page the site is actually built around — where the real enrollment
 
 - **Objective**: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against
   PopulationSim's synthetic K-12 student count (the real test, since that's uncontrolled) and
-  against its synthetic age 5-17 population (a sanity bound, since that's controlled — not expected
+  against its synthetic age 3-18 population (a sanity bound, since that's controlled — not expected
   to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs. synthetic
-  university-student count and college-age population.
-- **What it reads**: the two output tables from `2_enrollment.qmd` and the two from
-  `3_synthetic.qmd`, all from `_outputs/`.
+  sch_grade count (SCHG 15 and higher) and age 18-24 population.
+- **What it reads**: the real district and county tables from `2_enrollment.qmd` and the synthetic
+  district and county tables from `3_synthetic.qmd`, all in `_data/intermediate/`.
 - **Box Elder**: reported separately from the other four counties, since its real and synthetic
   numbers are both scoped differently there (model region vs. full county) — a single pooled number
   would misrepresent it either way.
 - **Output**: this page itself — the published comparison tables and charts, not another
   intermediate file.
 
-<!-- All code cells below are eval: false -- nothing here is implemented yet, just TODO outlines. -->
-
 ## Setup
 
 ```{python}
-#| eval: false
-# TODO: imports; load the four _outputs/ tables from 2_enrollment.qmd and 3_synthetic.qmd
+import pandas as pd
+from pathlib import Path
+
+paths = {"intermediate": Path("_data/intermediate/")}
 ```
 
 ## 1. School validation (by district)
 
 ```{python}
-#| eval: false
-# TODO: join real (DOE, NCES) + synthetic (enrolled-status, age-band) by District Name;
-#   compute diff and ratio for both the enrolled-status comparison and the age-band comparison
+real_district = pd.read_csv(paths["intermediate"] / "real_enrollment_by_district.csv")
+synthetic_district = pd.read_csv(paths["intermediate"] / "synthetic_k12_by_district.csv")
+
+school_validation = real_district.merge(
+    synthetic_district, on="District Name", how="outer", indicator=True
+)
+# Every district should be in both tables; anything else is a join problem to fix before reading ratios
+print("districts only in one table:", (school_validation["_merge"] != "both").sum())
+school_validation = school_validation.drop(columns="_merge")
+
+# Real enrollment already includes preschool (DOE totalk12 + preschool, NCES K-12 + PK), matching sch_grade
+for col in ["sch_grade", "age_3_18"]:
+    school_validation[f"{col}_vs_doe"] = school_validation[col] / school_validation["doe_enrollment"]
+    school_validation[f"{col}_vs_nces"] = school_validation[col] / school_validation["nces_enrollment"]
+
+school_counts = school_validation[
+    ["District Name", "sch_grade", "age_3_18", "doe_enrollment", "nces_enrollment"]
+].sort_values("doe_enrollment", ascending=False)
+school_counts
+```
+
+```{python}
+# Ratios: synthetic / real. 1.00 means the synthetic count equals the real one.
+school_ratios = school_validation[
+    ["District Name"] + [c for c in school_validation.columns if c.endswith(("_vs_doe", "_vs_nces"))]
+].sort_values("District Name")
+school_ratios.round(3)
 ```
 
 ## 2. College validation (by county)
 
 ```{python}
-#| eval: false
-# TODO: join real (USHE, NCES/IPEDS) + synthetic (enrolled-status, age-band) by COUNTYFP;
-#   compute diff and ratio for both comparisons
+real_county = pd.read_csv(
+    paths["intermediate"] / "real_enrollment_by_county.csv", dtype={"COUNTYFP": str}
+)
+synthetic_county = pd.read_csv(
+    paths["intermediate"] / "synthetic_college_by_county.csv", dtype={"COUNTYFP": str}
+)
+
+college_validation = real_county.merge(
+    synthetic_county, on="COUNTYFP", how="outer", indicator=True
+)
+# Every county should be in both tables; anything else is a join problem to fix before reading ratios
+print("counties only in one table:", (college_validation["_merge"] != "both").sum())
+college_validation = college_validation.drop(columns="_merge")
+
+for col in ["sch_grade", "age_18_24"]:
+    college_validation[f"{col}_vs_ushe"] = college_validation[col] / college_validation["ushe_enrollment"]
+    college_validation[f"{col}_vs_nces"] = college_validation[col] / college_validation["nces_enrollment"]
+
+college_validation.round(3)
 ```
 
 ## 3. Box Elder
