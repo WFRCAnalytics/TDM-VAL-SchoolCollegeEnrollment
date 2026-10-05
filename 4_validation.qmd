@@ -97,17 +97,117 @@ college_validation.round(3)
 
 ## 4. Results
 
-```{python}
-#| eval: false
-# TODO: ojs_define() the final comparison tables for the charts below
+Pick any combination of school levels and districts. The chart adds up the selection: each district
+shows real DOE and NCES enrollment next to the synthetic grade count and the synthetic age-band count.
+
+```{ojs}
+levelOrder = ["Pre-K", "K", "Elementary", "Middle", "High"]
+
+// Age bands used for the sanity bound, one per level (the bands overlap at boundary ages)
+ageBands = ({"Pre-K": [3, 5], "K": [5, 6], "Elementary": [6, 11], "Middle": [12, 14], "High": [15, 18]})
+
+realByLevel = FileAttachment("_data/intermediate/real_by_district_level.csv").csv({typed: true})
+synthByLevel = FileAttachment("_data/intermediate/synthetic_by_district_level.csv").csv({typed: true})
+synthAge = FileAttachment("_data/intermediate/synthetic_age_by_district.csv").csv({typed: true})
+
+levelRows = realByLevel.map(d => {
+  const s = synthByLevel.find(x => x["District Name"] === d["District Name"] && x.Level === d.Level);
+  return {
+    district: d["District Name"],
+    level: d.Level,
+    doe: d.doe_enrollment ?? 0,
+    nces: d.nces_enrollment ?? 0,
+    grade: s ? s.sch_grade : 0
+  };
+})
+
+districtNames = [...new Set(levelRows.map(d => d.district))].sort()
 ```
 
-<!-- TODO: Observable Plot charts -- real vs. synthetic by district (K-12) and by county (college),
-     both the enrolled-status and age-band comparisons. Left as a comment, not a {ojs} cell, since
-     an OJS cell with no real declaration is a hard Quarto render error ("requires at least one
-     declaration") -- eval: false doesn't apply to OJS the way it does to Python/R cells, since OJS
-     compiles into the Observable runtime at build time regardless. Add the real {ojs} cell once
-     there's an actual declaration to put in it. -->
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+
+viewof selectedLevels = Inputs.select(levelOrder, {
+  label: "School levels",
+  multiple: 5,
+  value: levelOrder,
+  format: lvl => `${lvl} (Age: ${ageBands[lvl][0]}-${ageBands[lvl][1]})`
+})
+
+viewof selectedDistricts = Inputs.select(districtNames, {
+  label: "Districts",
+  multiple: 5,
+  value: districtNames
+})
+
+viewof splitByDistrict = Inputs.checkbox(["Split by district"], {
+  label: "Chart",
+  value: ["Split by district"]
+})
+```
+
+```{ojs}
+selectedFacet = splitByDistrict.length > 0
+```
+
+```{ojs}
+//| label: fig-level-compare
+//| fig-cap: "Students by district for the selected school levels. DOE and NCES are K-12 plus preschool enrollment. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels' age bands, with each person counted once even where bands overlap."
+//| fig-alt: "Grouped bar chart with one group per selected district. Each group has four bars: DOE, NCES, synthetic grade count and synthetic age-band count, for the selected school levels."
+
+chartRows = {
+  const out = [];
+  for (const dist of selectedDistricts) {
+    const rows = levelRows.filter(d => d.district === dist && selectedLevels.includes(d.level));
+    if (!rows.length) continue;
+    const ages = new Set();
+    for (const lvl of selectedLevels) {
+      const [lo, hi] = ageBands[lvl];
+      for (let a = lo; a <= hi; a++) ages.add(a);
+    }
+    const ageTotal = d3.sum(
+      synthAge.filter(d => d["District Name"] === dist && ages.has(d.age)),
+      d => d.persons
+    );
+    out.push({district: dist, source: "DOE", students: d3.sum(rows, d => d.doe)});
+    out.push({district: dist, source: "NCES", students: d3.sum(rows, d => d.nces)});
+    out.push({district: dist, source: "Synthetic grade", students: d3.sum(rows, d => d.grade)});
+    out.push({district: dist, source: "Synthetic age band", students: ageTotal});
+  }
+  if (selectedFacet) return out;
+  // Split off: add the selected districts into one total per source
+  return d3.rollups(out, v => d3.sum(v, d => d.students), d => d.source)
+    .map(([source, students]) => ({district: "Total", source, students}));
+}
+
+chartRows.length === 0
+  ? html`<p><em>Select at least one school level and one district.</em></p>`
+  : Plot.plot({
+      width: 960,
+      height: 460,
+      marginBottom: 60,
+      grid: true,
+      ...(selectedFacet ? {fx: {label: null, domain: selectedDistricts}} : {}),
+      x: {axis: null},
+      y: {label: "Students", grid: true},
+      color: {
+        legend: true,
+        domain: ["DOE", "NCES", "Synthetic grade", "Synthetic age band"],
+        range: ["#1f78b4", "#33a02c", "#e31a1c", "#ff7f00"]
+      },
+      marks: [
+        Plot.barY(chartRows, {
+          ...(selectedFacet ? {fx: "district"} : {}),
+          x: "source",
+          y: "students",
+          fill: "source",
+          tip: true
+        }),
+        Plot.ruleY([0])
+      ]
+    })
+```
 
 ## 5. Summary
 

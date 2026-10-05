@@ -119,6 +119,47 @@ college_persons = (
 college_persons
 ```
 
+### By school level
+
+```{python}
+# Levels by SCHG code, at any age, matching the grade columns used for real enrollment in 2_enrollment.qmd:
+# Pre-K is nursery (1), K is kindergarten (2), and the rest are grade ranges.
+level_codes = {
+    "Pre-K": [1],
+    "K": [2],
+    "Elementary": list(range(3, 8)),
+    "Middle": list(range(8, 11)),
+    "High": list(range(11, 15)),
+}
+
+synthetic_by_level = pd.concat(
+    [
+        persons[persons["sch_grade"].isin(codes)]
+        .groupby("District Name")
+        .size()
+        .rename("sch_grade")
+        .reset_index()
+        .assign(Level=level)
+        for level, codes in level_codes.items()
+    ],
+    ignore_index=True,
+)
+
+# The levels together cover SCHG 1-14, so they must add back up to the district sch_grade totals
+level_total = synthetic_by_level.groupby("District Name")["sch_grade"].sum()
+assert (level_total == district_persons.set_index("District Name")["sch_grade"]).all(), "levels do not add up"
+
+# Single-year ages, so the validation chart can count each person once when several levels are picked
+synthetic_age_by_district = (
+    persons[persons["age"].between(3, 18)]
+    .groupby(["District Name", "age"])
+    .size()
+    .rename("persons")
+    .reset_index()
+)
+synthetic_by_level
+```
+
 ## 5. Box Elder clipping
 
 ```{python}
@@ -133,5 +174,9 @@ college_persons
 district_persons.to_csv(paths["intermediate"] / "synthetic_k12_by_district.csv", index=False)
 college_persons.to_csv(
     paths["intermediate"] / "synthetic_college_by_county.csv", index=False
+)
+synthetic_by_level.to_csv(paths["intermediate"] / "synthetic_by_district_level.csv", index=False)
+synthetic_age_by_district.to_csv(
+    paths["intermediate"] / "synthetic_age_by_district.csv", index=False
 )
 ```

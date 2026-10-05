@@ -86,8 +86,9 @@ doe_crosswalk = doe_crosswalk.drop_duplicates(subset=["ID"])
 # The UGRC layer repeats some school IDs. Exact copies (Minersville, 201, is listed twice with the same
 # count) are dropped so they are not double-counted. Separate records that share an ID (Grouse Creek,
 # 218, an elementary and a secondary with different counts) are both kept and summed.
+doe_grade_cols = ["preschool", "k"] + [f"grade{i}" for i in range(1, 13)]
 ugrc_unique = (
-    ugrc_public_schools[["schoolid", "schoolname", "totalk12", "preschool"]]
+    ugrc_public_schools[["schoolid", "schoolname", "totalk12", *doe_grade_cols]]
     .drop_duplicates()
     .assign(doe_students=lambda df: df["totalk12"] + df["preschool"].fillna(0))
 )
@@ -390,6 +391,71 @@ school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna(
 districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
 
 Inputs.table(districts_table, {rows: 25})
+```
+
+### School Enrollment by Level
+
+```{python}
+# Enrollment by school level, summed from the grade columns each level covers. A school's own label
+# can't split its students by level, since one school can serve several levels.
+# Each level maps to its DOE columns and its NCES columns.
+school_levels = {
+    "Pre-K": (["preschool"], ["PK"]),
+    "K": (["k"], ["KG"]),
+    "Elementary": ([f"grade{i}" for i in range(1, 6)], [f"G{i:02d}" for i in range(1, 6)]),
+    "Middle": ([f"grade{i}" for i in range(6, 9)], [f"G{i:02d}" for i in range(6, 9)]),
+    "High": ([f"grade{i}" for i in range(9, 13)], [f"G{i:02d}" for i in range(9, 13)]),
+}
+
+doe_by_level = (
+    doe_schools.assign(
+        **{level: doe_schools[doe_cols].fillna(0).sum(axis=1) for level, (doe_cols, _) in school_levels.items()}
+    )
+    .groupby("District Name")[list(school_levels)]
+    .sum()
+)
+
+# NCES negative codes (-2, grade not offered) count as zero, same as the K-12 totals above
+nces_levels = nces_public_school[["NCESSCH"]].assign(
+    **{
+        level: nces_public_school[nces_cols].clip(lower=0).fillna(0).sum(axis=1)
+        for level, (_, nces_cols) in school_levels.items()
+    }
+)
+nces_by_level = (
+    nces_levels.drop_duplicates()
+    .assign(NCESSCH=lambda df: df["NCESSCH"].astype(str))
+    .merge(nces_crosswalk[["ID", "District Name"]], left_on="NCESSCH", right_on="ID")
+    .groupby("District Name")[list(school_levels)]
+    .sum()
+)
+
+real_by_level = (
+    doe_by_level.reset_index()
+    .melt(id_vars="District Name", var_name="Level", value_name="doe_enrollment")
+    .merge(
+        nces_by_level.reset_index().melt(
+            id_vars="District Name", var_name="Level", value_name="nces_enrollment"
+        ),
+        on=["District Name", "Level"],
+        how="outer",
+    )
+)
+
+# The levels must add back up to the district totals computed above
+doe_gap = (
+    real_by_level.groupby("District Name")["doe_enrollment"].sum()
+    - doe_enrollment_by_district.set_index("District Name")["doe_enrollment"]
+)
+nces_gap = (
+    real_by_level.groupby("District Name")["nces_enrollment"].sum()
+    - nces_enrollment_by_district.set_index("District Name")["nces_enrollment"]
+)
+assert doe_gap.abs().max() < 0.5, "DOE levels do not add up to district totals"
+assert nces_gap.abs().max() < 0.5, "NCES levels do not add up to district totals"
+
+real_by_level.to_csv(paths["intermediate"] / "real_by_district_level.csv", index=False)
+real_by_level
 ```
 
 ### College Enrollment by Counties

@@ -387,7 +387,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#load-synthetic-persons" id="toc-load-synthetic-persons" class="nav-link" data-scroll-target="#load-synthetic-persons">1. Load synthetic persons</a></li>
   <li><a href="#classify-students" id="toc-classify-students" class="nav-link" data-scroll-target="#classify-students">2. Classify students</a></li>
   <li><a href="#join-persons-to-district-and-county" id="toc-join-persons-to-district-and-county" class="nav-link" data-scroll-target="#join-persons-to-district-and-county">3. Join persons to district and county</a></li>
-  <li><a href="#aggregate-to-district-and-county" id="toc-aggregate-to-district-and-county" class="nav-link" data-scroll-target="#aggregate-to-district-and-county">4. Aggregate to district and county</a></li>
+  <li><a href="#aggregate-to-district-and-county" id="toc-aggregate-to-district-and-county" class="nav-link" data-scroll-target="#aggregate-to-district-and-county">4. Aggregate to district and county</a>
+  <ul class="collapse">
+  <li><a href="#by-school-level" id="toc-by-school-level" class="nav-link" data-scroll-target="#by-school-level">By school level</a></li>
+  </ul></li>
   <li><a href="#box-elder-clipping" id="toc-box-elder-clipping" class="nav-link" data-scroll-target="#box-elder-clipping">5. Box Elder clipping</a></li>
   <li><a href="#write-output" id="toc-write-output" class="nav-link" data-scroll-target="#write-output">6. Write output</a></li>
   </ul>
@@ -431,7 +434,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="22fa9f04" class="cell" data-execution_count="1">
+<div id="ac205b24" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -451,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="load-synthetic-persons" class="level2">
 <h2 class="anchored" data-anchor-id="load-synthetic-persons">1. Load synthetic persons</h2>
-<div id="91c349b9" class="cell" data-execution_count="2">
+<div id="2b404738" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every person's household is in the households file, and res_type 3 marks group-quarters (dorm)</span></span>
@@ -464,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="classify-students" class="level2">
 <h2 class="anchored" data-anchor-id="classify-students">2. Classify students</h2>
-<div id="ef57d36d" class="cell" data-execution_count="3">
+<div id="0a246b97" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rules as PopulationSim's PersonType_Label (2_InputPreperation_Seed2.ipynb, person-type rules):</span></span>
@@ -482,7 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="join-persons-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="join-persons-to-district-and-county">3. Join persons to district and county</h2>
-<div id="9ebc8709" class="cell" data-execution_count="4">
+<div id="e240ce45" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>crosswalk_school <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_school.csv"</span>, dtype<span class="op">=</span>{<span class="st">"ID"</span>: <span class="bu">str</span>})</span>
@@ -509,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="aggregate-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">4. Aggregate to district and county</h2>
-<div id="f6689394" class="cell" data-execution_count="5">
+<div id="71d50c84" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each column counts persons in that district (summing a boolean counts the True rows)</span></span>
@@ -615,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="265e69b1" class="cell" data-execution_count="6">
+<div id="2e124392" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>college_persons <span class="op">=</span> (</span>
@@ -678,26 +681,453 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<section id="by-school-level" class="level3">
+<h3 class="anchored" data-anchor-id="by-school-level">By school level</h3>
+<div id="953e6fcd" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Levels by SCHG code, at any age, matching the grade columns used for real enrollment in 2_enrollment.qmd:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-K is nursery (1), K is kindergarten (2), and the rest are grade ranges.</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>level_codes <span class="op">=</span> {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pre-K"</span>: [<span class="dv">1</span>],</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"K"</span>: [<span class="dv">2</span>],</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Elementary"</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">3</span>, <span class="dv">8</span>)),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Middle"</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">8</span>, <span class="dv">11</span>)),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"High"</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">11</span>, <span class="dv">15</span>)),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>synthetic_by_level <span class="op">=</span> pd.concat(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        persons[persons[<span class="st">"sch_grade"</span>].isin(codes)]</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        .groupby(<span class="st">"District Name"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        .size()</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        .rename(<span class="st">"sch_grade"</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        .reset_index()</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        .assign(Level<span class="op">=</span>level)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> level, codes <span class="kw">in</span> level_codes.items()</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    ignore_index<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The levels together cover SCHG 1-14, so they must add back up to the district sch_grade totals</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>level_total <span class="op">=</span> synthetic_by_level.groupby(<span class="st">"District Name"</span>)[<span class="st">"sch_grade"</span>].<span class="bu">sum</span>()</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (level_total <span class="op">==</span> district_persons.set_index(<span class="st">"District Name"</span>)[<span class="st">"sch_grade"</span>]).<span class="bu">all</span>(), <span class="st">"levels do not add up"</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Single-year ages, so the validation chart can count each person once when several levels are picked</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>synthetic_age_by_district <span class="op">=</span> (</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    persons[persons[<span class="st">"age"</span>].between(<span class="dv">3</span>, <span class="dv">18</span>)]</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">"District Name"</span>, <span class="st">"age"</span>])</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    .size()</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"persons"</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>synthetic_by_level</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">District Name</th>
+<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">Level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ALPINE</td>
+<td>9453</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BOX ELDER</td>
+<td>677</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CANYONS</td>
+<td>4574</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>DAVIS COUNTY</td>
+<td>6149</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>GRANITE</td>
+<td>4686</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>JORDAN</td>
+<td>7078</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>MURRAY CITY</td>
+<td>417</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>NEBO</td>
+<td>3240</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>OGDEN CITY</td>
+<td>890</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PROVO CITY</td>
+<td>1232</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>SALT LAKE CITY</td>
+<td>1828</td>
+<td>Pre-K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>WEBER COUNTY</td>
+<td>2445</td>
+<td>Pre-K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>ALPINE</td>
+<td>11920</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>BOX ELDER</td>
+<td>489</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14</th>
+<td>CANYONS</td>
+<td>2506</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">15</th>
+<td>DAVIS COUNTY</td>
+<td>7083</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16</th>
+<td>GRANITE</td>
+<td>6174</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">17</th>
+<td>JORDAN</td>
+<td>5060</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">18</th>
+<td>MURRAY CITY</td>
+<td>490</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">19</th>
+<td>NEBO</td>
+<td>4056</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">20</th>
+<td>OGDEN CITY</td>
+<td>1165</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">21</th>
+<td>PROVO CITY</td>
+<td>1076</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">22</th>
+<td>SALT LAKE CITY</td>
+<td>1712</td>
+<td>K</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">23</th>
+<td>WEBER COUNTY</td>
+<td>3620</td>
+<td>K</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">24</th>
+<td>ALPINE</td>
+<td>45180</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">25</th>
+<td>BOX ELDER</td>
+<td>2421</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">26</th>
+<td>CANYONS</td>
+<td>17031</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">27</th>
+<td>DAVIS COUNTY</td>
+<td>36420</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">28</th>
+<td>GRANITE</td>
+<td>33570</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">29</th>
+<td>JORDAN</td>
+<td>32434</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">30</th>
+<td>MURRAY CITY</td>
+<td>2349</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">31</th>
+<td>NEBO</td>
+<td>17487</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">32</th>
+<td>OGDEN CITY</td>
+<td>5411</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">33</th>
+<td>PROVO CITY</td>
+<td>4699</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">34</th>
+<td>SALT LAKE CITY</td>
+<td>9397</td>
+<td>Elementary</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">35</th>
+<td>WEBER COUNTY</td>
+<td>12899</td>
+<td>Elementary</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">36</th>
+<td>ALPINE</td>
+<td>23750</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">37</th>
+<td>BOX ELDER</td>
+<td>1642</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">38</th>
+<td>CANYONS</td>
+<td>9737</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">39</th>
+<td>DAVIS COUNTY</td>
+<td>18776</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">40</th>
+<td>GRANITE</td>
+<td>18607</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">41</th>
+<td>JORDAN</td>
+<td>18463</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">42</th>
+<td>MURRAY CITY</td>
+<td>1338</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">43</th>
+<td>NEBO</td>
+<td>11112</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">44</th>
+<td>OGDEN CITY</td>
+<td>2935</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">45</th>
+<td>PROVO CITY</td>
+<td>3921</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">46</th>
+<td>SALT LAKE CITY</td>
+<td>6055</td>
+<td>Middle</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">47</th>
+<td>WEBER COUNTY</td>
+<td>9508</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">48</th>
+<td>ALPINE</td>
+<td>29859</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49</th>
+<td>BOX ELDER</td>
+<td>2514</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">50</th>
+<td>CANYONS</td>
+<td>12160</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">51</th>
+<td>DAVIS COUNTY</td>
+<td>23262</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">52</th>
+<td>GRANITE</td>
+<td>22337</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">53</th>
+<td>JORDAN</td>
+<td>22325</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">54</th>
+<td>MURRAY CITY</td>
+<td>1901</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">55</th>
+<td>NEBO</td>
+<td>10496</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">56</th>
+<td>OGDEN CITY</td>
+<td>3877</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">57</th>
+<td>PROVO CITY</td>
+<td>4610</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">58</th>
+<td>SALT LAKE CITY</td>
+<td>6703</td>
+<td>High</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">59</th>
+<td>WEBER COUNTY</td>
+<td>10852</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="box-elder-clipping" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder-clipping">5. Box Elder clipping</h2>
-<div id="684e51b8" class="cell" data-execution_count="7">
+<div id="48c3a854" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder MAZs fall inside vs.</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   outside the MPO/TDM model domain, and handle Box Elder separately from the other 4 counties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder MAZs fall inside vs.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   outside the MPO/TDM model domain, and handle Box Elder separately from the other 4 counties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="write-output" class="level2">
 <h2 class="anchored" data-anchor-id="write-output">6. Write output</h2>
-<div id="e7b70966" class="cell" data-execution_count="8">
+<div id="b3c2246c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>district_persons.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>college_persons.to_csv(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_college_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>district_persons.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>college_persons.to_csv(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_college_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>synthetic_by_level.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_by_district_level.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>synthetic_age_by_district.to_csv(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_age_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 

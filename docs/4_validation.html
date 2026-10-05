@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="14724b78" class="cell" data-execution_count="1">
+<div id="3e3ab1cc" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -442,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="school-validation-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="school-validation-by-district">1. School validation (by district)</h2>
-<div id="46a188c2" class="cell" data-execution_count="2">
+<div id="a95a9df8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>real_district <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_district.csv"</span>)</span>
@@ -586,7 +586,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="ffc47841" class="cell" data-execution_count="3">
+<div id="09cbcd8d" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratios: synthetic / real. 1.00 means the synthetic count equals the real one.</span></span>
@@ -716,7 +716,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="college-validation-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="college-validation-by-county">2. College validation (by county)</h2>
-<div id="b60d5eba" class="cell" data-execution_count="4">
+<div id="41733e22" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>real_county <span class="op">=</span> pd.read_csv(</span>
@@ -831,7 +831,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="box-elder" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder">3. Box Elder</h2>
-<div id="17a10793" class="cell" data-execution_count="5">
+<div id="0c11a809" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary</span></span>
@@ -842,18 +842,225 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">4. Results</h2>
-<div id="4dbbd48f" class="cell" data-execution_count="6">
+<p>Pick any combination of school levels and districts. The chart adds up the selection: each district shows real DOE and NCES enrollment next to the synthetic grade count and the synthetic age-band count.</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: ojs_define() the final comparison tables for the charts below</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" data-startfrom="104" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 103;"><span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>levelOrder <span class="op">=</span> [<span class="st">"Pre-K"</span><span class="op">,</span> <span class="st">"K"</span><span class="op">,</span> <span class="st">"Elementary"</span><span class="op">,</span> <span class="st">"Middle"</span><span class="op">,</span> <span class="st">"High"</span>]</span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a><span class="co">// Age bands used for the sanity bound, one per level (the bands overlap at boundary ages)</span></span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>ageBands <span class="op">=</span> ({<span class="st">"Pre-K"</span><span class="op">:</span> [<span class="dv">3</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span> <span class="st">"K"</span><span class="op">:</span> [<span class="dv">5</span><span class="op">,</span> <span class="dv">6</span>]<span class="op">,</span> <span class="st">"Elementary"</span><span class="op">:</span> [<span class="dv">6</span><span class="op">,</span> <span class="dv">11</span>]<span class="op">,</span> <span class="st">"Middle"</span><span class="op">:</span> [<span class="dv">12</span><span class="op">,</span> <span class="dv">14</span>]<span class="op">,</span> <span class="st">"High"</span><span class="op">:</span> [<span class="dv">15</span><span class="op">,</span> <span class="dv">18</span>]})</span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>realByLevel <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_by_district_level.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>synthByLevel <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/synthetic_by_district_level.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>synthAge <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/synthetic_age_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a>levelRows <span class="op">=</span> realByLevel<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> {</span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> s <span class="op">=</span> synthByLevel<span class="op">.</span><span class="fu">find</span>(x <span class="kw">=&gt;</span> x[<span class="st">"District Name"</span>] <span class="op">===</span> d[<span class="st">"District Name"</span>] <span class="op">&amp;&amp;</span> x<span class="op">.</span><span class="at">Level</span> <span class="op">===</span> d<span class="op">.</span><span class="at">Level</span>)<span class="op">;</span></span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {</span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a>    <span class="dt">district</span><span class="op">:</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a>    <span class="dt">level</span><span class="op">:</span> d<span class="op">.</span><span class="at">Level</span><span class="op">,</span></span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a>    <span class="dt">doe</span><span class="op">:</span> d<span class="op">.</span><span class="at">doe_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a>    <span class="dt">nces</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grade</span><span class="op">:</span> s <span class="op">?</span> s<span class="op">.</span><span class="at">sch_grade</span> <span class="op">:</span> <span class="dv">0</span></span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a>districtNames <span class="op">=</span> [<span class="op">...</span><span class="kw">new</span> <span class="bu">Set</span>(levelRows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">district</span>))]<span class="op">.</span><span class="fu">sort</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
 </div>
-<!-- TODO: Observable Plot charts -- real vs. synthetic by district (K-12) and by county (college),
-     both the enrolled-status and age-band comparisons. Left as a comment, not a {ojs} cell, since
-     an OJS cell with no real declaration is a hard Quarto render error ("requires at least one
-     declaration") -- eval: false doesn't apply to OJS the way it does to Python/R cells, since OJS
-     compiles into the Observable runtime at build time regardless. Add the real {ojs} cell once
-     there's an actual declaration to put in it. -->
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" data-startfrom="131" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 130;"><span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>viewof selectedLevels <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(levelOrder<span class="op">,</span> {</span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"School levels"</span><span class="op">,</span></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>  <span class="dt">multiple</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> levelOrder<span class="op">,</span></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>  <span class="dt">format</span><span class="op">:</span> lvl <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>lvl<span class="sc">}</span><span class="vs"> (Age: </span><span class="sc">${</span>ageBands[lvl][<span class="dv">0</span>]<span class="sc">}</span><span class="vs">-</span><span class="sc">${</span>ageBands[lvl][<span class="dv">1</span>]<span class="sc">}</span><span class="vs">)`</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>viewof selectedDistricts <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(districtNames<span class="op">,</span> {</span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Districts"</span><span class="op">,</span></span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>  <span class="dt">multiple</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> districtNames</span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>viewof splitByDistrict <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>([<span class="st">"Split by district"</span>]<span class="op">,</span> {</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Chart"</span><span class="op">,</span></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> [<span class="st">"Split by district"</span>]</span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell panel-input card bg-light p-2 quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-startfrom="150" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 149;"><span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a>selectedFacet <span class="op">=</span> splitByDistrict<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" data-startfrom="159" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 158;"><span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a>chartRows <span class="op">=</span> {</span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> out <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> dist <span class="kw">of</span> selectedDistricts) {</span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> rows <span class="op">=</span> levelRows<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">district</span> <span class="op">===</span> dist <span class="op">&amp;&amp;</span> selectedLevels<span class="op">.</span><span class="fu">includes</span>(d<span class="op">.</span><span class="at">level</span>))<span class="op">;</span></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>rows<span class="op">.</span><span class="at">length</span>) <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ages <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>()<span class="op">;</span></span>
+<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> lvl <span class="kw">of</span> selectedLevels) {</span>
+<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> [lo<span class="op">,</span> hi] <span class="op">=</span> ageBands[lvl]<span class="op">;</span></span>
+<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (<span class="kw">let</span> a <span class="op">=</span> lo<span class="op">;</span> a <span class="op">&lt;=</span> hi<span class="op">;</span> a<span class="op">++</span>) ages<span class="op">.</span><span class="fu">add</span>(a)<span class="op">;</span></span>
+<span id="cb11-168"><a href="#cb11-168" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-169"><a href="#cb11-169" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ageTotal <span class="op">=</span> d3<span class="op">.</span><span class="fu">sum</span>(</span>
+<span id="cb11-170"><a href="#cb11-170" aria-hidden="true" tabindex="-1"></a>      synthAge<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d[<span class="st">"District Name"</span>] <span class="op">===</span> dist <span class="op">&amp;&amp;</span> ages<span class="op">.</span><span class="fu">has</span>(d<span class="op">.</span><span class="at">age</span>))<span class="op">,</span></span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a>      d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">persons</span></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span><span class="fu">push</span>({<span class="dt">district</span><span class="op">:</span> dist<span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"DOE"</span><span class="op">,</span> <span class="dt">students</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">sum</span>(rows<span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">doe</span>)})<span class="op">;</span></span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span><span class="fu">push</span>({<span class="dt">district</span><span class="op">:</span> dist<span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"NCES"</span><span class="op">,</span> <span class="dt">students</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">sum</span>(rows<span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">nces</span>)})<span class="op">;</span></span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span><span class="fu">push</span>({<span class="dt">district</span><span class="op">:</span> dist<span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"Synthetic grade"</span><span class="op">,</span> <span class="dt">students</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">sum</span>(rows<span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">grade</span>)})<span class="op">;</span></span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span><span class="fu">push</span>({<span class="dt">district</span><span class="op">:</span> dist<span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"Synthetic age band"</span><span class="op">,</span> <span class="dt">students</span><span class="op">:</span> ageTotal})<span class="op">;</span></span>
+<span id="cb11-177"><a href="#cb11-177" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-178"><a href="#cb11-178" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (selectedFacet) <span class="cf">return</span> out<span class="op">;</span></span>
+<span id="cb11-179"><a href="#cb11-179" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Split off: add the selected districts into one total per source</span></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> d3<span class="op">.</span><span class="fu">rollups</span>(out<span class="op">,</span> v <span class="kw">=&gt;</span> d3<span class="op">.</span><span class="fu">sum</span>(v<span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">students</span>)<span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">source</span>)</span>
+<span id="cb11-181"><a href="#cb11-181" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">map</span>(([source<span class="op">,</span> students]) <span class="kw">=&gt;</span> ({<span class="dt">district</span><span class="op">:</span> <span class="st">"Total"</span><span class="op">,</span> source<span class="op">,</span> students}))<span class="op">;</span></span>
+<span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a>chartRows<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span></span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a>  <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;p&gt;&lt;em&gt;Select at least one school level and one district.&lt;/em&gt;&lt;/p&gt;`</span></span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a>      <span class="dt">width</span><span class="op">:</span> <span class="dv">960</span><span class="op">,</span></span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a>      <span class="dt">height</span><span class="op">:</span> <span class="dv">460</span><span class="op">,</span></span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">60</span><span class="op">,</span></span>
+<span id="cb11-190"><a href="#cb11-190" aria-hidden="true" tabindex="-1"></a>      <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb11-191"><a href="#cb11-191" aria-hidden="true" tabindex="-1"></a>      <span class="op">...</span>(selectedFacet <span class="op">?</span> {<span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> selectedDistricts}} <span class="op">:</span> {})<span class="op">,</span></span>
+<span id="cb11-192"><a href="#cb11-192" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb11-193"><a href="#cb11-193" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb11-194"><a href="#cb11-194" aria-hidden="true" tabindex="-1"></a>      <span class="dt">color</span><span class="op">:</span> {</span>
+<span id="cb11-195"><a href="#cb11-195" aria-hidden="true" tabindex="-1"></a>        <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb11-196"><a href="#cb11-196" aria-hidden="true" tabindex="-1"></a>        <span class="dt">domain</span><span class="op">:</span> [<span class="st">"DOE"</span><span class="op">,</span> <span class="st">"NCES"</span><span class="op">,</span> <span class="st">"Synthetic grade"</span><span class="op">,</span> <span class="st">"Synthetic age band"</span>]<span class="op">,</span></span>
+<span id="cb11-197"><a href="#cb11-197" aria-hidden="true" tabindex="-1"></a>        <span class="dt">range</span><span class="op">:</span> [<span class="st">"#1f78b4"</span><span class="op">,</span> <span class="st">"#33a02c"</span><span class="op">,</span> <span class="st">"#e31a1c"</span><span class="op">,</span> <span class="st">"#ff7f00"</span>]</span>
+<span id="cb11-198"><a href="#cb11-198" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb11-199"><a href="#cb11-199" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">barY</span>(chartRows<span class="op">,</span> {</span>
+<span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a>          <span class="op">...</span>(selectedFacet <span class="op">?</span> {<span class="dt">fx</span><span class="op">:</span> <span class="st">"district"</span>} <span class="op">:</span> {})<span class="op">,</span></span>
+<span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> <span class="st">"students"</span><span class="op">,</span></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a>          <span class="dt">tip</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a>        })<span class="op">,</span></span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb11-209"><a href="#cb11-209" aria-hidden="true" tabindex="-1"></a>    })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-level-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-level-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div id="fig-level-compare-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-level-compare-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-level-compare-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-level-compare-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-level-compare-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-4-2" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-level-compare-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-level-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Students by district for the selected school levels. DOE and NCES are K-12 plus preschool enrollment. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels’ age bands, with each person counted once even where bands overlap.
+</figcaption>
+</figure>
+</div>
+</div>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">5. Summary</h2>
@@ -865,7 +1072,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W119
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImxldmVsT3JkZXIgPSBbXCJQcmUtS1wiLCBcIktcIiwgXCJFbGVtZW50YXJ5XCIsIFwiTWlkZGxlXCIsIFwiSGlnaFwiXVxuXG4vLyBBZ2UgYmFuZHMgdXNlZCBmb3IgdGhlIHNhbml0eSBib3VuZCwgb25lIHBlciBsZXZlbCAodGhlIGJhbmRzIG92ZXJsYXAgYXQgYm91bmRhcnkgYWdlcylcbmFnZUJhbmRzID0gKHtcIlByZS1LXCI6IFszLCA1XSwgXCJLXCI6IFs1LCA2XSwgXCJFbGVtZW50YXJ5XCI6IFs2LCAxMV0sIFwiTWlkZGxlXCI6IFsxMiwgMTRdLCBcIkhpZ2hcIjogWzE1LCAxOF19KVxuXG5yZWFsQnlMZXZlbCA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfYnlfZGlzdHJpY3RfbGV2ZWwuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KVxuc3ludGhCeUxldmVsID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvc3ludGhldGljX2J5X2Rpc3RyaWN0X2xldmVsLmNzdlwiKS5jc3Yoe3R5cGVkOiB0cnVlfSlcbnN5bnRoQWdlID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvc3ludGhldGljX2FnZV9ieV9kaXN0cmljdC5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pXG5cbmxldmVsUm93cyA9IHJlYWxCeUxldmVsLm1hcChkID0+IHtcbiAgY29uc3QgcyA9IHN5bnRoQnlMZXZlbC5maW5kKHggPT4geFtcIkRpc3RyaWN0IE5hbWVcIl0gPT09IGRbXCJEaXN0cmljdCBOYW1lXCJdICYmIHguTGV2ZWwgPT09IGQuTGV2ZWwpO1xuICByZXR1cm4ge1xuICAgIGRpc3RyaWN0OiBkW1wiRGlzdHJpY3QgTmFtZVwiXSxcbiAgICBsZXZlbDogZC5MZXZlbCxcbiAgICBkb2U6IGQuZG9lX2Vucm9sbG1lbnQgPz8gMCxcbiAgICBuY2VzOiBkLm5jZXNfZW5yb2xsbWVudCA/PyAwLFxuICAgIGdyYWRlOiBzID8gcy5zY2hfZ3JhZGUgOiAwXG4gIH07XG59KVxuXG5kaXN0cmljdE5hbWVzID0gWy4uLm5ldyBTZXQobGV2ZWxSb3dzLm1hcChkID0+IGQuZGlzdHJpY3QpKV0uc29ydCgpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBzZWxlY3RlZExldmVscyA9IElucHV0cy5zZWxlY3QobGV2ZWxPcmRlciwge1xuICBsYWJlbDogXCJTY2hvb2wgbGV2ZWxzXCIsXG4gIG11bHRpcGxlOiA1LFxuICB2YWx1ZTogbGV2ZWxPcmRlcixcbiAgZm9ybWF0OiBsdmwgPT4gYCR7bHZsfSAoQWdlOiAke2FnZUJhbmRzW2x2bF1bMF19LSR7YWdlQmFuZHNbbHZsXVsxXX0pYFxufSlcblxudmlld29mIHNlbGVjdGVkRGlzdHJpY3RzID0gSW5wdXRzLnNlbGVjdChkaXN0cmljdE5hbWVzLCB7XG4gIGxhYmVsOiBcIkRpc3RyaWN0c1wiLFxuICBtdWx0aXBsZTogNSxcbiAgdmFsdWU6IGRpc3RyaWN0TmFtZXNcbn0pXG5cbnZpZXdvZiBzcGxpdEJ5RGlzdHJpY3QgPSBJbnB1dHMuY2hlY2tib3goW1wiU3BsaXQgYnkgZGlzdHJpY3RcIl0sIHtcbiAgbGFiZWw6IFwiQ2hhcnRcIixcbiAgdmFsdWU6IFtcIlNwbGl0IGJ5IGRpc3RyaWN0XCJdXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoic2VsZWN0ZWRGYWNldCA9IHNwbGl0QnlEaXN0cmljdC5sZW5ndGggPiAwXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmNoYXJ0Um93cyA9IHtcbiAgY29uc3Qgb3V0ID0gW107XG4gIGZvciAoY29uc3QgZGlzdCBvZiBzZWxlY3RlZERpc3RyaWN0cykge1xuICAgIGNvbnN0IHJvd3MgPSBsZXZlbFJvd3MuZmlsdGVyKGQgPT4gZC5kaXN0cmljdCA9PT0gZGlzdCAmJiBzZWxlY3RlZExldmVscy5pbmNsdWRlcyhkLmxldmVsKSk7XG4gICAgaWYgKCFyb3dzLmxlbmd0aCkgY29udGludWU7XG4gICAgY29uc3QgYWdlcyA9IG5ldyBTZXQoKTtcbiAgICBmb3IgKGNvbnN0IGx2bCBvZiBzZWxlY3RlZExldmVscykge1xuICAgICAgY29uc3QgW2xvLCBoaV0gPSBhZ2VCYW5kc1tsdmxdO1xuICAgICAgZm9yIChsZXQgYSA9IGxvOyBhIDw9IGhpOyBhKyspIGFnZXMuYWRkKGEpO1xuICAgIH1cbiAgICBjb25zdCBhZ2VUb3RhbCA9IGQzLnN1bShcbiAgICAgIHN5bnRoQWdlLmZpbHRlcihkID0+IGRbXCJEaXN0cmljdCBOYW1lXCJdID09PSBkaXN0ICYmIGFnZXMuaGFzKGQuYWdlKSksXG4gICAgICBkID0+IGQucGVyc29uc1xuICAgICk7XG4gICAgb3V0LnB1c2goe2Rpc3RyaWN0OiBkaXN0LCBzb3VyY2U6IFwiRE9FXCIsIHN0dWRlbnRzOiBkMy5zdW0ocm93cywgZCA9PiBkLmRvZSl9KTtcbiAgICBvdXQucHVzaCh7ZGlzdHJpY3Q6IGRpc3QsIHNvdXJjZTogXCJOQ0VTXCIsIHN0dWRlbnRzOiBkMy5zdW0ocm93cywgZCA9PiBkLm5jZXMpfSk7XG4gICAgb3V0LnB1c2goe2Rpc3RyaWN0OiBkaXN0LCBzb3VyY2U6IFwiU3ludGhldGljIGdyYWRlXCIsIHN0dWRlbnRzOiBkMy5zdW0ocm93cywgZCA9PiBkLmdyYWRlKX0pO1xuICAgIG91dC5wdXNoKHtkaXN0cmljdDogZGlzdCwgc291cmNlOiBcIlN5bnRoZXRpYyBhZ2UgYmFuZFwiLCBzdHVkZW50czogYWdlVG90YWx9KTtcbiAgfVxuICBpZiAoc2VsZWN0ZWRGYWNldCkgcmV0dXJuIG91dDtcbiAgLy8gU3BsaXQgb2ZmOiBhZGQgdGhlIHNlbGVjdGVkIGRpc3RyaWN0cyBpbnRvIG9uZSB0b3RhbCBwZXIgc291cmNlXG4gIHJldHVybiBkMy5yb2xsdXBzKG91dCwgdiA9PiBkMy5zdW0odiwgZCA9PiBkLnN0dWRlbnRzKSwgZCA9PiBkLnNvdXJjZSlcbiAgICAubWFwKChbc291cmNlLCBzdHVkZW50c10pID0+ICh7ZGlzdHJpY3Q6IFwiVG90YWxcIiwgc291cmNlLCBzdHVkZW50c30pKTtcbn1cblxuY2hhcnRSb3dzLmxlbmd0aCA9PT0gMFxuICA/IGh0bWxgPHA+PGVtPlNlbGVjdCBhdCBsZWFzdCBvbmUgc2Nob29sIGxldmVsIGFuZCBvbmUgZGlzdHJpY3QuPC9lbT48L3A+YFxuICA6IFBsb3QucGxvdCh7XG4gICAgICB3aWR0aDogOTYwLFxuICAgICAgaGVpZ2h0OiA0NjAsXG4gICAgICBtYXJnaW5Cb3R0b206IDYwLFxuICAgICAgZ3JpZDogdHJ1ZSxcbiAgICAgIC4uLihzZWxlY3RlZEZhY2V0ID8ge2Z4OiB7bGFiZWw6IG51bGwsIGRvbWFpbjogc2VsZWN0ZWREaXN0cmljdHN9fSA6IHt9KSxcbiAgICAgIHg6IHtheGlzOiBudWxsfSxcbiAgICAgIHk6IHtsYWJlbDogXCJTdHVkZW50c1wiLCBncmlkOiB0cnVlfSxcbiAgICAgIGNvbG9yOiB7XG4gICAgICAgIGxlZ2VuZDogdHJ1ZSxcbiAgICAgICAgZG9tYWluOiBbXCJET0VcIiwgXCJOQ0VTXCIsIFwiU3ludGhldGljIGdyYWRlXCIsIFwiU3ludGhldGljIGFnZSBiYW5kXCJdLFxuICAgICAgICByYW5nZTogW1wiIzFmNzhiNFwiLCBcIiMzM2EwMmNcIiwgXCIjZTMxYTFjXCIsIFwiI2ZmN2YwMFwiXVxuICAgICAgfSxcbiAgICAgIG1hcmtzOiBbXG4gICAgICAgIFBsb3QuYmFyWShjaGFydFJvd3MsIHtcbiAgICAgICAgICAuLi4oc2VsZWN0ZWRGYWNldCA/IHtmeDogXCJkaXN0cmljdFwifSA6IHt9KSxcbiAgICAgICAgICB4OiBcInNvdXJjZVwiLFxuICAgICAgICAgIHk6IFwic3R1ZGVudHNcIixcbiAgICAgICAgICBmaWxsOiBcInNvdXJjZVwiLFxuICAgICAgICAgIHRpcDogdHJ1ZVxuICAgICAgICB9KSxcbiAgICAgICAgUGxvdC5ydWxlWShbMF0pXG4gICAgICBdXG4gICAgfSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnc2VsZWN0ZWRMZXZlbHMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnc2VsZWN0ZWREaXN0cmljdHMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnc3BsaXRCeURpc3RyaWN0JykifV19
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

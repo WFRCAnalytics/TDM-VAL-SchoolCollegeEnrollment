@@ -454,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="a92af000" class="cell" data-execution_count="1">
+<div id="cf71a65c" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlalchemy</span>
@@ -466,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="20271a94" class="cell" data-execution_count="2">
+<div id="64fe07c0" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> {</span>
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="62c3142f" class="cell" data-execution_count="3">
+<div id="3e1481e7" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opensgid_engine <span class="op">=</span> sqlalchemy.create_engine(</span>
@@ -491,7 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b4a6a1f1" class="cell" data-execution_count="4">
+<div id="ae853d9f" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive FIPS codes via pygris instead of hardcoding them</span></span>
@@ -505,17 +505,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using FIPS code '49' for input 'UT'
-Using FIPS code '057' for input 'Weber'
 Using FIPS code '035' for input 'Salt Lake'
-Using FIPS code '003' for input 'Box Elder'
+Using FIPS code '057' for input 'Weber'
 Using FIPS code '049' for input 'Utah'
+Using FIPS code '003' for input 'Box Elder'
 Using FIPS code '011' for input 'Davis'</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>['49057', '49035', '49003', '49049', '49011']</code></pre>
+<pre><code>['49035', '49057', '49049', '49003', '49011']</code></pre>
 </div>
 </div>
-<div id="79af26c9" class="cell" data-execution_count="5">
+<div id="f0a5cbe3" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive the NCES EDGE/CCD year-code (2023 -&gt; "2324") so a future vintage swap below is a single</span></span>
@@ -530,7 +530,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="county-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="county-boundaries">1. County boundaries</h2>
-<div id="78d9030d" class="cell" data-execution_count="6">
+<div id="5533c84f" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>county_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"county_boundary.gpkg"</span></span>
@@ -553,7 +553,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="69a57f23" class="cell" data-execution_count="7">
+<div id="376d056a" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bound_counties.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -562,7 +562,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="school-district-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="school-district-boundaries">2. School district boundaries</h2>
-<div id="6bb69c0d" class="cell" data-execution_count="8">
+<div id="50853138" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>district_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"school_district_boundary.gpkg"</span></span>
@@ -591,7 +591,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="446f716e" class="cell" data-execution_count="9">
+<div id="bd03823e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bound_districts.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -600,7 +600,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="travel-analysis-zone-taz-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="travel-analysis-zone-taz-boundaries">3. Travel Analysis Zone (TAZ) boundaries</h2>
-<div id="0c870bfe" class="cell" data-execution_count="10">
+<div id="162543df" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>taz_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"taz_boundary.gpkg"</span></span>
@@ -641,7 +641,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="bb13593a" class="cell" data-execution_count="11">
+<div id="e908dc55" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bound_taz.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -650,7 +650,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="micro-analysis-zone-maz-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="micro-analysis-zone-maz-boundaries">4. Micro Analysis Zone (MAZ) boundaries</h2>
-<div id="7aa85e29" class="cell" data-execution_count="12">
+<div id="ab8755d6" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>maz_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"maz_boundary.gpkg"</span></span>
@@ -678,7 +678,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="26835aa9" class="cell" data-execution_count="13">
+<div id="1886cc64" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bound_maz.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -687,7 +687,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="census-blocks" class="level2">
 <h2 class="anchored" data-anchor-id="census-blocks">5. Census blocks</h2>
-<div id="e9547c70" class="cell" data-execution_count="14">
+<div id="514ff81c" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>block_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"block_boundary.gpkg"</span></span>
@@ -728,7 +728,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="9a7ad407" class="cell" data-execution_count="15">
+<div id="dcc65f06" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bound_blocks.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -739,7 +739,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <h2 class="anchored" data-anchor-id="pre-k-to-12-school-locations">6. Pre-K to 12 school locations</h2>
 <section id="ugrc-pre-k-to-12" class="level3">
 <h3 class="anchored" data-anchor-id="ugrc-pre-k-to-12">UGRC Pre-K to 12</h3>
-<div id="e4d19d1e" class="cell" data-execution_count="16">
+<div id="2c54c7f3" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ugrc_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_school.gpkg"</span></span>
@@ -765,7 +765,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="ee8d9cd1" class="cell" data-execution_count="17">
+<div id="be9b3519" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ugrc_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -774,7 +774,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="nces-public-schools" class="level3">
 <h3 class="anchored" data-anchor-id="nces-public-schools">NCES public schools</h3>
-<div id="c65f8ce4" class="cell" data-execution_count="18">
+<div id="f7350c6f" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nces_public_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_public_school.gpkg"</span></span>
@@ -800,13 +800,13 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="800923b5" class="cell" data-execution_count="19">
+<div id="de4070d4" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nces_public_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="1ead4e68" class="cell" data-execution_count="20">
+<div id="bb564622" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TOTAL is documented by NCES as "Total Students (Includes AE)" -- verified 2026-10-01 this has no</span></span>
@@ -821,7 +821,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="nces-private-school" class="level3">
 <h3 class="anchored" data-anchor-id="nces-private-school">NCES private school</h3>
-<div id="62400c23" class="cell" data-execution_count="21">
+<div id="243e9aad" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nces_private_school_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_private_school.gpkg"</span></span>
@@ -862,7 +862,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="87ea4104" class="cell" data-execution_count="22">
+<div id="c7b8b6c0" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nces_private_schools.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -874,7 +874,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <h2 class="anchored" data-anchor-id="college-campus-locations">7. College campus locations</h2>
 <section id="ugrc-higher-education" class="level3">
 <h3 class="anchored" data-anchor-id="ugrc-higher-education">UGRC higher education</h3>
-<div id="9e250f53" class="cell" data-execution_count="23">
+<div id="9df3dce6" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ugrc_college_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"ugrc_college.gpkg"</span></span>
@@ -900,7 +900,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="1f067b67" class="cell" data-execution_count="24">
+<div id="bcbe1d7e" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ugrc_colleges.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -909,7 +909,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="nces-postsecondary-colleges" class="level3">
 <h3 class="anchored" data-anchor-id="nces-postsecondary-colleges">NCES postsecondary (colleges)</h3>
-<div id="640f90a5" class="cell" data-execution_count="25">
+<div id="dde5342c" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nces_college_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_college.gpkg"</span></span>
@@ -932,7 +932,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="27a2a644" class="cell" data-execution_count="26">
+<div id="bc566458" class="cell" data-execution_count="26">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nces_colleges.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -942,7 +942,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="model-mpo-region-boundary" class="level2">
 <h2 class="anchored" data-anchor-id="model-mpo-region-boundary">8. Model / MPO region boundary</h2>
-<div id="662f6148" class="cell" data-execution_count="27">
+<div id="62332522" class="cell" data-execution_count="27">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model_boundary_path <span class="op">=</span> paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"model_boundary.gpkg"</span></span>
@@ -960,7 +960,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 <span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>bound_model <span class="op">=</span> gpd.read_file(model_boundary_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="f2dbf61f" class="cell" data-execution_count="28">
+<div id="29a5aa52" class="cell" data-execution_count="28">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>bound_model.explore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -969,7 +969,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 </section>
 <section id="generate-crosswalks" class="level2">
 <h2 class="anchored" data-anchor-id="generate-crosswalks">9. Generate crosswalks</h2>
-<div id="285a02cb" class="cell" data-execution_count="29">
+<div id="b0dd9178" class="cell" data-execution_count="29">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>district_polys <span class="op">=</span> bound_districts[[<span class="st">"name"</span>, <span class="st">"geometry"</span>]]</span>
@@ -1025,7 +1025,7 @@ Using FIPS code '011' for input 'Davis'</code></pre>
 college rows: 24620 duplicate (Source, ID): 0</code></pre>
 </div>
 </div>
-<div id="fc526dd2" class="cell" data-execution_count="30">
+<div id="a07a242d" class="cell" data-execution_count="30">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Not strictly needed for a one-shot Quarto render (the process exit reclaims the connection</span></span>
@@ -1039,7 +1039,7 @@ college rows: 24620 duplicate (Source, ID): 0</code></pre>
 <h2 class="anchored" data-anchor-id="check-the-crosswalk">10. Check the crosswalk</h2>
 <p>Every later join depends on these match rates, so coverage is checked here before anything downstream uses the crosswalk.</p>
 <p>The map is drawn in OJS, and the coverage summary is printed by Python. Python first writes the map layers as GeoJSON (WGS84, which is what browsers expect) so OJS can read them.</p>
-<div id="c8e431bf" class="cell" data-execution_count="31">
+<div id="c0a67014" class="cell" data-execution_count="31">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OJS reads GeoJSON, not GeoDataFrames, so export each map layer in WGS84 for the {ojs} map below</span></span>
@@ -1156,7 +1156,7 @@ Figure&nbsp;1: Study area. Gray fill is school district boundaries, black lines 
 </figure>
 </div>
 </div>
-<div id="ca491678" class="cell" data-execution_count="32">
+<div id="924f3c62" class="cell" data-execution_count="32">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> [<span class="st">"school"</span>, <span class="st">"college"</span>]:</span>
