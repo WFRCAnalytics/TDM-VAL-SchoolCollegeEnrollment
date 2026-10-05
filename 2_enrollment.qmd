@@ -260,20 +260,18 @@ ushe_enrollment_by_county
 # Same source and method as the WF-TDM college enrollment repo (5-CollegeEnrollmentIPEDS.qmd).
 ipeds_dir = paths["raw"] / "ipeds"
 ipeds_dir.mkdir(parents=True, exist_ok=True)
-ipeds_csv_path = ipeds_dir / f"ef{constants['data_year']}a_dist.csv"
+zip_path = ipeds_dir / f"EF{constants['data_year']}A_DIST.zip"
 
-if not ipeds_csv_path.exists():
-    zip_path = ipeds_dir / f"EF{constants['data_year']}A_DIST.zip"
+if not zip_path.exists():
     # The datacenter/data path serves 2023; the tablefiles/zipfiles path used in the WF-TDM repo returns 404
     response = requests.get(
         f"https://nces.ed.gov/ipeds/datacenter/data/EF{constants['data_year']}A_DIST.zip"
     )
     response.raise_for_status()
     zip_path.write_bytes(response.content)
-    with zipfile.ZipFile(zip_path) as z:
-        z.extractall(ipeds_dir)
 
-ipeds_dist = pd.read_csv(ipeds_csv_path)
+# pandas reads the single CSV inside the zip directly, so nothing is extracted to disk
+ipeds_dist = pd.read_csv(zip_path)
 ```
 
 ```{python}

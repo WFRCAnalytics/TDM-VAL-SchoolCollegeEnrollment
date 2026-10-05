@@ -1,0 +1,28 @@
+Institution,Source,Segment,Students
+Brigham Young University,IPEDS,In-person only,22188.0
+Ensign College,IPEDS,In-person only,764.0
+Utah Valley University,IPEDS,In-person only,23719.0
+Salt Lake Community College,IPEDS,In-person only,15865.0
+University of Utah,IPEDS,In-person only,17616.0
+Weber State University,IPEDS,In-person only,17277.0
+Westminster University,IPEDS,In-person only,998.0
+Brigham Young University,IPEDS,Hybrid (some DE),12087.0
+Ensign College,IPEDS,Hybrid (some DE),910.0
+Utah Valley University,IPEDS,Hybrid (some DE),14634.0
+Salt Lake Community College,IPEDS,Hybrid (some DE),5831.0
+University of Utah,IPEDS,Hybrid (some DE),15418.0
+Weber State University,IPEDS,Hybrid (some DE),8498.0
+Westminster University,IPEDS,Hybrid (some DE),199.0
+Brigham Young University,IPEDS,Online only,799.0
+Ensign College,IPEDS,Online only,4299.0
+Utah Valley University,IPEDS,Online only,6298.0
+Salt Lake Community College,IPEDS,Online only,5068.0
+University of Utah,IPEDS,Online only,2226.0
+Weber State University,IPEDS,Online only,4761.0
+Westminster University,IPEDS,Online only,17.0
+Salt Lake Community College,USHE,In-person only,23802.0
+University of Utah,USHE,In-person only,44633.0
+Utah Valley University,USHE,Hybrid (some DE),18046.0
+Utah Valley University,USHE,In-person only,23211.0
+Weber State University,USHE,Hybrid (some DE),11386.0
+Weber State University,USHE,In-person only,13056.0

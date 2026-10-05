@@ -429,56 +429,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="dc4acfc0" class="cell" data-execution_count="1">
+<div id="ee175321" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: imports; path to local PopulationSim output (likely via .env, machine-specific, not a</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   repo-relative path since that data is gitignored in TDM-INP-PopulationSim); load crosswalk.csv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="load-synthetic-persons" class="level2">
 <h2 class="anchored" data-anchor-id="load-synthetic-persons">1. Load synthetic persons</h2>
-<div id="d4df8d3e" class="cell" data-execution_count="2">
+<div id="0c515ad9" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: load PopulationSim's synthetic NonGQ persons + dorm/GQ student persons, concat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="classify-k-12-students" class="level2">
 <h2 class="anchored" data-anchor-id="classify-k-12-students">2. Classify K-12 students</h2>
-<div id="836ba87e" class="cell" data-execution_count="3">
+<div id="c5ee9910" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: PersonType_Label == "K-12 student" (uncontrolled) and age 5-17 (controlled) -- two</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   separate boolean columns, not one, since they answer different questions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="classify-college-students" class="level2">
 <h2 class="anchored" data-anchor-id="classify-college-students">3. Classify college students</h2>
-<div id="45ab138e" class="cell" data-execution_count="4">
+<div id="a3ffcf16" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: PersonType_Label == "University student" (uncontrolled) and college-age band (controlled)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   -- combine NonGQ + dorm/GQ persons first</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="join-persons-to-district-county" class="level2">
 <h2 class="anchored" data-anchor-id="join-persons-to-district-county">4. Join persons to district / county</h2>
-<div id="ad4ac6c1" class="cell" data-execution_count="5">
+<div id="df79d704" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: resolve the MAZ/TAZ-vs-block join-key question (see Overview), then join to crosswalk.csv</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   to get each person's District Name (K-12) and COUNTYFP (college)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="aggregate-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">5. Aggregate to district and county</h2>
-<div id="bd14dad2" class="cell" data-execution_count="6">
+<div id="53805b18" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: groupby District Name -&gt; K-12 enrolled count, age 5-17 count</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   groupby COUNTYFP -&gt; University-student count, college-age count</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="box-elder-clipping" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder-clipping">6. Box Elder clipping</h2>
-<div id="a55ad70c" class="cell" data-execution_count="7">
+<div id="cdd32450" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder blocks/persons fall</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   inside vs. outside the actual MPO/TDM model domain; handle separately from the other 4 counties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 <section id="write-output" class="level2">
 <h2 class="anchored" data-anchor-id="write-output">7. Write output</h2>
-<div id="538858fe" class="cell" data-execution_count="8">
+<div id="47f31e03" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: write both synthetic tables to _outputs/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 
 
