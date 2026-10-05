@@ -204,7 +204,7 @@ maz_boundary_path = paths["raw"] / "geometry" / "maz_boundary.gpkg"
 # 1. Build the cache once from the local zip (no download -- it's a draft Andy supplied)
 if not maz_boundary_path.exists():
     all_maz = gpd.read_file(
-        "zip://_data/raw/geometry/microzones_draft_20260610Andyaddedmaz_idforUtah.zip"
+        "zip://_data/raw/geometry/microzones_draft_20260610AndyaddedmazidforUtah.zip"
     ).to_crs(constants["crs"])
     all_maz = all_maz[all_maz.geometry.notna()].copy()
     all_maz = all_maz.set_geometry(all_maz.geometry.buffer(0))
@@ -531,6 +531,25 @@ nces_college_block_match = gpd.sjoin(
     how="left",
 )[["UNITID", "GEOID20"]].rename(columns={"UNITID": "NCES College ID"})
 
+maz_district = gpd.sjoin(
+    bound_maz.set_geometry(bound_maz.centroid)[["maz_id", "geometry"]],
+    bound_districts[["name", "geometry"]],
+    predicate="within",
+    how="left",
+)[["maz_id", "name"]].rename(columns={"name": "MAZ District Name"})
+
+maz_county = gpd.sjoin(
+    bound_maz.set_geometry(bound_maz.centroid)[["maz_id", "geometry"]],
+    bound_counties[["COUNTYFP", "geometry"]],
+    predicate="within",
+    how="left",
+)[["maz_id", "COUNTYFP"]].rename(columns={"COUNTYFP": "MAZ COUNTYFP"})
+
+maz_attrs = maz_district.merge(maz_county, on="maz_id", how="outer")
+assert maz_attrs["maz_id"].is_unique, "MAZ centroid falls in more than one district or county"
+```
+
+```{python}
 crosswalk = (
     bound_blocks[["GEOID20", "COUNTYFP20", "district_name", "TAZID", "maz_id"]]
     .merge(school_block_match.rename(columns={"schoolid": "School ID"}), on="GEOID20", how="left")
@@ -538,6 +557,7 @@ crosswalk = (
     .merge(nces_public_block_match, on="GEOID20", how="left")
     .merge(nces_private_block_match, on="GEOID20", how="left")
     .merge(nces_college_block_match, on="GEOID20", how="left")
+    .merge(maz_attrs, on="maz_id", how="left")
     .rename(
         columns={"GEOID20": "GEOID", "COUNTYFP20": "COUNTYFP", "district_name": "District Name"}
     )
