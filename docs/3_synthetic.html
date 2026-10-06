@@ -123,7 +123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -369,6 +369,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1_geography.html">Pipeline</a></li><li class="breadcrumb-item"><a href="./3_synthetic.html">3. Synthetic population</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
   <div id="quarto-announcement" data-announcement-id="dc29ec16406e1179d09b601e52b5d611" class="alert alert-primary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p>Site under development.</p>
 </div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
@@ -376,6 +389,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="site_libs\quarto-contrib\quarto-project\WFRCAnalytics\wfrc-brand\assets\logo\stacked\WFRC_logo_stacked_color_transparent.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="site_libs\quarto-contrib\quarto-project\WFRCAnalytics\wfrc-brand\assets\logo\stacked\WFRC_logo_stacked_white_transparent.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Pipeline</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1_geography.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Geography</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2_enrollment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Enrollment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3_synthetic.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">3. Synthetic population</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./4_validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Validation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -397,10 +469,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1_geography.html">Pipeline</a></li><li class="breadcrumb-item"><a href="./3_synthetic.html">3. Synthetic population</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Synthetic Population</h1>
 <p class="subtitle lead">PopulationSim synthetic enrollment estimates, by district and county</p>
@@ -408,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta column-body">
 
     
   
@@ -429,12 +501,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>MAZ join</strong>: each person has a <code>maz_id</code>. The MAZ rows in <code>crosswalk_school.csv</code> give each person a school district, and the MAZ rows in <code>crosswalk_college.csv</code> give each person a county.</li>
 <li><strong>Known gaps</strong>: college counts are residence-based and include every enrolled resident, while IPEDS counts by institution location and USHE counts public institutions only. The two sides differ in definition, not only in data.</li>
 <li><strong>Box Elder</strong>: handled last. The MPO/TDM model region only partly covers the county, so its synthetic counts need to be clipped to the model boundary (<code>1_geography.qmd</code>’s <code>model_boundary</code> layer) before comparison. This is still a TODO.</li>
-<li><strong>Output</strong>: district persons (<code>sch_grade</code>, <code>age_3_18</code>) and county persons (<code>sch_grade</code>, <code>age_18_24</code>), written to <code>_data/intermediate/</code>.</li>
+<li><strong>Output</strong>: written to <code>_data/intermediate/</code>. <code>synthetic_k12_by_district.csv</code> has district persons (<code>sch_grade</code>, <code>age_3_18</code>). <code>synthetic_college_by_county.csv</code> has county persons (<code>undergraduate</code>, <code>graduate</code>, <code>age_18_24</code>). <code>synthetic_by_district_level.csv</code> and <code>synthetic_age_by_district.csv</code> hold the school-level and single-year-age breakdowns that the validation charts use.</li>
 </ul>
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="54dcdab0" class="cell" data-execution_count="1">
+<div id="ac9a2ba5" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -454,7 +526,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="load-synthetic-persons" class="level2">
 <h2 class="anchored" data-anchor-id="load-synthetic-persons">1. Load synthetic persons</h2>
-<div id="adb691fd" class="cell" data-execution_count="2">
+<div id="9ff462d0" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every person's household is in the households file, and res_type 3 marks group-quarters (dorm)</span></span>
@@ -467,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="classify-students" class="level2">
 <h2 class="anchored" data-anchor-id="classify-students">2. Classify students</h2>
-<div id="64407fc5" class="cell" data-execution_count="3">
+<div id="ade0b153" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rules as PopulationSim's PersonType_Label (2_InputPreperation_Seed2.ipynb, person-type rules):</span></span>
@@ -486,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="join-persons-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="join-persons-to-district-and-county">3. Join persons to district and county</h2>
-<div id="5be58fc5" class="cell" data-execution_count="4">
+<div id="1132f365" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>crosswalk_school <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_school.csv"</span>, dtype<span class="op">=</span>{<span class="st">"ID"</span>: <span class="bu">str</span>})</span>
@@ -513,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="aggregate-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">4. Aggregate to district and county</h2>
-<div id="17dbd998" class="cell" data-execution_count="5">
+<div id="eb052090" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each column counts persons in that district (summing a boolean counts the True rows)</span></span>
@@ -619,7 +691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="57dddf83" class="cell" data-execution_count="6">
+<div id="0bbebc30" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>college_persons <span class="op">=</span> (</span>
@@ -691,7 +763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="by-school-level" class="level3">
 <h3 class="anchored" data-anchor-id="by-school-level">By school level</h3>
-<div id="cb8fb186" class="cell" data-execution_count="7">
+<div id="c9cd0b2f" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Levels by SCHG code, at any age, matching the grade columns used for real enrollment in 2_enrollment.qmd:</span></span>
@@ -1115,7 +1187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="box-elder-clipping" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder-clipping">5. Box Elder clipping</h2>
-<div id="54a1bb53" class="cell" data-execution_count="8">
+<div id="74101c82" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder MAZs fall inside vs.</span></span>
@@ -1125,7 +1197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="write-output" class="level2">
 <h2 class="anchored" data-anchor-id="write-output">6. Write output</h2>
-<div id="ca729030" class="cell" data-execution_count="9">
+<div id="49a9ad89" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>district_persons.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>

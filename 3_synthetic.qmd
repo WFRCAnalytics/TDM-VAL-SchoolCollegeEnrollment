@@ -27,8 +27,10 @@ the real enrollment numbers from `2_enrollment.qmd`.
 - **Box Elder**: handled last. The MPO/TDM model region only partly covers the county, so its
   synthetic counts need to be clipped to the model boundary (`1_geography.qmd`'s `model_boundary`
   layer) before comparison. This is still a TODO.
-- **Output**: district persons (`sch_grade`, `age_3_18`) and county persons (`sch_grade`,
-  `age_18_24`), written to `_data/intermediate/`.
+- **Output**: written to `_data/intermediate/`. `synthetic_k12_by_district.csv` has district persons
+  (`sch_grade`, `age_3_18`). `synthetic_college_by_county.csv` has county persons (`undergraduate`,
+  `graduate`, `age_18_24`). `synthetic_by_district_level.csv` and `synthetic_age_by_district.csv`
+  hold the school-level and single-year-age breakdowns that the validation charts use.
 
 ## Setup
 

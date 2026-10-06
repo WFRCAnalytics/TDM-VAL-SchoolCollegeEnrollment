@@ -17,6 +17,8 @@ and PopulationSim's synthetic estimates (`3_synthetic.qmd`) get compared.
   the threshold you set.
 - **What it reads**: the district and county tables from `2_enrollment.qmd` and the synthetic tables
   from `3_synthetic.qmd`, all in `_data/intermediate/`.
+- **Status**: sections 1 and 2 (districts and counties) are built. Section 3 (Box Elder) and the summary
+  in section 4 are still placeholders.
 - **Box Elder**: reported separately, since its real and synthetic numbers are both scoped differently
   there (model region vs. full county). It is still a TODO.
 

@@ -21,16 +21,22 @@ PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
 - **Objective**: get district-level K-12 enrollment and county-level college enrollment from real,
   non-synthetic sources, joined through the school and college crosswalks built in `1_geography.qmd`.
 - **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts),
-  NCES enrollment by district (public via CCD, private via the Private School Universe Survey);
-  USHE (student home ZIP code, not institution location — a different geography than everything
-  else in this project) and NCES/IPEDS enrollment by county.
-- **Known gaps**: NCES private-school enrollment is school-location-based, not residence-based, and
-  a handful of statewide online-only private programs still need manual review before being trusted
-  at face value (see section 3); USHE data is Academic Year 2025, not 2023-24 — no 2023-24 USHE
-  extract exists in what WFRC has on file, so this is a real year mismatch against the ~2023 vintage
-  used everywhere else, not an oversight.
-- **Output**: one table of district-level enrollment, one table of county-level enrollment, both
-  written to `_outputs/`.
+  NCES enrollment by district (public via CCD); NCES private-school enrollment (Private School
+  Universe Survey), reported in section 3 but not in the district validation table; USHE enrollment
+  by institution and site (the WFRC data request, not a home-ZIP file, so its geography is the
+  institution's site); and IPEDS by county (fall 2023 campus-based enrollment, institutional control,
+  and full-time/part-time detail).
+- **Known gaps**:
+  - Charter schools are counted as public schools in the district totals. Whether Utah DOE credits
+    their enrollment to the resident district has not been checked against DOE's published totals.
+  - NCES private-school enrollment is by school location, not residence.
+  - USHE is Academic Year 2025 and covers public institutions only. IPEDS is fall 2023. Neither
+    matches the ~2023 vintage used everywhere else, and no 2023-24 USHE extract is on file.
+- **Output**: CSVs in `_data/intermediate/`. The validation pages read the district and county totals
+  (`real_enrollment_by_district.csv`, `real_enrollment_by_county.csv`) and the level breakdowns
+  (`real_by_district_level.csv`, `real_college_by_county_level.csv`). `university_modality_compare.csv`
+  feeds the section 8 chart. `ipeds_fulltime_parttime.csv` is written but not charted yet. `_outputs/`
+  is created here, but nothing is written to it.
 
 ## Setup
 

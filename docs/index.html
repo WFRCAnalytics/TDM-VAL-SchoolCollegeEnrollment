@@ -88,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -334,6 +334,19 @@ ul.task-list li input[type="checkbox"] {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Overview</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
   <div id="quarto-announcement" data-announcement-id="dc29ec16406e1179d09b601e52b5d611" class="alert alert-primary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p>Site under development.</p>
 </div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
@@ -341,28 +354,92 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="site_libs\quarto-contrib\quarto-project\WFRCAnalytics\wfrc-brand\assets\logo\stacked\WFRC_logo_stacked_color_transparent.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="site_libs\quarto-contrib\quarto-project\WFRCAnalytics\wfrc-brand\assets\logo\stacked\WFRC_logo_stacked_white_transparent.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Pipeline</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1_geography.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Geography</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2_enrollment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Enrollment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3_synthetic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Synthetic population</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./4_validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Validation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#how-this-site-is-built" id="toc-how-this-site-is-built" class="nav-link active" data-scroll-target="#how-this-site-is-built">How this site is built</a></li>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose">Purpose</a></li>
+  <li><a href="#comparisons-at-a-glance" id="toc-comparisons-at-a-glance" class="nav-link" data-scroll-target="#comparisons-at-a-glance">Comparisons at a glance</a></li>
+  <li><a href="#pages" id="toc-pages" class="nav-link" data-scroll-target="#pages">Pages</a></li>
+  <li><a href="#how-the-site-is-built" id="toc-how-the-site-is-built" class="nav-link" data-scroll-target="#how-the-site-is-built">How the site is built</a></li>
+  <li><a href="#known-limitations" id="toc-known-limitations" class="nav-link" data-scroll-target="#known-limitations">Known limitations</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-body" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">School and College Enrollment Validation</h1>
+<p class="subtitle lead">Does PopulationSim’s synthetic population match real K-12 and college enrollment?</p>
 </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta column-body">
 
     
   
@@ -374,10 +451,84 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This site validates the <a href="https://github.com/WFRCAnalytics/TDM-INP-PopulationSim">PopulationSim</a> synthetic population — the household/person microdata underlying WFRC’s travel demand model — against real K-12 and college enrollment, for the Wasatch Front region (Box Elder, Davis, Weber, Salt Lake, and Utah counties). School enrollment is compared at the <strong>school district</strong> level; college enrollment at the <strong>county</strong> level.</p>
-<p>PopulationSim doesn’t control on school enrollment directly, so each comparison is made two ways: against the synthetic population’s uncontrolled enrollment-status label (the real test of how well the synthetic population reflects actual enrollment), and against its controlled age-band population (a sanity bound — age-eligible should meet or exceed enrolled, not match it exactly).</p>
-<section id="how-this-site-is-built" class="level2">
-<h2 class="anchored" data-anchor-id="how-this-site-is-built">How this site is built</h2>
+<section id="purpose" class="level2">
+<h2 class="anchored" data-anchor-id="purpose">Purpose</h2>
+<p>This site checks the <a href="https://github.com/WFRCAnalytics/TDM-INP-PopulationSim">PopulationSim</a> synthetic population behind WFRC’s travel demand model against real school and college enrollment. The study area is Box Elder, Davis, Weber, Salt Lake, and Utah counties. K-12 enrollment is compared by <strong>school district</strong>. College enrollment is compared by <strong>county</strong>.</p>
+<p>PopulationSim does not control on school enrollment, so each comparison runs two ways:</p>
+<ul>
+<li><strong>Enrollment status (the real test).</strong> The synthetic population’s school-grade label (<code>SCHG</code>) is uncontrolled, so it is compared directly with actual enrollment.</li>
+<li><strong>Age population (a sanity bound).</strong> Age is controlled in PopulationSim. The population in the school-age band should meet or exceed enrollment. It is not expected to match exactly.</li>
+</ul>
+</section>
+<section id="comparisons-at-a-glance" class="level2">
+<h2 class="anchored" data-anchor-id="comparisons-at-a-glance">Comparisons at a glance</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Real reference</th>
+<th>Synthetic: enrolled</th>
+<th>Synthetic: age band</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>K-12, by district</td>
+<td>Utah DOE school counts (K-12 + preschool); NCES CCD public schools (K-12 + PK)</td>
+<td><code>SCHG</code> 1-14, any age</td>
+<td>Ages 3-18</td>
+</tr>
+<tr class="even">
+<td>College, by county</td>
+<td>USHE (public institutions, all levels, Academic Year 2025 Term 2); IPEDS campus-based (fall 2023)</td>
+<td><code>SCHG</code> 15 (undergraduate) and 16 (graduate), any age</td>
+<td>Ages 18-24</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pages" class="level2">
+<h2 class="anchored" data-anchor-id="pages">Pages</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Page</th>
+<th>What it does</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="./1_geography.html">1. Geography</a></td>
+<td>Builds the school-to-district and college-to-county crosswalks. MAZ rows in both let PopulationSim output roll up. Checks coverage and maps the study area.</td>
+<td>Done</td>
+</tr>
+<tr class="even">
+<td><a href="./2_enrollment.html">2. Enrollment</a></td>
+<td>Real K-12 enrollment by district (Utah DOE, NCES CCD, NCES private) and college enrollment by county (USHE, IPEDS). Compares the sources.</td>
+<td>Done</td>
+</tr>
+<tr class="odd">
+<td><a href="./3_synthetic.html">3. Synthetic population</a></td>
+<td>Rolls PopulationSim persons up to district and county by school grade and by age.</td>
+<td>Done, except the Box Elder clip</td>
+</tr>
+<tr class="even">
+<td><a href="./4_validation.html">4. Validation</a></td>
+<td>Real against synthetic, by district and by county: tables, scatter plots, and level charts.</td>
+<td>Districts and counties done; Box Elder and the summary are still to do</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-the-site-is-built" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-site-is-built">How the site is built</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -385,49 +536,59 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <pre class="mermaid mermaid-js">flowchart TD
     subgraph sources["Data sources"]
-        UGRC["UGRC / Open SGID\nboundaries, school and college locations"]
-        NCES["NCES\nCCD, Private School Survey, IPEDS locations"]
-        CENSUS["Census TIGER\ncounties, blocks"]
-        TAZSRC["WFRC WasatchFrontTAZ\nTravel Analysis Zones"]
-        MAZSRC["WFRC MAZ\n(planned — not yet published)"]
-        PSIM["PopulationSim\nsynthetic population (local)"]
-        USHE["USHE\nenrollment by student home ZIP"]
-        IPEDS["IPEDS\nFall Enrollment survey"]
+        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts"]
+        NCES["NCES\nCCD public schools, Private School Universe Survey, postsecondary locations"]
+        IPEDS["IPEDS\nFall Enrollment and institutional control"]
+        CENSUS["Census TIGER (via pygris)\ncounties and blocks; blocks are not used in the crosswalks"]
+        MAZSRC["MAZ microzones\ndraft layer supplied for Utah"]
+        TAZSRC["WFRC WasatchFrontTAZ\nreference layer only"]
+        USHE["USHE\nenrollment by institution and site"]
+        PSIM["PopulationSim persons\nsynthetic population, local only"]
     end
 
     UGRC --&gt; GEO
     NCES --&gt; GEO
     CENSUS --&gt; GEO
-    TAZSRC --&gt; GEO
-    MAZSRC -.-&gt; GEO
+    MAZSRC --&gt; GEO
+    TAZSRC -.-&gt; GEO
     GEO["1_geography.qmd\nschool and college crosswalks"] --&gt; XWALK[("crosswalk_school.csv\ncrosswalk_college.csv")]
 
     XWALK --&gt; ENR
-    USHE --&gt; ENR
-    IPEDS --&gt; ENR
     UGRC --&gt; ENR
     NCES --&gt; ENR
-    ENR["2_enrollment.qmd\nreal DOE / NCES / USHE / IPEDS enrollment"] --&gt; ENR_OUT[("real enrollment\nby district and county")]
+    IPEDS --&gt; ENR
+    USHE --&gt; ENR
+    ENR["2_enrollment.qmd\nreal enrollment by district and county"] --&gt; ENR_OUT[("real_enrollment_by_district.csv\nreal_enrollment_by_county.csv")]
 
     XWALK --&gt; SYN
     PSIM --&gt; SYN
-    SYN["3_synthetic.qmd\nPopulationSim rollups"] --&gt; SYN_OUT[("synthetic enrollment\nby district and county")]
+    SYN["3_synthetic.qmd\nPopulationSim rollups"] --&gt; SYN_OUT[("synthetic_k12_by_district.csv\nsynthetic_college_by_county.csv")]
 
     ENR_OUT --&gt; VAL
     SYN_OUT --&gt; VAL
-    VAL["4_validation.qmd\nreal vs. synthetic comparison"]
+    VAL["4_validation.qmd\nreal against synthetic"]
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+<p>The pages run in order. Each one writes CSV and GeoJSON files to <code>_data/intermediate/</code>, and the next page reads them. The charts are built in Observable JavaScript from those files, so they update on every render.</p>
+</section>
+<section id="known-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="known-limitations">Known limitations</h2>
 <ul>
-<li><a href="./1_geography.html"><strong>Geography</strong></a> — builds two crosswalks that every later step joins against: schools to districts and colleges to counties. Both include MAZ rows, so PopulationSim output rolls up through MAZ. Blocks are no longer used for these joins.</li>
-<li><a href="./2_enrollment.html"><strong>Enrollment</strong></a> — real K-12 and college enrollment, from state and federal sources.</li>
-<li><a href="./3_synthetic.html"><strong>Synthetic Population</strong></a> — PopulationSim’s synthetic enrollment estimates, rolled up to the same district/county geography.</li>
-<li><a href="./4_validation.html"><strong>Validation</strong></a> — the comparison itself.</li>
+<li><strong>Box Elder is only partly inside the model region.</strong> Synthetic persons exist only inside model MAZs, so Box Elder needs clipping to the model boundary before it can be compared. That clip is still a TODO.</li>
+<li><strong>USHE and IPEDS are not like-for-like.</strong> USHE covers public institutions only and is Academic Year
+<ol start="2025" type="1">
+<li>IPEDS includes private institutions and is fall 2023. The county validation has an option to include private institutions.</li>
+</ol></li>
+<li><strong>Residence against location.</strong> Synthetic college counts are where students live. IPEDS counts by institution location, and USHE counts by site.</li>
+<li><strong>Charter schools</strong> are included in the district totals. Whether Utah DOE credits their enrollment to the resident district has not been checked against DOE’s published totals.</li>
+<li><strong>Online-only schools</strong> have no geographic catchment, so they are left out of the district totals and reported separately.</li>
+<li><strong>Private schools</strong> (NCES Private School Universe Survey) appear on the enrollment page but not in the district validation table.</li>
 </ul>
+<p>Code, setup, and how to re-render the site are in the <a href="https://github.com/WFRCAnalytics/TDM-VAL-SchoolCollegeEnrollment#readme">project README</a>.</p>
 
 
 </section>

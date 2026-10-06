@@ -14,6 +14,23 @@ website:
     type: primary
     position: below-navbar
 
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - text: "Overview"
+        href: index.qmd
+      - section: "Pipeline"
+        contents:
+          - text: "1. Geography"
+            href: 1_geography.qmd
+          - text: "2. Enrollment"
+            href: 2_enrollment.qmd
+          - text: "3. Synthetic population"
+            href: 3_synthetic.qmd
+          - text: "4. Validation"
+            href: 4_validation.qmd
+
   navbar:
     logo-alt: "Wasatch Front Regional Council"
     right:

@@ -1,61 +1,95 @@
 ---
 title: "School and College Enrollment Validation"
+subtitle: "Does PopulationSim's synthetic population match real K-12 and college enrollment?"
 ---
 
-This site validates the [PopulationSim](https://github.com/WFRCAnalytics/TDM-INP-PopulationSim)
-synthetic population — the household/person microdata underlying WFRC's travel demand model —
-against real K-12 and college enrollment, for the Wasatch Front region (Box Elder, Davis, Weber,
-Salt Lake, and Utah counties). School enrollment is compared at the **school district** level;
-college enrollment at the **county** level.
+## Purpose
 
-PopulationSim doesn't control on school enrollment directly, so each comparison is made two ways:
-against the synthetic population's uncontrolled enrollment-status label (the real test of how well
-the synthetic population reflects actual enrollment), and against its controlled age-band population
-(a sanity bound — age-eligible should meet or exceed enrolled, not match it exactly).
+This site checks the [PopulationSim](https://github.com/WFRCAnalytics/TDM-INP-PopulationSim)
+synthetic population behind WFRC's travel demand model against real school and college enrollment.
+The study area is Box Elder, Davis, Weber, Salt Lake, and Utah counties. K-12 enrollment is compared
+by **school district**. College enrollment is compared by **county**.
 
-## How this site is built
+PopulationSim does not control on school enrollment, so each comparison runs two ways:
+
+- **Enrollment status (the real test).** The synthetic population's school-grade label (`SCHG`) is
+  uncontrolled, so it is compared directly with actual enrollment.
+- **Age population (a sanity bound).** Age is controlled in PopulationSim. The population in the
+  school-age band should meet or exceed enrollment. It is not expected to match exactly.
+
+## Comparisons at a glance
+
+| Level | Real reference | Synthetic: enrolled | Synthetic: age band |
+|---|---|---|---|
+| K-12, by district | Utah DOE school counts (K-12 + preschool); NCES CCD public schools (K-12 + PK) | `SCHG` 1-14, any age | Ages 3-18 |
+| College, by county | USHE (public institutions, all levels, Academic Year 2025 Term 2); IPEDS campus-based (fall 2023) | `SCHG` 15 (undergraduate) and 16 (graduate), any age | Ages 18-24 |
+
+## Pages
+
+| Page | What it does | Status |
+|---|---|---|
+| [1. Geography](1_geography.qmd) | Builds the school-to-district and college-to-county crosswalks. MAZ rows in both let PopulationSim output roll up. Checks coverage and maps the study area. | Done |
+| [2. Enrollment](2_enrollment.qmd) | Real K-12 enrollment by district (Utah DOE, NCES CCD, NCES private) and college enrollment by county (USHE, IPEDS). Compares the sources. | Done |
+| [3. Synthetic population](3_synthetic.qmd) | Rolls PopulationSim persons up to district and county by school grade and by age. | Done, except the Box Elder clip |
+| [4. Validation](4_validation.qmd) | Real against synthetic, by district and by county: tables, scatter plots, and level charts. | Districts and counties done; Box Elder and the summary are still to do |
+
+## How the site is built
 
 ```{mermaid}
 flowchart TD
     subgraph sources["Data sources"]
-        UGRC["UGRC / Open SGID\nboundaries, school and college locations"]
-        NCES["NCES\nCCD, Private School Survey, IPEDS locations"]
-        CENSUS["Census TIGER\ncounties, blocks"]
-        TAZSRC["WFRC WasatchFrontTAZ\nTravel Analysis Zones"]
-        MAZSRC["WFRC MAZ\n(planned — not yet published)"]
-        PSIM["PopulationSim\nsynthetic population (local)"]
-        USHE["USHE\nenrollment by student home ZIP"]
-        IPEDS["IPEDS\nFall Enrollment survey"]
+        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts"]
+        NCES["NCES\nCCD public schools, Private School Universe Survey, postsecondary locations"]
+        IPEDS["IPEDS\nFall Enrollment and institutional control"]
+        CENSUS["Census TIGER (via pygris)\ncounties and blocks; blocks are not used in the crosswalks"]
+        MAZSRC["MAZ microzones\ndraft layer supplied for Utah"]
+        TAZSRC["WFRC WasatchFrontTAZ\nreference layer only"]
+        USHE["USHE\nenrollment by institution and site"]
+        PSIM["PopulationSim persons\nsynthetic population, local only"]
     end
 
     UGRC --> GEO
     NCES --> GEO
     CENSUS --> GEO
-    TAZSRC --> GEO
-    MAZSRC -.-> GEO
+    MAZSRC --> GEO
+    TAZSRC -.-> GEO
     GEO["1_geography.qmd\nschool and college crosswalks"] --> XWALK[("crosswalk_school.csv\ncrosswalk_college.csv")]
 
     XWALK --> ENR
-    USHE --> ENR
-    IPEDS --> ENR
     UGRC --> ENR
     NCES --> ENR
-    ENR["2_enrollment.qmd\nreal DOE / NCES / USHE / IPEDS enrollment"] --> ENR_OUT[("real enrollment\nby district and county")]
+    IPEDS --> ENR
+    USHE --> ENR
+    ENR["2_enrollment.qmd\nreal enrollment by district and county"] --> ENR_OUT[("real_enrollment_by_district.csv\nreal_enrollment_by_county.csv")]
 
     XWALK --> SYN
     PSIM --> SYN
-    SYN["3_synthetic.qmd\nPopulationSim rollups"] --> SYN_OUT[("synthetic enrollment\nby district and county")]
+    SYN["3_synthetic.qmd\nPopulationSim rollups"] --> SYN_OUT[("synthetic_k12_by_district.csv\nsynthetic_college_by_county.csv")]
 
     ENR_OUT --> VAL
     SYN_OUT --> VAL
-    VAL["4_validation.qmd\nreal vs. synthetic comparison"]
+    VAL["4_validation.qmd\nreal against synthetic"]
 ```
 
-- [**Geography**](1_geography.qmd) — builds two crosswalks that every later step joins against: schools
-  to districts and colleges to counties. Both include MAZ rows, so PopulationSim output rolls up
-  through MAZ. Blocks are no longer used for these joins.
-- [**Enrollment**](2_enrollment.qmd) — real K-12 and college enrollment, from state and federal
-  sources.
-- [**Synthetic Population**](3_synthetic.qmd) — PopulationSim's synthetic enrollment estimates,
-  rolled up to the same district/county geography.
-- [**Validation**](4_validation.qmd) — the comparison itself.
+The pages run in order. Each one writes CSV and GeoJSON files to `_data/intermediate/`, and the next
+page reads them. The charts are built in Observable JavaScript from those files, so they update on
+every render.
+
+## Known limitations
+
+- **Box Elder is only partly inside the model region.** Synthetic persons exist only inside model MAZs,
+  so Box Elder needs clipping to the model boundary before it can be compared. That clip is still a TODO.
+- **USHE and IPEDS are not like-for-like.** USHE covers public institutions only and is Academic Year
+  2025. IPEDS includes private institutions and is fall 2023. The county validation has an option to
+  include private institutions.
+- **Residence against location.** Synthetic college counts are where students live. IPEDS counts by
+  institution location, and USHE counts by site.
+- **Charter schools** are included in the district totals. Whether Utah DOE credits their enrollment to
+  the resident district has not been checked against DOE's published totals.
+- **Online-only schools** have no geographic catchment, so they are left out of the district totals and
+  reported separately.
+- **Private schools** (NCES Private School Universe Survey) appear on the enrollment page but not in the
+  district validation table.
+
+Code, setup, and how to re-render the site are in the
+[project README](https://github.com/WFRCAnalytics/TDM-VAL-SchoolCollegeEnrollment#readme).

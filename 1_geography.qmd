@@ -28,7 +28,9 @@ This script builds the geographic crosswalk that every later step in this projec
   [WasatchFrontTAZ feature service](https://services1.arcgis.com/taguadKoI1XFwivx/ArcGIS/rest/services/WasatchFrontTAZ/FeatureServer/0)
   rather than the [TDM-GEO-AnalysisZones](https://github.com/WFRCAnalytics/TDM-GEO-AnalysisZones)
   repo directly, so the pull stays current without tracking that repo's releases — TAZID is what
-  is kept as a reference layer. The synthetic join uses MAZ, not TAZ.
+  is kept as a reference layer. The synthetic join uses MAZ, not TAZ. MAZ boundaries come from a
+  draft microzone layer supplied for Utah (`_data/raw/geometry/microzones_draft_*.zip`), not yet a
+  published WFRC layer. Block boundaries are still cached and checked, but no crosswalk uses them.
 - **Output**: two crosswalks, one per use. `_data/intermediate/crosswalk_school.csv` maps each K-12
   school (UGRC, NCES public, NCES private) and each MAZ to its district. `_data/intermediate/crosswalk_college.csv`
   maps each college (UGRC, NCES) and each MAZ to its county. MAZ rows appear in both files, so
