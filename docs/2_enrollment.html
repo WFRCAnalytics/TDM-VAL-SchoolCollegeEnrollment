@@ -87,7 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d1a3c7ef0f27de390c984bb61a93f1f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-9a5b7506bf8f95eb61b8ed512e223511.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-dark-ff57422db6c4207c9319844177b5b1b7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/bootstrap/bootstrap-d1a3c7ef0f27de390c984bb61a93f1f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -390,7 +390,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#k-12-nces-enrollment-by-district" id="toc-k-12-nces-enrollment-by-district" class="nav-link" data-scroll-target="#k-12-nces-enrollment-by-district">2. K-12 — NCES enrollment by district</a></li>
   <li><a href="#k-12-nces-private-school-enrollment-by-district" id="toc-k-12-nces-private-school-enrollment-by-district" class="nav-link" data-scroll-target="#k-12-nces-private-school-enrollment-by-district">3. K-12 — NCES private-school enrollment by district</a></li>
   <li><a href="#colleges-ushe-enrollment-by-county" id="toc-colleges-ushe-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ushe-enrollment-by-county">4. Colleges — USHE enrollment by county</a></li>
-  <li><a href="#colleges-ncesipeds-enrollment-by-county" id="toc-colleges-ncesipeds-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</a></li>
+  <li><a href="#colleges-ncesipeds-enrollment-by-county" id="toc-colleges-ncesipeds-enrollment-by-county" class="nav-link" data-scroll-target="#colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</a>
+  <ul class="collapse">
+  <li><a href="#ipeds-full-time-and-part-time-main-file" id="toc-ipeds-full-time-and-part-time-main-file" class="nav-link" data-scroll-target="#ipeds-full-time-and-part-time-main-file">IPEDS full-time and part-time (main file)</a></li>
+  </ul></li>
   <li><a href="#assemble-enrollment-tables" id="toc-assemble-enrollment-tables" class="nav-link" data-scroll-target="#assemble-enrollment-tables">6. Assemble enrollment tables</a>
   <ul class="collapse">
   <li><a href="#school-enrollment-by-school-districts" id="toc-school-enrollment-by-school-districts" class="nav-link" data-scroll-target="#school-enrollment-by-school-districts">School Enrollment by School Districts</a></li>
@@ -454,7 +457,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="ff48f274" class="cell" data-execution_count="1">
+<div id="e252143d" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -485,7 +488,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-utah-doe-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-utah-doe-enrollment-by-district">1. K-12 — Utah DOE enrollment by district</h2>
-<div id="24e4324a" class="cell" data-execution_count="2">
+<div id="47a33e2a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public schools only</span></span>
@@ -622,7 +625,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="94339eea" class="cell" data-execution_count="3">
+<div id="09fbf59c" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public DOE schools that did not get a district from the school crosswalk</span></span>
@@ -703,7 +706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="8dd67fb8" class="cell" data-execution_count="4">
+<div id="4a9982a5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Online school enrollment (reported separately; not included in the district totals above)</span></span>
@@ -724,7 +727,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-nces-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-nces-enrollment-by-district">2. K-12 — NCES enrollment by district</h2>
-<div id="f6593d27" class="cell" data-execution_count="5">
+<div id="da718912" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matches constants["data_year"] -- the vintage pulled in 1_geography.qmd</span></span>
@@ -848,7 +851,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-nces-private-school-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-nces-private-school-enrollment-by-district">3. K-12 — NCES private-school enrollment by district</h2>
-<div id="ecbfb2e3" class="cell" data-execution_count="6">
+<div id="b590970d" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Private School Universe Survey (PSS)</span></span>
@@ -872,7 +875,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>).query(<span class="st">"PSTABB == 'UT'"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="f14c1870" class="cell" data-execution_count="7">
+<div id="7e429403" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>crosswalk_private <span class="op">=</span> school_crosswalk[school_crosswalk[<span class="st">"Source"</span>] <span class="op">==</span> <span class="st">"NCES private"</span>]</span>
@@ -977,7 +980,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colleges-ushe-enrollment-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="colleges-ushe-enrollment-by-county">4. Colleges — USHE enrollment by county</h2>
-<div id="7b5e4e8b" class="cell" data-execution_count="8">
+<div id="1dfefc20" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic Year 2020 (Term 2)</span></span>
@@ -989,7 +992,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ushe_2025_fall <span class="op">=</span> ushe.query(<span class="st">"`Academic Year` == 2025 and Term == 2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="fd08828c" class="cell" data-execution_count="9">
+<div id="9fcfaca2" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scoped to WFRC region institutions/sites only (constants["counties"] in 1_geography.qmd) --</span></span>
@@ -1087,7 +1090,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colleges-ncesipeds-enrollment-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</h2>
-<div id="eb87cbf0" class="cell" data-execution_count="10">
+<div id="070977ee" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS Fall Enrollment distance-education component (EF{year}A_DIST). In-person enrollment is</span></span>
@@ -1110,58 +1113,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>ipeds_dist <span class="op">=</span> pd.read_csv(zip_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="30084559" class="cell" data-execution_count="11">
+<div id="f1dba25c" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EFDELEV == 1 is the grand-total row for each institution (the other levels are breakdowns)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ipeds_in_person <span class="op">=</span> ipeds_dist.query(<span class="st">"EFDELEV == 1"</span>).assign(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    in_person<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"EFDENON"</span>].fillna(<span class="dv">0</span>) <span class="op">+</span> df[<span class="st">"EFDESOM"</span>].fillna(<span class="dv">0</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)[[<span class="st">"UNITID"</span>, <span class="st">"in_person"</span>]]</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># The seven target colleges from the WF-TDM college repo (6-CollegeControlTotals.qmd), each assigned</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># to its county. The other institutions in the crosswalk are left out to match that snapshot.</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>target_county <span class="op">=</span> {</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230764</span>: <span class="st">"035"</span>,  <span class="co"># University of Utah (Salt Lake)</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230746</span>: <span class="st">"035"</span>,  <span class="co"># Salt Lake Community College (all five campuses are in Salt Lake County)</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230418</span>: <span class="st">"035"</span>,  <span class="co"># Ensign College</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230807</span>: <span class="st">"035"</span>,  <span class="co"># Westminster University</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230038</span>: <span class="st">"049"</span>,  <span class="co"># Brigham Young University (Utah County)</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230737</span>: <span class="st">"049"</span>,  <span class="co"># Utah Valley University (Utah County)</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230782</span>: <span class="st">"057"</span>,  <span class="co"># Weber State University (Main campus, Weber County)</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>ipeds_targets <span class="op">=</span> ipeds_in_person[ipeds_in_person[<span class="st">"UNITID"</span>].isin(target_county)].assign(</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    COUNTYFP<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].<span class="bu">map</span>(target_county)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Weber State's Davis campus is counted in Davis County, using its share of USHE headcount among</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># the two WSU campuses in the repo's split (Main campus and WSU - Davis Center)</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>wsu_sites <span class="op">=</span> ushe_2025_fall[</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    (ushe_2025_fall[<span class="st">"Institution"</span>] <span class="op">==</span> <span class="st">"Weber State University"</span>)</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span> ushe_2025_fall[<span class="st">"Site"</span>].isin([<span class="st">"Main Campus"</span>, <span class="st">"WSU - Davis Center"</span>])</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>].groupby(<span class="st">"Site"</span>)[<span class="st">"Headcount"</span>].<span class="bu">sum</span>()</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>wsu_davis_share <span class="op">=</span> wsu_sites[<span class="st">"WSU - Davis Center"</span>] <span class="op">/</span> wsu_sites.<span class="bu">sum</span>()</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>wsu_total <span class="op">=</span> ipeds_targets.loc[ipeds_targets[<span class="st">"UNITID"</span>] <span class="op">==</span> <span class="dv">230782</span>, <span class="st">"in_person"</span>].item()</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>wsu_davis_students <span class="op">=</span> <span class="bu">round</span>(wsu_total <span class="op">*</span> wsu_davis_share)</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>ipeds_targets.loc[ipeds_targets[<span class="st">"UNITID"</span>] <span class="op">==</span> <span class="dv">230782</span>, <span class="st">"in_person"</span>] <span class="op">=</span> wsu_total <span class="op">-</span> wsu_davis_students</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>ipeds_targets <span class="op">=</span> pd.concat(</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>        ipeds_targets,</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        pd.DataFrame({<span class="st">"UNITID"</span>: [<span class="dv">230782</span>], <span class="st">"in_person"</span>: [wsu_davis_students], <span class="st">"COUNTYFP"</span>: [<span class="st">"011"</span>]}),</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    ignore_index<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county <span class="op">=</span> (</span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    ipeds_targets.groupby(<span class="st">"COUNTYFP"</span>)[<span class="st">"in_person"</span>]</span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"nces_enrollment"</span>)</span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS institutional control (public, private not-for-profit, private for-profit) from the IPEDS</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># directory file (HD). Downloaded if missing, and the code labels are checked against its dictionary.</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>hd_year <span class="op">=</span> constants[<span class="st">"data_year"</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>hd_zip <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"HD</span><span class="sc">{</span>hd_year<span class="sc">}</span><span class="ss">.zip"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>hd_dict_zip <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"HD</span><span class="sc">{</span>hd_year<span class="sc">}</span><span class="ss">_Dict.zip"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> url, path <span class="kw">in</span> [</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    (<span class="ss">f"https://nces.ed.gov/ipeds/datacenter/data/HD</span><span class="sc">{</span>hd_year<span class="sc">}</span><span class="ss">.zip"</span>, hd_zip),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    (<span class="ss">f"https://nces.ed.gov/ipeds/datacenter/data/HD</span><span class="sc">{</span>hd_year<span class="sc">}</span><span class="ss">_Dict.zip"</span>, hd_dict_zip),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>]:</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> path.exists():</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.get(url)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        response.raise_for_status()</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        path.write_bytes(response.content)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(hd_dict_zip) <span class="im">as</span> z:</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    hd_dict_name <span class="op">=</span> <span class="bu">next</span>(n <span class="cf">for</span> n <span class="kw">in</span> z.namelist() <span class="cf">if</span> n.lower().endswith(<span class="st">".xlsx"</span>))</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    hd_frequencies <span class="op">=</span> pd.read_excel(z.<span class="bu">open</span>(hd_dict_name), sheet_name<span class="op">=</span><span class="st">"Frequencies"</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>control_rows <span class="op">=</span> hd_frequencies[hd_frequencies[<span class="st">"VarName"</span>] <span class="op">==</span> <span class="st">"CONTROL"</span>]</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># The dictionary stores codes as text, so convert them to the integers used in the directory file</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>control_labels <span class="op">=</span> {<span class="bu">int</span>(code): label <span class="cf">for</span> code, label <span class="kw">in</span> <span class="bu">zip</span>(control_rows[<span class="st">"CodeValue"</span>], control_rows[<span class="st">"ValueLabel"</span>])}</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> control_labels.get(<span class="dv">1</span>) <span class="op">==</span> <span class="st">"Public"</span>, <span class="st">"IPEDS CONTROL code 1 is no longer Public"</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> control_labels.get(<span class="dv">2</span>) <span class="op">==</span> <span class="st">"Private not-for-profit"</span>, <span class="st">"IPEDS CONTROL code 2 changed"</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> control_labels.get(<span class="dv">3</span>) <span class="op">==</span> <span class="st">"Private for-profit"</span>, <span class="st">"IPEDS CONTROL code 3 changed"</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(hd_zip) <span class="im">as</span> z:</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    hd_directory <span class="op">=</span> pd.read_csv(z.<span class="bu">open</span>(z.namelist()[<span class="dv">0</span>]), usecols<span class="op">=</span>[<span class="st">"UNITID"</span>, <span class="st">"CONTROL"</span>], low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>college_control <span class="op">=</span> (</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    hd_directory.assign(Control<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"CONTROL"</span>].<span class="bu">map</span>(control_labels).fillna(<span class="st">"Not available"</span>))</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    .loc[:, [<span class="st">"UNITID"</span>, <span class="st">"Control"</span>]]</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
+</div>
+<div id="2ed0b112" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every institution in the study counties that IPEDS covers, using campus-based enrollment: in-person</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plus hybrid (EFDENON + EFDESOM). Exclusively online students (EFDEEXC) are left out, since they don't</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># attend a campus in the county. EFDELEV 2 is undergraduate and 12 is graduate (the subtotals add up).</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>ipeds_levels <span class="op">=</span> {<span class="dv">2</span>: <span class="st">"Undergraduate"</span>, <span class="dv">12</span>: <span class="st">"Graduate"</span>}</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>nces_college_locations <span class="op">=</span> gpd.read_file(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    paths[<span class="st">"raw"</span>] <span class="op">/</span> <span class="st">"geometry"</span> <span class="op">/</span> <span class="st">"nces_college.gpkg"</span>, ignore_geometry<span class="op">=</span><span class="va">True</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>in_study_counties <span class="op">=</span> nces_college_locations[<span class="st">"county_fips"</span>].isin(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"003"</span>, <span class="st">"011"</span>, <span class="st">"035"</span>, <span class="st">"049"</span>, <span class="st">"057"</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>college_county <span class="op">=</span> (</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    nces_college_locations.loc[in_study_counties, [<span class="st">"UNITID"</span>, <span class="st">"county_fips"</span>]]</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    .dropna(subset<span class="op">=</span>[<span class="st">"UNITID"</span>])</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    .assign(UNITID<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].astype(<span class="bu">int</span>))</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"county_fips"</span>: <span class="st">"COUNTYFP"</span>})</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>campus <span class="op">=</span> ipeds_dist[ipeds_dist[<span class="st">"EFDELEV"</span>].isin(ipeds_levels)].copy()</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>campus[[<span class="st">"EFDENON"</span>, <span class="st">"EFDESOM"</span>]] <span class="op">=</span> campus[[<span class="st">"EFDENON"</span>, <span class="st">"EFDESOM"</span>]].<span class="bu">apply</span>(pd.to_numeric, errors<span class="op">=</span><span class="st">"coerce"</span>).fillna(<span class="dv">0</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>campus[<span class="st">"Level"</span>] <span class="op">=</span> campus[<span class="st">"EFDELEV"</span>].<span class="bu">map</span>(ipeds_levels)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>campus[<span class="st">"campus_based"</span>] <span class="op">=</span> campus[<span class="st">"EFDENON"</span>] <span class="op">+</span> campus[<span class="st">"EFDESOM"</span>]</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>campus <span class="op">=</span> (</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    campus[[<span class="st">"UNITID"</span>, <span class="st">"Level"</span>, <span class="st">"campus_based"</span>]]</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    .merge(college_county, on<span class="op">=</span><span class="st">"UNITID"</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    .merge(college_control, on<span class="op">=</span><span class="st">"UNITID"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    .assign(Control<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"Control"</span>].fillna(<span class="st">"Not available"</span>))</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Weber State's Davis campus is counted in Davis County, using its share of USHE headcount among</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co"># the two WSU campuses (Main campus and WSU - Davis Center). The Davis Center is not a separate IPEDS record.</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>wsu_sites <span class="op">=</span> ushe_2025_fall[</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    (ushe_2025_fall[<span class="st">"Institution"</span>] <span class="op">==</span> <span class="st">"Weber State University"</span>)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span> ushe_2025_fall[<span class="st">"Site"</span>].isin([<span class="st">"Main Campus"</span>, <span class="st">"WSU - Davis Center"</span>])</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>].groupby(<span class="st">"Site"</span>)[<span class="st">"Headcount"</span>].<span class="bu">sum</span>()</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>wsu_davis_share <span class="op">=</span> wsu_sites[<span class="st">"WSU - Davis Center"</span>] <span class="op">/</span> wsu_sites.<span class="bu">sum</span>()</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>wsu <span class="op">=</span> campus[<span class="st">"UNITID"</span>].eq(<span class="dv">230782</span>)</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>wsu_davis <span class="op">=</span> campus[wsu].assign(COUNTYFP<span class="op">=</span><span class="st">"011"</span>, campus_based<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"campus_based"</span>] <span class="op">*</span> wsu_davis_share)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>campus.loc[wsu, <span class="st">"campus_based"</span>] <span class="op">=</span> campus.loc[wsu, <span class="st">"campus_based"</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> wsu_davis_share)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>campus <span class="op">=</span> pd.concat([campus, wsu_davis], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>ipeds_by_county_level <span class="op">=</span> (</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    campus.groupby([<span class="st">"COUNTYFP"</span>, <span class="st">"Level"</span>, <span class="st">"Control"</span>])[<span class="st">"campus_based"</span>]</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">round</span>()</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>    .rename(<span class="st">"nces_enrollment"</span>)</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>ipeds_by_county_level.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_college_by_county_level.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>ipeds_enrollment_by_county <span class="op">=</span> (</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>    ipeds_by_county_level.groupby(<span class="st">"COUNTYFP"</span>)[<span class="st">"nces_enrollment"</span>].<span class="bu">sum</span>().reset_index()</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>ipeds_by_county_level</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 
 
@@ -1170,6 +1216,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">COUNTYFP</th>
+<th data-quarto-table-cell-role="th">Level</th>
+<th data-quarto-table-cell-role="th">Control</th>
 <th data-quarto-table-cell-role="th">nces_enrollment</th>
 </tr>
 </thead>
@@ -1177,22 +1225,128 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>011</td>
-<td>4308.0</td>
+<td>Graduate</td>
+<td>Public</td>
+<td>115.0</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>035</td>
-<td>57601.0</td>
+<td>011</td>
+<td>Undergraduate</td>
+<td>Private for-profit</td>
+<td>422.0</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>049</td>
-<td>72628.0</td>
+<td>011</td>
+<td>Undergraduate</td>
+<td>Public</td>
+<td>8051.0</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
+<td>035</td>
+<td>Graduate</td>
+<td>Private for-profit</td>
+<td>74.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>035</td>
+<td>Graduate</td>
+<td>Private not-for-profit</td>
+<td>310.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>035</td>
+<td>Graduate</td>
+<td>Public</td>
+<td>7869.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>035</td>
+<td>Undergraduate</td>
+<td>Private for-profit</td>
+<td>5096.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>035</td>
+<td>Undergraduate</td>
+<td>Private not-for-profit</td>
+<td>2561.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>035</td>
+<td>Undergraduate</td>
+<td>Public</td>
+<td>46861.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>049</td>
+<td>Graduate</td>
+<td>Private for-profit</td>
+<td>1071.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>049</td>
+<td>Graduate</td>
+<td>Private not-for-profit</td>
+<td>2767.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>049</td>
+<td>Graduate</td>
+<td>Public</td>
+<td>706.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>049</td>
+<td>Undergraduate</td>
+<td>Private for-profit</td>
+<td>1642.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>049</td>
+<td>Undergraduate</td>
+<td>Private not-for-profit</td>
+<td>31508.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14</th>
+<td>049</td>
+<td>Undergraduate</td>
+<td>Public</td>
+<td>41405.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">15</th>
 <td>057</td>
-<td>21467.0</td>
+<td>Graduate</td>
+<td>Public</td>
+<td>574.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16</th>
+<td>057</td>
+<td>Undergraduate</td>
+<td>Private for-profit</td>
+<td>58.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">17</th>
+<td>057</td>
+<td>Undergraduate</td>
+<td>Public</td>
+<td>23925.0</td>
 </tr>
 </tbody>
 </table>
@@ -1200,38 +1354,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<section id="ipeds-full-time-and-part-time-main-file" class="level3">
+<h3 class="anchored" data-anchor-id="ipeds-full-time-and-part-time-main-file">IPEDS full-time and part-time (main file)</h3>
+<div id="82f052ad" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS Fall Enrollment main file (enrollment by level and full- or part-time status) and its data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dictionary. Downloaded if missing, the same way as the distance-education file above.</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>ef_year <span class="op">=</span> constants[<span class="st">"data_year"</span>]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ef_main_zip <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"EF</span><span class="sc">{</span>ef_year<span class="sc">}</span><span class="ss">A.zip"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ef_dict_zip <span class="op">=</span> ipeds_dir <span class="op">/</span> <span class="ss">f"EF</span><span class="sc">{</span>ef_year<span class="sc">}</span><span class="ss">A_Dict.zip"</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> url, path <span class="kw">in</span> [</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    (<span class="ss">f"https://nces.ed.gov/ipeds/datacenter/data/EF</span><span class="sc">{</span>ef_year<span class="sc">}</span><span class="ss">A.zip"</span>, ef_main_zip),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    (<span class="ss">f"https://nces.ed.gov/ipeds/datacenter/data/EF</span><span class="sc">{</span>ef_year<span class="sc">}</span><span class="ss">A_Dict.zip"</span>, ef_dict_zip),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>]:</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> path.exists():</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.get(url)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        response.raise_for_status()</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        path.write_bytes(response.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="327ba7a9" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The codes used below, checked against the IPEDS dictionary, so a change in IPEDS fails here</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ef_codes <span class="op">=</span> {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: <span class="st">"All students total"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: <span class="st">"All students, Undergraduate total"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">12</span>: <span class="st">"All students, Graduate"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">21</span>: <span class="st">"Full-time students total"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">22</span>: <span class="st">"Full-time students, Undergraduate total"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">32</span>: <span class="st">"Full-time students, Graduate"</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="dv">41</span>: <span class="st">"Part-time students total"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">42</span>: <span class="st">"Part-time students, Undergraduate total"</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="dv">52</span>: <span class="st">"Part-time students, Graduate"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(ef_dict_zip) <span class="im">as</span> z:</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    dict_name <span class="op">=</span> <span class="bu">next</span>(n <span class="cf">for</span> n <span class="kw">in</span> z.namelist() <span class="cf">if</span> n.lower().endswith(<span class="st">".xlsx"</span>))</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    frequencies <span class="op">=</span> pd.read_excel(z.<span class="bu">open</span>(dict_name), sheet_name<span class="op">=</span><span class="st">"Frequencies"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>dict_labels <span class="op">=</span> frequencies[frequencies[<span class="st">"varname"</span>] <span class="op">==</span> <span class="st">"EFALEVEL"</span>].set_index(<span class="st">"codevalue"</span>)[<span class="st">"valuelabel"</span>]</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> code, label <span class="kw">in</span> ef_codes.items():</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> dict_labels.get(code) <span class="op">==</span> label, <span class="ss">f"EFALEVEL </span><span class="sc">{</span>code<span class="sc">}</span><span class="ss"> is '</span><span class="sc">{</span>dict_labels<span class="sc">.</span>get(code)<span class="sc">}</span><span class="ss">', expected '</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">'"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="e46d169d" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(ef_main_zip) <span class="im">as</span> z:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    ef_main <span class="op">=</span> pd.read_csv(z.<span class="bu">open</span>(z.namelist()[<span class="dv">0</span>]), usecols<span class="op">=</span>[<span class="st">"UNITID"</span>, <span class="st">"EFALEVEL"</span>, <span class="st">"EFTOTLT"</span>], low_memory<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ef_main[<span class="st">"EFTOTLT"</span>] <span class="op">=</span> pd.to_numeric(ef_main[<span class="st">"EFTOTLT"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>ef_wide <span class="op">=</span> ef_main.pivot_table(index<span class="op">=</span><span class="st">"UNITID"</span>, columns<span class="op">=</span><span class="st">"EFALEVEL"</span>, values<span class="op">=</span><span class="st">"EFTOTLT"</span>, aggfunc<span class="op">=</span><span class="st">"sum"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Subtotals must add up for every institution that reports all the codes (they do, as of the 2023 file)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>ef_complete <span class="op">=</span> ef_wide[<span class="bu">list</span>(ef_codes)].dropna()</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (ef_complete[<span class="dv">1</span>] <span class="op">==</span> ef_complete[<span class="dv">21</span>] <span class="op">+</span> ef_complete[<span class="dv">41</span>]).<span class="bu">all</span>(), <span class="st">"total is not full-time + part-time"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (ef_complete[<span class="dv">21</span>] <span class="op">==</span> ef_complete[<span class="dv">22</span>] <span class="op">+</span> ef_complete[<span class="dv">32</span>]).<span class="bu">all</span>(), <span class="st">"full-time is not undergrad + grad"</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (ef_complete[<span class="dv">41</span>] <span class="op">==</span> ef_complete[<span class="dv">42</span>] <span class="op">+</span> ef_complete[<span class="dv">52</span>]).<span class="bu">all</span>(), <span class="st">"part-time is not undergrad + grad"</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (ef_complete[<span class="dv">12</span>] <span class="op">==</span> ef_complete[<span class="dv">32</span>] <span class="op">+</span> ef_complete[<span class="dv">52</span>]).<span class="bu">all</span>(), <span class="st">"grad is not full-time + part-time"</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>ipeds_fulltime_parttime <span class="op">=</span> ef_wide[<span class="bu">list</span>(ef_codes)].rename(columns<span class="op">=</span>ef_codes).rename_axis(<span class="st">"UNITID"</span>).reset_index()</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>ipeds_fulltime_parttime.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"ipeds_fulltime_parttime.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"institutions with full-time and part-time detail: </span><span class="sc">{</span><span class="bu">len</span>(ef_complete)<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(ef_wide)<span class="sc">:,}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>institutions with full-time and part-time detail: 1,583 of 5,913</code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="assemble-enrollment-tables" class="level2">
 <h2 class="anchored" data-anchor-id="assemble-enrollment-tables">6. Assemble enrollment tables</h2>
 <section id="school-enrollment-by-school-districts" class="level3">
 <h3 class="anchored" data-anchor-id="school-enrollment-by-school-districts">School Enrollment by School Districts</h3>
-<div id="5fde8279" class="cell" data-execution_count="12">
+<div id="aaa80e1b" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Canonical district list -- every district the school crosswalk covers (school points and MAZ rows),</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regardless of whether a given source has a school in it (left-merging onto this keeps a real data</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gap visible as NaN instead of silently dropping the row via an inner join)</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>district_list <span class="op">=</span> school_crosswalk[[<span class="st">"District Name"</span>]].dropna().drop_duplicates()</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>school_enrollment <span class="op">=</span> (</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    district_list.merge(doe_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    .merge(nces_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    .merge(nces_private_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># No private schools in a district is a real zero, not a gap</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>school_enrollment[<span class="st">"nces_private_enrollment"</span>] <span class="op">=</span> school_enrollment[<span class="st">"nces_private_enrollment"</span>].fillna(</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Canonical district list -- every district the school crosswalk covers (school points and MAZ rows),</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regardless of whether a given source has a school in it (left-merging onto this keeps a real data</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gap visible as NaN instead of silently dropping the row via an inner join)</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>district_list <span class="op">=</span> school_crosswalk[[<span class="st">"District Name"</span>]].dropna().drop_duplicates()</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Public enrollment only. Private school enrollment (NCES PSS) stays in section 3 and is not part of</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the district table used for validation.</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>school_enrollment <span class="op">=</span> (</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    district_list.merge(doe_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    .merge(nces_enrollment_by_district, on<span class="op">=</span><span class="st">"District Name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="1b0d9b9b" class="cell" data-execution_count="13">
+<div id="b936abcf" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># an actual join problem (e.g. a school missing from the crosswalk), not an expected gap</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>school_enrollment[school_enrollment[[<span class="st">"doe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># an actual join problem (e.g. a school missing from the crosswalk), not an expected gap</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>school_enrollment[school_enrollment[[<span class="st">"doe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -1242,7 +1462,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">District Name</th>
 <th data-quarto-table-cell-role="th">doe_enrollment</th>
 <th data-quarto-table-cell-role="th">nces_enrollment</th>
-<th data-quarto-table-cell-role="th">nces_private_enrollment</th>
 </tr>
 </thead>
 <tbody>
@@ -1252,13 +1471,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p><em>K-12 and preschool enrollment by school district: Utah DOE (UGRC school counts, K-12 plus preschool), NCES public (CCD, K-12 plus PK) and NCES private (PSS). Blank cells are gaps in the source, not zeros.</em></p>
+<p><em>K-12 and preschool enrollment by school district, public schools only: Utah DOE (UGRC school counts, K-12 plus preschool) and NCES public (CCD, K-12 plus PK). Blank cells are gaps in the source, not zeros.</em></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" data-startfrom="391" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 390;"><span id="cb17-391"><a href="#cb17-391" aria-hidden="true" tabindex="-1"></a>districts_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb17-392"><a href="#cb17-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-393"><a href="#cb17-393" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(districts_table<span class="op">,</span> {<span class="dt">rows</span><span class="op">:</span> <span class="dv">25</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" data-startfrom="488" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 487;"><span id="cb22-488"><a href="#cb22-488" aria-hidden="true" tabindex="-1"></a>districts_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb22-489"><a href="#cb22-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-490"><a href="#cb22-490" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(districts_table<span class="op">,</span> {<span class="dt">rows</span><span class="op">:</span> <span class="dv">25</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -1278,71 +1497,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="school-enrollment-by-level" class="level3">
 <h3 class="anchored" data-anchor-id="school-enrollment-by-level">School Enrollment by Level</h3>
-<div id="d7f6c766" class="cell" data-execution_count="14">
+<div id="ef530810" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enrollment by school level, summed from the grade columns each level covers. A school's own label</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># can't split its students by level, since one school can serve several levels.</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Each level maps to its DOE columns and its NCES columns.</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>school_levels <span class="op">=</span> {</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pre-K"</span>: ([<span class="st">"preschool"</span>], [<span class="st">"PK"</span>]),</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"K"</span>: ([<span class="st">"k"</span>], [<span class="st">"KG"</span>]),</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Elementary"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)]),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Middle"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>, <span class="dv">9</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>, <span class="dv">9</span>)]),</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"High"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">13</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">13</span>)]),</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>doe_by_level <span class="op">=</span> (</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    doe_schools.assign(</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>{level: doe_schools[doe_cols].fillna(<span class="dv">0</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="cf">for</span> level, (doe_cols, _) <span class="kw">in</span> school_levels.items()}</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="bu">list</span>(school_levels)]</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co"># NCES negative codes (-2, grade not offered) count as zero, same as the K-12 totals above</span></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>nces_levels <span class="op">=</span> nces_public_school[[<span class="st">"NCESSCH"</span>]].assign(</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>{</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>        level: nces_public_school[nces_cols].clip(lower<span class="op">=</span><span class="dv">0</span>).fillna(<span class="dv">0</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> level, (_, nces_cols) <span class="kw">in</span> school_levels.items()</span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>nces_by_level <span class="op">=</span> (</span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    nces_levels.drop_duplicates()</span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    .assign(NCESSCH<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"NCESSCH"</span>].astype(<span class="bu">str</span>))</span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    .merge(nces_crosswalk[[<span class="st">"ID"</span>, <span class="st">"District Name"</span>]], left_on<span class="op">=</span><span class="st">"NCESSCH"</span>, right_on<span class="op">=</span><span class="st">"ID"</span>)</span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="bu">list</span>(school_levels)]</span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>real_by_level <span class="op">=</span> (</span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    doe_by_level.reset_index()</span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    .melt(id_vars<span class="op">=</span><span class="st">"District Name"</span>, var_name<span class="op">=</span><span class="st">"Level"</span>, value_name<span class="op">=</span><span class="st">"doe_enrollment"</span>)</span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    .merge(</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>        nces_by_level.reset_index().melt(</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>            id_vars<span class="op">=</span><span class="st">"District Name"</span>, var_name<span class="op">=</span><span class="st">"Level"</span>, value_name<span class="op">=</span><span class="st">"nces_enrollment"</span></span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>        on<span class="op">=</span>[<span class="st">"District Name"</span>, <span class="st">"Level"</span>],</span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"outer"</span>,</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a><span class="co"># The levels must add back up to the district totals computed above</span></span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>doe_gap <span class="op">=</span> (</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    real_by_level.groupby(<span class="st">"District Name"</span>)[<span class="st">"doe_enrollment"</span>].<span class="bu">sum</span>()</span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> doe_enrollment_by_district.set_index(<span class="st">"District Name"</span>)[<span class="st">"doe_enrollment"</span>]</span>
-<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>nces_gap <span class="op">=</span> (</span>
-<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    real_by_level.groupby(<span class="st">"District Name"</span>)[<span class="st">"nces_enrollment"</span>].<span class="bu">sum</span>()</span>
-<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> nces_enrollment_by_district.set_index(<span class="st">"District Name"</span>)[<span class="st">"nces_enrollment"</span>]</span>
-<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> doe_gap.<span class="bu">abs</span>().<span class="bu">max</span>() <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="st">"DOE levels do not add up to district totals"</span></span>
-<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> nces_gap.<span class="bu">abs</span>().<span class="bu">max</span>() <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="st">"NCES levels do not add up to district totals"</span></span>
-<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>real_by_level.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_by_district_level.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>real_by_level</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enrollment by school level, summed from the grade columns each level covers. A school's own label</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># can't split its students by level, since one school can serve several levels.</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Each level maps to its DOE columns and its NCES columns.</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>school_levels <span class="op">=</span> {</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pre-K"</span>: ([<span class="st">"preschool"</span>], [<span class="st">"PK"</span>]),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"K"</span>: ([<span class="st">"k"</span>], [<span class="st">"KG"</span>]),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Elementary"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>)]),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Middle"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>, <span class="dv">9</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>, <span class="dv">9</span>)]),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"High"</span>: ([<span class="ss">f"grade</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">13</span>)], [<span class="ss">f"G</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">13</span>)]),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>doe_by_level <span class="op">=</span> (</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    doe_schools.assign(</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>{level: doe_schools[doe_cols].fillna(<span class="dv">0</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="cf">for</span> level, (doe_cols, _) <span class="kw">in</span> school_levels.items()}</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="bu">list</span>(school_levels)]</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># NCES negative codes (-2, grade not offered) count as zero, same as the K-12 totals above</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>nces_levels <span class="op">=</span> nces_public_school[[<span class="st">"NCESSCH"</span>]].assign(</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>{</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        level: nces_public_school[nces_cols].clip(lower<span class="op">=</span><span class="dv">0</span>).fillna(<span class="dv">0</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> level, (_, nces_cols) <span class="kw">in</span> school_levels.items()</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>nces_by_level <span class="op">=</span> (</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>    nces_levels.drop_duplicates()</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    .assign(NCESSCH<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"NCESSCH"</span>].astype(<span class="bu">str</span>))</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>    .merge(nces_crosswalk[[<span class="st">"ID"</span>, <span class="st">"District Name"</span>]], left_on<span class="op">=</span><span class="st">"NCESSCH"</span>, right_on<span class="op">=</span><span class="st">"ID"</span>)</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"District Name"</span>)[<span class="bu">list</span>(school_levels)]</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>real_by_level <span class="op">=</span> (</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    doe_by_level.reset_index()</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    .melt(id_vars<span class="op">=</span><span class="st">"District Name"</span>, var_name<span class="op">=</span><span class="st">"Level"</span>, value_name<span class="op">=</span><span class="st">"doe_enrollment"</span>)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>    .merge(</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>        nces_by_level.reset_index().melt(</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>            id_vars<span class="op">=</span><span class="st">"District Name"</span>, var_name<span class="op">=</span><span class="st">"Level"</span>, value_name<span class="op">=</span><span class="st">"nces_enrollment"</span></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>        on<span class="op">=</span>[<span class="st">"District Name"</span>, <span class="st">"Level"</span>],</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>        how<span class="op">=</span><span class="st">"outer"</span>,</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a><span class="co"># The levels must add back up to the district totals computed above</span></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>doe_gap <span class="op">=</span> (</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    real_by_level.groupby(<span class="st">"District Name"</span>)[<span class="st">"doe_enrollment"</span>].<span class="bu">sum</span>()</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> doe_enrollment_by_district.set_index(<span class="st">"District Name"</span>)[<span class="st">"doe_enrollment"</span>]</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>nces_gap <span class="op">=</span> (</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>    real_by_level.groupby(<span class="st">"District Name"</span>)[<span class="st">"nces_enrollment"</span>].<span class="bu">sum</span>()</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> nces_enrollment_by_district.set_index(<span class="st">"District Name"</span>)[<span class="st">"nces_enrollment"</span>]</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> doe_gap.<span class="bu">abs</span>().<span class="bu">max</span>() <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="st">"DOE levels do not add up to district totals"</span></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> nces_gap.<span class="bu">abs</span>().<span class="bu">max</span>() <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="st">"NCES levels do not add up to district totals"</span></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>real_by_level.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_by_district_level.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>real_by_level</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
 
@@ -1786,23 +2005,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="college-enrollment-by-counties" class="level3">
 <h3 class="anchored" data-anchor-id="college-enrollment-by-counties">College Enrollment by Counties</h3>
-<div id="be29b918" class="cell" data-execution_count="15">
+<div id="bf787b9c" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>county_list <span class="op">=</span> college_crosswalk[[<span class="st">"COUNTYFP"</span>]].dropna().drop_duplicates()</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>college_enrollment <span class="op">=</span> county_list.merge(</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    ushe_enrollment_by_county.rename(columns<span class="op">=</span>{<span class="st">"county_fips"</span>: <span class="st">"COUNTYFP"</span>}), on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>).merge(ipeds_enrollment_by_county, on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>county_list <span class="op">=</span> college_crosswalk[[<span class="st">"COUNTYFP"</span>]].dropna().drop_duplicates()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>college_enrollment <span class="op">=</span> county_list.merge(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    ushe_enrollment_by_county.rename(columns<span class="op">=</span>{<span class="st">"county_fips"</span>: <span class="st">"COUNTYFP"</span>}), on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>).merge(ipeds_enrollment_by_county, on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="0231cbb5" class="cell" data-execution_count="16">
+<div id="ec687ec5" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same sanity check, county side</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>college_enrollment[college_enrollment[[<span class="st">"ushe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same sanity check, county side</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>college_enrollment[college_enrollment[[<span class="st">"ushe_enrollment"</span>, <span class="st">"nces_enrollment"</span>]].isna().<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
 
@@ -1832,13 +2051,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21" data-startfrom="480" data-source-offset="-91"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 479;"><span id="cb21-480"><a href="#cb21-480" aria-hidden="true" tabindex="-1"></a>counties_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_county.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">then</span>(rows <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({</span>
-<span id="cb21-481"><a href="#cb21-481" aria-hidden="true" tabindex="-1"></a>  <span class="dt">County</span><span class="op">:</span> ({<span class="dv">3</span><span class="op">:</span> <span class="st">"Box Elder"</span><span class="op">,</span> <span class="dv">11</span><span class="op">:</span> <span class="st">"Davis"</span><span class="op">,</span> <span class="dv">35</span><span class="op">:</span> <span class="st">"Salt Lake"</span><span class="op">,</span> <span class="dv">49</span><span class="op">:</span> <span class="st">"Utah"</span><span class="op">,</span> <span class="dv">57</span><span class="op">:</span> <span class="st">"Weber"</span>})[d<span class="op">.</span><span class="at">COUNTYFP</span>]<span class="op">,</span></span>
-<span id="cb21-482"><a href="#cb21-482" aria-hidden="true" tabindex="-1"></a>  <span class="st">"USHE (AY 2025)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">ushe_enrollment</span><span class="op">,</span></span>
-<span id="cb21-483"><a href="#cb21-483" aria-hidden="true" tabindex="-1"></a>  <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span></span>
-<span id="cb21-484"><a href="#cb21-484" aria-hidden="true" tabindex="-1"></a>})))</span>
-<span id="cb21-485"><a href="#cb21-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-486"><a href="#cb21-486" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(counties_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-startfrom="577" data-source-offset="-91"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 576;"><span id="cb26-577"><a href="#cb26-577" aria-hidden="true" tabindex="-1"></a>counties_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_county.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">then</span>(rows <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({</span>
+<span id="cb26-578"><a href="#cb26-578" aria-hidden="true" tabindex="-1"></a>  <span class="dt">County</span><span class="op">:</span> ({<span class="dv">3</span><span class="op">:</span> <span class="st">"Box Elder"</span><span class="op">,</span> <span class="dv">11</span><span class="op">:</span> <span class="st">"Davis"</span><span class="op">,</span> <span class="dv">35</span><span class="op">:</span> <span class="st">"Salt Lake"</span><span class="op">,</span> <span class="dv">49</span><span class="op">:</span> <span class="st">"Utah"</span><span class="op">,</span> <span class="dv">57</span><span class="op">:</span> <span class="st">"Weber"</span>})[d<span class="op">.</span><span class="at">COUNTYFP</span>]<span class="op">,</span></span>
+<span id="cb26-579"><a href="#cb26-579" aria-hidden="true" tabindex="-1"></a>  <span class="st">"USHE (AY 2025)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">ushe_enrollment</span><span class="op">,</span></span>
+<span id="cb26-580"><a href="#cb26-580" aria-hidden="true" tabindex="-1"></a>  <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span></span>
+<span id="cb26-581"><a href="#cb26-581" aria-hidden="true" tabindex="-1"></a>})))</span>
+<span id="cb26-582"><a href="#cb26-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-583"><a href="#cb26-583" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(counties_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -1855,12 +2074,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="d55fde42" class="cell" data-execution_count="17">
+<div id="6fd431f5" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>paths[<span class="st">"output"</span>].mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>school_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>college_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>paths[<span class="st">"output"</span>].mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>school_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>college_enrollment.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"real_enrollment_by_county.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -1871,40 +2090,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23" data-startfrom="505" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 504;"><span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a>districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb23-506"><a href="#cb23-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-507"><a href="#cb23-507" aria-hidden="true" tabindex="-1"></a>max_district <span class="op">=</span> d3<span class="op">.</span><span class="fu">max</span>(districts<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">doe_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span> d<span class="op">.</span><span class="at">nces_enrollment</span> <span class="op">??</span> <span class="dv">0</span>))</span>
-<span id="cb23-508"><a href="#cb23-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-509"><a href="#cb23-509" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb23-510"><a href="#cb23-510" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
-<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">520</span><span class="op">,</span></span>
-<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb23-514"><a href="#cb23-514" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
-<span id="cb23-515"><a href="#cb23-515" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb23-516"><a href="#cb23-516" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"DOE enrollment (UGRC school counts)"</span>}<span class="op">,</span></span>
-<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"NCES enrollment (CCD)"</span>}<span class="op">,</span></span>
-<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>([[<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>]<span class="op">,</span> [max_district<span class="op">,</span> max_district]]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"#999"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"4 4"</span>})<span class="op">,</span></span>
-<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(districts<span class="op">,</span> {</span>
-<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"doe_enrollment"</span><span class="op">,</span></span>
-<span id="cb23-524"><a href="#cb23-524" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"nces_enrollment"</span><span class="op">,</span></span>
-<span id="cb23-525"><a href="#cb23-525" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span></span>
-<span id="cb23-526"><a href="#cb23-526" aria-hidden="true" tabindex="-1"></a>      <span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
-<span id="cb23-527"><a href="#cb23-527" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
-<span id="cb23-528"><a href="#cb23-528" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
-<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
-<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
-<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`DOE: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`NCES: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
-<span id="cb23-534"><a href="#cb23-534" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb23-535"><a href="#cb23-535" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb23-536"><a href="#cb23-536" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb23-537"><a href="#cb23-537" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-startfrom="602" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 601;"><span id="cb28-602"><a href="#cb28-602" aria-hidden="true" tabindex="-1"></a>districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb28-603"><a href="#cb28-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-604"><a href="#cb28-604" aria-hidden="true" tabindex="-1"></a>max_district <span class="op">=</span> d3<span class="op">.</span><span class="fu">max</span>(districts<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">doe_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span> d<span class="op">.</span><span class="at">nces_enrollment</span> <span class="op">??</span> <span class="dv">0</span>))</span>
+<span id="cb28-605"><a href="#cb28-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-606"><a href="#cb28-606" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb28-607"><a href="#cb28-607" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
+<span id="cb28-608"><a href="#cb28-608" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">520</span><span class="op">,</span></span>
+<span id="cb28-609"><a href="#cb28-609" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb28-610"><a href="#cb28-610" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb28-611"><a href="#cb28-611" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
+<span id="cb28-612"><a href="#cb28-612" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb28-613"><a href="#cb28-613" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb28-614"><a href="#cb28-614" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb28-615"><a href="#cb28-615" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"DOE enrollment (UGRC school counts)"</span>}<span class="op">,</span></span>
+<span id="cb28-616"><a href="#cb28-616" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"NCES enrollment (CCD)"</span>}<span class="op">,</span></span>
+<span id="cb28-617"><a href="#cb28-617" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb28-618"><a href="#cb28-618" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>([[<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>]<span class="op">,</span> [max_district<span class="op">,</span> max_district]]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"#999"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"4 4"</span>})<span class="op">,</span></span>
+<span id="cb28-619"><a href="#cb28-619" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(districts<span class="op">,</span> {</span>
+<span id="cb28-620"><a href="#cb28-620" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"doe_enrollment"</span><span class="op">,</span></span>
+<span id="cb28-621"><a href="#cb28-621" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"nces_enrollment"</span><span class="op">,</span></span>
+<span id="cb28-622"><a href="#cb28-622" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span></span>
+<span id="cb28-623"><a href="#cb28-623" aria-hidden="true" tabindex="-1"></a>      <span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb28-624"><a href="#cb28-624" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
+<span id="cb28-625"><a href="#cb28-625" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
+<span id="cb28-626"><a href="#cb28-626" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb28-627"><a href="#cb28-627" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
+<span id="cb28-628"><a href="#cb28-628" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
+<span id="cb28-629"><a href="#cb28-629" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`DOE: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb28-630"><a href="#cb28-630" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`NCES: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb28-631"><a href="#cb28-631" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb28-632"><a href="#cb28-632" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-633"><a href="#cb28-633" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb28-634"><a href="#cb28-634" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb28-635"><a href="#cb28-635" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-district-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1961,44 +2180,44 @@ Figure&nbsp;1: Public K-12 and preschool enrollment by district: Utah DOE (UGRC 
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" data-startfrom="546" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 545;"><span id="cb24-546"><a href="#cb24-546" aria-hidden="true" tabindex="-1"></a>college_long <span class="op">=</span> counties_table<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
-<span id="cb24-547"><a href="#cb24-547" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"USHE (AY 2025)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"USHE (AY 2025)"</span>]}<span class="op">,</span></span>
-<span id="cb24-548"><a href="#cb24-548" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"IPEDS in-person (fall 2023)"</span>]}</span>
-<span id="cb24-549"><a href="#cb24-549" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb24-550"><a href="#cb24-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-551"><a href="#cb24-551" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb24-552"><a href="#cb24-552" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
-<span id="cb24-553"><a href="#cb24-553" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">420</span><span class="op">,</span></span>
-<span id="cb24-554"><a href="#cb24-554" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb24-555"><a href="#cb24-555" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb24-556"><a href="#cb24-556" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
-<span id="cb24-557"><a href="#cb24-557" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb24-558"><a href="#cb24-558" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb24-559"><a href="#cb24-559" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb24-560"><a href="#cb24-560" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb24-561"><a href="#cb24-561" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb24-562"><a href="#cb24-562" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Headcount"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb24-563"><a href="#cb24-563" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Source"</span>}<span class="op">,</span></span>
-<span id="cb24-564"><a href="#cb24-564" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb24-565"><a href="#cb24-565" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barY</span>(college_long<span class="op">,</span> {</span>
-<span id="cb24-566"><a href="#cb24-566" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="st">"county"</span><span class="op">,</span></span>
-<span id="cb24-567"><a href="#cb24-567" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
-<span id="cb24-568"><a href="#cb24-568" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"headcount"</span><span class="op">,</span></span>
-<span id="cb24-569"><a href="#cb24-569" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
-<span id="cb24-570"><a href="#cb24-570" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">county</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">source</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb24-571"><a href="#cb24-571" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
-<span id="cb24-572"><a href="#cb24-572" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb24-573"><a href="#cb24-573" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
-<span id="cb24-574"><a href="#cb24-574" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
-<span id="cb24-575"><a href="#cb24-575" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fx</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb24-576"><a href="#cb24-576" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb24-577"><a href="#cb24-577" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb24-578"><a href="#cb24-578" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`Headcount: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
-<span id="cb24-579"><a href="#cb24-579" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb24-580"><a href="#cb24-580" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb24-581"><a href="#cb24-581" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb24-582"><a href="#cb24-582" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb24-583"><a href="#cb24-583" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-startfrom="643" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 642;"><span id="cb29-643"><a href="#cb29-643" aria-hidden="true" tabindex="-1"></a>college_long <span class="op">=</span> counties_table<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
+<span id="cb29-644"><a href="#cb29-644" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"USHE (AY 2025)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"USHE (AY 2025)"</span>]}<span class="op">,</span></span>
+<span id="cb29-645"><a href="#cb29-645" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"IPEDS in-person (fall 2023)"</span>]}</span>
+<span id="cb29-646"><a href="#cb29-646" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb29-647"><a href="#cb29-647" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-648"><a href="#cb29-648" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb29-649"><a href="#cb29-649" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
+<span id="cb29-650"><a href="#cb29-650" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">420</span><span class="op">,</span></span>
+<span id="cb29-651"><a href="#cb29-651" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb29-652"><a href="#cb29-652" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb29-653"><a href="#cb29-653" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
+<span id="cb29-654"><a href="#cb29-654" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb29-655"><a href="#cb29-655" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb29-656"><a href="#cb29-656" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb29-657"><a href="#cb29-657" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb29-658"><a href="#cb29-658" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb29-659"><a href="#cb29-659" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Headcount"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb29-660"><a href="#cb29-660" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Source"</span>}<span class="op">,</span></span>
+<span id="cb29-661"><a href="#cb29-661" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb29-662"><a href="#cb29-662" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barY</span>(college_long<span class="op">,</span> {</span>
+<span id="cb29-663"><a href="#cb29-663" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="st">"county"</span><span class="op">,</span></span>
+<span id="cb29-664"><a href="#cb29-664" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb29-665"><a href="#cb29-665" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"headcount"</span><span class="op">,</span></span>
+<span id="cb29-666"><a href="#cb29-666" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb29-667"><a href="#cb29-667" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">county</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">source</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb29-668"><a href="#cb29-668" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
+<span id="cb29-669"><a href="#cb29-669" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb29-670"><a href="#cb29-670" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
+<span id="cb29-671"><a href="#cb29-671" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
+<span id="cb29-672"><a href="#cb29-672" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fx</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-673"><a href="#cb29-673" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-674"><a href="#cb29-674" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-675"><a href="#cb29-675" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`Headcount: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb29-676"><a href="#cb29-676" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb29-677"><a href="#cb29-677" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb29-678"><a href="#cb29-678" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb29-679"><a href="#cb29-679" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb29-680"><a href="#cb29-680" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-county-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2041,69 +2260,69 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 </section>
 <section id="universities-ushe-vs-ipeds-by-modality" class="level2">
 <h2 class="anchored" data-anchor-id="universities-ushe-vs-ipeds-by-modality">8. Universities: USHE vs IPEDS by modality</h2>
-<div id="a1b08fde" class="cell" data-execution_count="18">
+<div id="7d261d60" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>university_names <span class="op">=</span> {</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230764</span>: <span class="st">"University of Utah"</span>,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230746</span>: <span class="st">"Salt Lake Community College"</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230782</span>: <span class="st">"Weber State University"</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230737</span>: <span class="st">"Utah Valley University"</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230038</span>: <span class="st">"Brigham Young University"</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230418</span>: <span class="st">"Ensign College"</span>,</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230807</span>: <span class="st">"Westminster University"</span>,</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>ushe_names <span class="op">=</span> {</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"University Of Utah"</span>: <span class="st">"University of Utah"</span>,</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Salt Lake Community College"</span>: <span class="st">"Salt Lake Community College"</span>,</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weber State University"</span>: <span class="st">"Weber State University"</span>,</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Utah Valley University"</span>: <span class="st">"Utah Valley University"</span>,</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS, fall 2023 (same definitions as section 5)</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>ipeds_long <span class="op">=</span> (</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    ipeds_dist[ipeds_dist[<span class="st">"EFDELEV"</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    .loc[<span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].isin(<span class="bu">list</span>(university_names))]</span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        Institution<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].<span class="bu">map</span>(university_names),</span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>{</span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"In-person only"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDENON"</span>].fillna(<span class="dv">0</span>),</span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Hybrid (some DE)"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDESOM"</span>].fillna(<span class="dv">0</span>),</span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Online only"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDEEXC"</span>].fillna(<span class="dv">0</span>),</span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    .melt(</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>        id_vars<span class="op">=</span>[<span class="st">"Institution"</span>],</span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>        value_vars<span class="op">=</span>[<span class="st">"In-person only"</span>, <span class="st">"Hybrid (some DE)"</span>, <span class="st">"Online only"</span>],</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>        var_name<span class="op">=</span><span class="st">"Segment"</span>,</span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>        value_name<span class="op">=</span><span class="st">"Students"</span>,</span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    .assign(Source<span class="op">=</span><span class="st">"IPEDS"</span>)</span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a><span class="co"># USHE, Academic Year 2025 Term 2 (full- and part-time). The "taught online" rows are the hybrid</span></span>
-<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a><span class="co"># portion; USHE has no online-only category.</span></span>
-<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>ushe_long <span class="op">=</span> (</span>
-<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>    ushe_2025_fall[ushe_2025_fall[<span class="st">"Institution"</span>].isin(<span class="bu">list</span>(ushe_names))]</span>
-<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
-<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>        Institution<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"Institution"</span>].<span class="bu">map</span>(ushe_names),</span>
-<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>        Segment<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"Site"</span>].eq(<span class="st">"This portion of the course is taught online"</span>).<span class="bu">map</span>(</span>
-<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>            {<span class="va">True</span>: <span class="st">"Hybrid (some DE)"</span>, <span class="va">False</span>: <span class="st">"In-person only"</span>}</span>
-<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">"Institution"</span>, <span class="st">"Segment"</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"Headcount"</span>]</span>
-<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
-<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"Headcount"</span>: <span class="st">"Students"</span>})</span>
-<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>    .assign(Source<span class="op">=</span><span class="st">"USHE"</span>)</span>
-<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>modality_compare <span class="op">=</span> pd.concat([ipeds_long, ushe_long], ignore_index<span class="op">=</span><span class="va">True</span>)[</span>
-<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Institution"</span>, <span class="st">"Source"</span>, <span class="st">"Segment"</span>, <span class="st">"Students"</span>]</span>
-<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>modality_compare.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"university_modality_compare.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>modality_compare</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>university_names <span class="op">=</span> {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230764</span>: <span class="st">"University of Utah"</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230746</span>: <span class="st">"Salt Lake Community College"</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230782</span>: <span class="st">"Weber State University"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230737</span>: <span class="st">"Utah Valley University"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230038</span>: <span class="st">"Brigham Young University"</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230418</span>: <span class="st">"Ensign College"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">230807</span>: <span class="st">"Westminster University"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>ushe_names <span class="op">=</span> {</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"University Of Utah"</span>: <span class="st">"University of Utah"</span>,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Salt Lake Community College"</span>: <span class="st">"Salt Lake Community College"</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weber State University"</span>: <span class="st">"Weber State University"</span>,</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Utah Valley University"</span>: <span class="st">"Utah Valley University"</span>,</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS, fall 2023 (same definitions as section 5)</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>ipeds_long <span class="op">=</span> (</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    ipeds_dist[ipeds_dist[<span class="st">"EFDELEV"</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    .loc[<span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].isin(<span class="bu">list</span>(university_names))]</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>        Institution<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"UNITID"</span>].<span class="bu">map</span>(university_names),</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>{</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"In-person only"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDENON"</span>].fillna(<span class="dv">0</span>),</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Hybrid (some DE)"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDESOM"</span>].fillna(<span class="dv">0</span>),</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Online only"</span>: <span class="kw">lambda</span> df: df[<span class="st">"EFDEEXC"</span>].fillna(<span class="dv">0</span>),</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>    .melt(</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>        id_vars<span class="op">=</span>[<span class="st">"Institution"</span>],</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>        value_vars<span class="op">=</span>[<span class="st">"In-person only"</span>, <span class="st">"Hybrid (some DE)"</span>, <span class="st">"Online only"</span>],</span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>        var_name<span class="op">=</span><span class="st">"Segment"</span>,</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>        value_name<span class="op">=</span><span class="st">"Students"</span>,</span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>    .assign(Source<span class="op">=</span><span class="st">"IPEDS"</span>)</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a><span class="co"># USHE, Academic Year 2025 Term 2 (full- and part-time). The "taught online" rows are the hybrid</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="co"># portion; USHE has no online-only category.</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>ushe_long <span class="op">=</span> (</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>    ushe_2025_fall[ushe_2025_fall[<span class="st">"Institution"</span>].isin(<span class="bu">list</span>(ushe_names))]</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>        Institution<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"Institution"</span>].<span class="bu">map</span>(ushe_names),</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>        Segment<span class="op">=</span><span class="kw">lambda</span> df: df[<span class="st">"Site"</span>].eq(<span class="st">"This portion of the course is taught online"</span>).<span class="bu">map</span>(</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>            {<span class="va">True</span>: <span class="st">"Hybrid (some DE)"</span>, <span class="va">False</span>: <span class="st">"In-person only"</span>}</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">"Institution"</span>, <span class="st">"Segment"</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"Headcount"</span>]</span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"Headcount"</span>: <span class="st">"Students"</span>})</span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>    .assign(Source<span class="op">=</span><span class="st">"USHE"</span>)</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>modality_compare <span class="op">=</span> pd.concat([ipeds_long, ushe_long], ignore_index<span class="op">=</span><span class="va">True</span>)[</span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Institution"</span>, <span class="st">"Source"</span>, <span class="st">"Segment"</span>, <span class="st">"Students"</span>]</span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>modality_compare.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"university_modality_compare.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>modality_compare</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <div>
 
 
@@ -2316,7 +2535,7 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-startfrom="649" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 648;"><span id="cb26-649"><a href="#cb26-649" aria-hidden="true" tabindex="-1"></a>uni_modality_compare <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/university_modality_compare.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-startfrom="746" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 745;"><span id="cb31-746"><a href="#cb31-746" aria-hidden="true" tabindex="-1"></a>uni_modality_compare <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/university_modality_compare.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-6" data-nodetype="declaration">
@@ -2327,29 +2546,29 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" data-startfrom="656" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 655;"><span id="cb27-656"><a href="#cb27-656" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb27-657"><a href="#cb27-657" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
-<span id="cb27-658"><a href="#cb27-658" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">110</span> <span class="op">*</span> <span class="kw">new</span> <span class="bu">Set</span>(uni_modality_compare<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Institution</span>))<span class="op">.</span><span class="at">size</span> <span class="op">+</span> <span class="dv">60</span><span class="op">,</span></span>
-<span id="cb27-659"><a href="#cb27-659" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span></span>
-<span id="cb27-660"><a href="#cb27-660" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
-<span id="cb27-661"><a href="#cb27-661" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
-<span id="cb27-662"><a href="#cb27-662" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb27-663"><a href="#cb27-663" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb27-664"><a href="#cb27-664" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fy</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb27-665"><a href="#cb27-665" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb27-666"><a href="#cb27-666" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb27-667"><a href="#cb27-667" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="st">"In-person only"</span><span class="op">,</span> <span class="st">"Hybrid (some DE)"</span><span class="op">,</span> <span class="st">"Online only"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#1f78b4"</span><span class="op">,</span> <span class="st">"#f59e0b"</span><span class="op">,</span> <span class="st">"#9ca3af"</span>]}<span class="op">,</span></span>
-<span id="cb27-668"><a href="#cb27-668" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb27-669"><a href="#cb27-669" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barX</span>(uni_modality_compare<span class="op">,</span> {</span>
-<span id="cb27-670"><a href="#cb27-670" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fy</span><span class="op">:</span> <span class="st">"Institution"</span><span class="op">,</span></span>
-<span id="cb27-671"><a href="#cb27-671" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"Source"</span><span class="op">,</span></span>
-<span id="cb27-672"><a href="#cb27-672" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span></span>
-<span id="cb27-673"><a href="#cb27-673" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"Segment"</span><span class="op">,</span></span>
-<span id="cb27-674"><a href="#cb27-674" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">Institution</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Source</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Segment</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Students</span><span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb27-675"><a href="#cb27-675" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span>}</span>
-<span id="cb27-676"><a href="#cb27-676" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb27-677"><a href="#cb27-677" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb27-678"><a href="#cb27-678" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-startfrom="753" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 752;"><span id="cb32-753"><a href="#cb32-753" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb32-754"><a href="#cb32-754" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
+<span id="cb32-755"><a href="#cb32-755" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">110</span> <span class="op">*</span> <span class="kw">new</span> <span class="bu">Set</span>(uni_modality_compare<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Institution</span>))<span class="op">.</span><span class="at">size</span> <span class="op">+</span> <span class="dv">60</span><span class="op">,</span></span>
+<span id="cb32-756"><a href="#cb32-756" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span></span>
+<span id="cb32-757"><a href="#cb32-757" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb32-758"><a href="#cb32-758" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
+<span id="cb32-759"><a href="#cb32-759" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb32-760"><a href="#cb32-760" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb32-761"><a href="#cb32-761" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fy</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb32-762"><a href="#cb32-762" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb32-763"><a href="#cb32-763" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb32-764"><a href="#cb32-764" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="st">"In-person only"</span><span class="op">,</span> <span class="st">"Hybrid (some DE)"</span><span class="op">,</span> <span class="st">"Online only"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#1f78b4"</span><span class="op">,</span> <span class="st">"#f59e0b"</span><span class="op">,</span> <span class="st">"#9ca3af"</span>]}<span class="op">,</span></span>
+<span id="cb32-765"><a href="#cb32-765" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb32-766"><a href="#cb32-766" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barX</span>(uni_modality_compare<span class="op">,</span> {</span>
+<span id="cb32-767"><a href="#cb32-767" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fy</span><span class="op">:</span> <span class="st">"Institution"</span><span class="op">,</span></span>
+<span id="cb32-768"><a href="#cb32-768" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"Source"</span><span class="op">,</span></span>
+<span id="cb32-769"><a href="#cb32-769" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span></span>
+<span id="cb32-770"><a href="#cb32-770" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"Segment"</span><span class="op">,</span></span>
+<span id="cb32-771"><a href="#cb32-771" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">Institution</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Source</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Segment</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Students</span><span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb32-772"><a href="#cb32-772" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span>}</span>
+<span id="cb32-773"><a href="#cb32-773" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb32-774"><a href="#cb32-774" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb32-775"><a href="#cb32-775" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-university-modality" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">

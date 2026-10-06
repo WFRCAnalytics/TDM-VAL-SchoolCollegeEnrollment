@@ -309,53 +309,153 @@ ipeds_dist = pd.read_csv(zip_path)
 ```
 
 ```{python}
-# EFDELEV == 1 is the grand-total row for each institution (the other levels are breakdowns)
-ipeds_in_person = ipeds_dist.query("EFDELEV == 1").assign(
-    in_person=lambda df: df["EFDENON"].fillna(0) + df["EFDESOM"].fillna(0)
-)[["UNITID", "in_person"]]
+# IPEDS institutional control (public, private not-for-profit, private for-profit) from the IPEDS
+# directory file (HD). Downloaded if missing, and the code labels are checked against its dictionary.
+hd_year = constants["data_year"]
+hd_zip = ipeds_dir / f"HD{hd_year}.zip"
+hd_dict_zip = ipeds_dir / f"HD{hd_year}_Dict.zip"
 
-# The seven target colleges from the WF-TDM college repo (6-CollegeControlTotals.qmd), each assigned
-# to its county. The other institutions in the crosswalk are left out to match that snapshot.
-target_county = {
-    230764: "035",  # University of Utah (Salt Lake)
-    230746: "035",  # Salt Lake Community College (all five campuses are in Salt Lake County)
-    230418: "035",  # Ensign College
-    230807: "035",  # Westminster University
-    230038: "049",  # Brigham Young University (Utah County)
-    230737: "049",  # Utah Valley University (Utah County)
-    230782: "057",  # Weber State University (Main campus, Weber County)
-}
+for url, path in [
+    (f"https://nces.ed.gov/ipeds/datacenter/data/HD{hd_year}.zip", hd_zip),
+    (f"https://nces.ed.gov/ipeds/datacenter/data/HD{hd_year}_Dict.zip", hd_dict_zip),
+]:
+    if not path.exists():
+        response = requests.get(url)
+        response.raise_for_status()
+        path.write_bytes(response.content)
 
-ipeds_targets = ipeds_in_person[ipeds_in_person["UNITID"].isin(target_county)].assign(
-    COUNTYFP=lambda df: df["UNITID"].map(target_county)
+with zipfile.ZipFile(hd_dict_zip) as z:
+    hd_dict_name = next(n for n in z.namelist() if n.lower().endswith(".xlsx"))
+    hd_frequencies = pd.read_excel(z.open(hd_dict_name), sheet_name="Frequencies")
+control_rows = hd_frequencies[hd_frequencies["VarName"] == "CONTROL"]
+# The dictionary stores codes as text, so convert them to the integers used in the directory file
+control_labels = {int(code): label for code, label in zip(control_rows["CodeValue"], control_rows["ValueLabel"])}
+assert control_labels.get(1) == "Public", "IPEDS CONTROL code 1 is no longer Public"
+assert control_labels.get(2) == "Private not-for-profit", "IPEDS CONTROL code 2 changed"
+assert control_labels.get(3) == "Private for-profit", "IPEDS CONTROL code 3 changed"
+
+with zipfile.ZipFile(hd_zip) as z:
+    hd_directory = pd.read_csv(z.open(z.namelist()[0]), usecols=["UNITID", "CONTROL"], low_memory=False)
+college_control = (
+    hd_directory.assign(Control=lambda df: df["CONTROL"].map(control_labels).fillna("Not available"))
+    .loc[:, ["UNITID", "Control"]]
+)
+```
+
+```{python}
+# Every institution in the study counties that IPEDS covers, using campus-based enrollment: in-person
+# plus hybrid (EFDENON + EFDESOM). Exclusively online students (EFDEEXC) are left out, since they don't
+# attend a campus in the county. EFDELEV 2 is undergraduate and 12 is graduate (the subtotals add up).
+ipeds_levels = {2: "Undergraduate", 12: "Graduate"}
+nces_college_locations = gpd.read_file(
+    paths["raw"] / "geometry" / "nces_college.gpkg", ignore_geometry=True
+)
+in_study_counties = nces_college_locations["county_fips"].isin(
+    ["003", "011", "035", "049", "057"]
+)
+college_county = (
+    nces_college_locations.loc[in_study_counties, ["UNITID", "county_fips"]]
+    .dropna(subset=["UNITID"])
+    .assign(UNITID=lambda df: df["UNITID"].astype(int))
+    .rename(columns={"county_fips": "COUNTYFP"})
+)
+
+campus = ipeds_dist[ipeds_dist["EFDELEV"].isin(ipeds_levels)].copy()
+campus[["EFDENON", "EFDESOM"]] = campus[["EFDENON", "EFDESOM"]].apply(pd.to_numeric, errors="coerce").fillna(0)
+campus["Level"] = campus["EFDELEV"].map(ipeds_levels)
+campus["campus_based"] = campus["EFDENON"] + campus["EFDESOM"]
+campus = (
+    campus[["UNITID", "Level", "campus_based"]]
+    .merge(college_county, on="UNITID")
+    .merge(college_control, on="UNITID", how="left")
+    .assign(Control=lambda df: df["Control"].fillna("Not available"))
 )
 
 # Weber State's Davis campus is counted in Davis County, using its share of USHE headcount among
-# the two WSU campuses in the repo's split (Main campus and WSU - Davis Center)
+# the two WSU campuses (Main campus and WSU - Davis Center). The Davis Center is not a separate IPEDS record.
 wsu_sites = ushe_2025_fall[
     (ushe_2025_fall["Institution"] == "Weber State University")
     & ushe_2025_fall["Site"].isin(["Main Campus", "WSU - Davis Center"])
 ].groupby("Site")["Headcount"].sum()
 wsu_davis_share = wsu_sites["WSU - Davis Center"] / wsu_sites.sum()
 
-wsu_total = ipeds_targets.loc[ipeds_targets["UNITID"] == 230782, "in_person"].item()
-wsu_davis_students = round(wsu_total * wsu_davis_share)
-ipeds_targets.loc[ipeds_targets["UNITID"] == 230782, "in_person"] = wsu_total - wsu_davis_students
-ipeds_targets = pd.concat(
-    [
-        ipeds_targets,
-        pd.DataFrame({"UNITID": [230782], "in_person": [wsu_davis_students], "COUNTYFP": ["011"]}),
-    ],
-    ignore_index=True,
-)
+wsu = campus["UNITID"].eq(230782)
+wsu_davis = campus[wsu].assign(COUNTYFP="011", campus_based=lambda df: df["campus_based"] * wsu_davis_share)
+campus.loc[wsu, "campus_based"] = campus.loc[wsu, "campus_based"] * (1 - wsu_davis_share)
+campus = pd.concat([campus, wsu_davis], ignore_index=True)
 
-ipeds_enrollment_by_county = (
-    ipeds_targets.groupby("COUNTYFP")["in_person"]
+ipeds_by_county_level = (
+    campus.groupby(["COUNTYFP", "Level", "Control"])["campus_based"]
     .sum()
+    .round()
     .rename("nces_enrollment")
     .reset_index()
 )
-ipeds_enrollment_by_county
+ipeds_by_county_level.to_csv(paths["intermediate"] / "real_college_by_county_level.csv", index=False)
+
+ipeds_enrollment_by_county = (
+    ipeds_by_county_level.groupby("COUNTYFP")["nces_enrollment"].sum().reset_index()
+)
+ipeds_by_county_level
+```
+
+### IPEDS full-time and part-time (main file)
+
+```{python}
+# IPEDS Fall Enrollment main file (enrollment by level and full- or part-time status) and its data
+# dictionary. Downloaded if missing, the same way as the distance-education file above.
+ef_year = constants["data_year"]
+ef_main_zip = ipeds_dir / f"EF{ef_year}A.zip"
+ef_dict_zip = ipeds_dir / f"EF{ef_year}A_Dict.zip"
+
+for url, path in [
+    (f"https://nces.ed.gov/ipeds/datacenter/data/EF{ef_year}A.zip", ef_main_zip),
+    (f"https://nces.ed.gov/ipeds/datacenter/data/EF{ef_year}A_Dict.zip", ef_dict_zip),
+]:
+    if not path.exists():
+        response = requests.get(url)
+        response.raise_for_status()
+        path.write_bytes(response.content)
+```
+
+```{python}
+# The codes used below, checked against the IPEDS dictionary, so a change in IPEDS fails here
+ef_codes = {
+    1: "All students total",
+    2: "All students, Undergraduate total",
+    12: "All students, Graduate",
+    21: "Full-time students total",
+    22: "Full-time students, Undergraduate total",
+    32: "Full-time students, Graduate",
+    41: "Part-time students total",
+    42: "Part-time students, Undergraduate total",
+    52: "Part-time students, Graduate",
+}
+with zipfile.ZipFile(ef_dict_zip) as z:
+    dict_name = next(n for n in z.namelist() if n.lower().endswith(".xlsx"))
+    frequencies = pd.read_excel(z.open(dict_name), sheet_name="Frequencies")
+dict_labels = frequencies[frequencies["varname"] == "EFALEVEL"].set_index("codevalue")["valuelabel"]
+for code, label in ef_codes.items():
+    assert dict_labels.get(code) == label, f"EFALEVEL {code} is '{dict_labels.get(code)}', expected '{label}'"
+```
+
+```{python}
+with zipfile.ZipFile(ef_main_zip) as z:
+    ef_main = pd.read_csv(z.open(z.namelist()[0]), usecols=["UNITID", "EFALEVEL", "EFTOTLT"], low_memory=False)
+
+ef_main["EFTOTLT"] = pd.to_numeric(ef_main["EFTOTLT"], errors="coerce")
+ef_wide = ef_main.pivot_table(index="UNITID", columns="EFALEVEL", values="EFTOTLT", aggfunc="sum")
+
+# Subtotals must add up for every institution that reports all the codes (they do, as of the 2023 file)
+ef_complete = ef_wide[list(ef_codes)].dropna()
+assert (ef_complete[1] == ef_complete[21] + ef_complete[41]).all(), "total is not full-time + part-time"
+assert (ef_complete[21] == ef_complete[22] + ef_complete[32]).all(), "full-time is not undergrad + grad"
+assert (ef_complete[41] == ef_complete[42] + ef_complete[52]).all(), "part-time is not undergrad + grad"
+assert (ef_complete[12] == ef_complete[32] + ef_complete[52]).all(), "grad is not full-time + part-time"
+
+ipeds_fulltime_parttime = ef_wide[list(ef_codes)].rename(columns=ef_codes).rename_axis("UNITID").reset_index()
+ipeds_fulltime_parttime.to_csv(paths["intermediate"] / "ipeds_fulltime_parttime.csv", index=False)
+print(f"institutions with full-time and part-time detail: {len(ef_complete):,} of {len(ef_wide):,}")
 ```
 
 ## 6. Assemble enrollment tables
@@ -368,14 +468,11 @@ ipeds_enrollment_by_county
 # gap visible as NaN instead of silently dropping the row via an inner join)
 district_list = school_crosswalk[["District Name"]].dropna().drop_duplicates()
 
+# Public enrollment only. Private school enrollment (NCES PSS) stays in section 3 and is not part of
+# the district table used for validation.
 school_enrollment = (
     district_list.merge(doe_enrollment_by_district, on="District Name", how="left")
     .merge(nces_enrollment_by_district, on="District Name", how="left")
-    .merge(nces_private_enrollment_by_district, on="District Name", how="left")
-)
-# No private schools in a district is a real zero, not a gap
-school_enrollment["nces_private_enrollment"] = school_enrollment["nces_private_enrollment"].fillna(
-    0
 )
 ```
 
@@ -385,7 +482,7 @@ school_enrollment["nces_private_enrollment"] = school_enrollment["nces_private_e
 school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
 ```
 
-*K-12 and preschool enrollment by school district: Utah DOE (UGRC school counts, K-12 plus preschool), NCES public (CCD, K-12 plus PK) and NCES private (PSS). Blank cells are gaps in the source, not zeros.*
+*K-12 and preschool enrollment by school district, public schools only: Utah DOE (UGRC school counts, K-12 plus preschool) and NCES public (CCD, K-12 plus PK). Blank cells are gaps in the source, not zeros.*
 
 ```{ojs}
 districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})

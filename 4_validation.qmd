@@ -5,110 +5,181 @@ subtitle: "Real enrollment vs. PopulationSim synthetic estimates, by district an
 
 ## Overview
 
-This is the page the site is actually built around — where the real enrollment numbers
-(`2_enrollment.qmd`) and PopulationSim's synthetic estimates (`3_synthetic.qmd`) get compared.
+This is the page the site is built around: where the real enrollment numbers (`2_enrollment.qmd`)
+and PopulationSim's synthetic estimates (`3_synthetic.qmd`) get compared.
 
-- **Objective**: for each school district, compare real (Utah DOE / NCES) K-12 enrollment against
-  PopulationSim's synthetic K-12 student count (the real test, since that's uncontrolled) and
-  against its synthetic age 3-18 population (a sanity bound, since that's controlled — not expected
-  to match exactly). Same comparison for colleges by county, real (USHE / NCES-IPEDS) vs. synthetic
-  sch_grade count (SCHG 15 and higher) and age 18-24 population.
-- **What it reads**: the real district and county tables from `2_enrollment.qmd` and the synthetic
-  district and county tables from `3_synthetic.qmd`, all in `_data/intermediate/`.
-- **Box Elder**: reported separately from the other four counties, since its real and synthetic
-  numbers are both scoped differently there (model region vs. full county) — a single pooled number
-  would misrepresent it either way.
-- **Output**: this page itself — the published comparison tables and charts, not another
-  intermediate file.
+- **Objective**: for each school district, compare the synthetic enrolled count (school grades) and
+  the synthetic population aged 3-18 against real enrollment from Utah DOE or NCES CCD. For each
+  county, compare the same kind of synthetic counts against USHE or IPEDS. The population counts are
+  a sanity bound, since age is controlled in PopulationSim, so they are not expected to match.
+- **Using the page**: the inputs above each table pick what is compared and against which source.
+  The table and the scatter plots update with them. The flag marks rows that are further off than
+  the threshold you set.
+- **What it reads**: the district and county tables from `2_enrollment.qmd` and the synthetic tables
+  from `3_synthetic.qmd`, all in `_data/intermediate/`.
+- **Box Elder**: reported separately, since its real and synthetic numbers are both scoped differently
+  there (model region vs. full county). It is still a TODO.
 
-## Setup
-
-```{python}
-import pandas as pd
-from pathlib import Path
-
-paths = {"intermediate": Path("_data/intermediate/")}
+```{ojs}
+// Tooltip colours follow the page theme. Plot draws each tooltip box with a fixed background and its
+// text inherits the page colour, so the box colour has to match the theme. This re-runs when the theme
+// changes (the observers below), so the charts redraw with the new tooltip colours.
+tipTheme = Generators.observe(notify => {
+  const backgroundOf = el => {
+    const bg = getComputedStyle(el).backgroundColor;
+    return bg.startsWith("rgba(0, 0, 0, 0)") || bg === "transparent" ? null : bg;
+  };
+  const isDark = () => {
+    const bg = backgroundOf(document.body) ?? backgroundOf(document.documentElement) ?? "rgb(255, 255, 255)";
+    const [r, g, b] = bg.match(/[\d.]+/g).slice(0, 3).map(Number);
+    return 0.299 * r + 0.587 * g + 0.114 * b < 128;
+  };
+  const emit = () => notify(isDark()
+    ? {fill: "#0c2a3b", stroke: "#4b5563"}
+    : {fill: "#ffffff", stroke: "#374151"});
+  const observer = new MutationObserver(emit);
+  observer.observe(document.documentElement, {attributes: true, attributeFilter: ["class", "style", "data-bs-theme", "data-theme"]});
+  observer.observe(document.body, {attributes: true, attributeFilter: ["class", "style"]});
+  observer.observe(document.head, {subtree: true, attributes: true, attributeFilter: ["href", "disabled", "media"]});
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", emit);
+  emit();
+  return () => {
+    observer.disconnect();
+    media.removeEventListener("change", emit);
+  };
+})
 ```
 
 ## 1. School validation (by district)
 
-```{python}
-real_district = pd.read_csv(paths["intermediate"] / "real_enrollment_by_district.csv")
-synthetic_district = pd.read_csv(paths["intermediate"] / "synthetic_k12_by_district.csv")
+```{ojs}
+compareOptions = ["Enrolled (school grades)", "Population aged 3-18"];
+referenceOptions = ["Utah DOE", "NCES CCD"];
+measureOptions = ["Difference", "Percent difference", "Ratio"];
 
-school_validation = real_district.merge(
-    synthetic_district, on="District Name", how="outer", indicator=True
-)
-# Every district should be in both tables; anything else is a join problem to fix before reading ratios
-print("districts only in one table:", (school_validation["_merge"] != "both").sum())
-school_validation = school_validation.drop(columns="_merge")
+districtReal = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true});
+districtSynth = FileAttachment("_data/intermediate/synthetic_k12_by_district.csv").csv({typed: true});
+districtSynthMap = new Map(districtSynth.map(d => [d["District Name"], d]));
 
-# Real enrollment already includes preschool (DOE totalk12 + preschool, NCES K-12 + PK), matching sch_grade
-for col in ["sch_grade", "age_3_18"]:
-    school_validation[f"{col}_vs_doe"] = school_validation[col] / school_validation["doe_enrollment"]
-    school_validation[f"{col}_vs_nces"] = school_validation[col] / school_validation["nces_enrollment"]
-
-school_counts = school_validation[
-    ["District Name", "sch_grade", "age_3_18", "doe_enrollment", "nces_enrollment"]
-].sort_values("doe_enrollment", ascending=False)
-school_counts
+districtRefKey = `Reference (${districtReference})`;
+districtSynKey = districtCompare === compareOptions[0] ? "Synthetic enrolled" : "Synthetic population";
 ```
 
-```{python}
-# Ratios: synthetic / real. 1.00 means the synthetic count equals the real one.
-school_ratios = school_validation[
-    ["District Name"] + [c for c in school_validation.columns if c.endswith(("_vs_doe", "_vs_nces"))]
-].sort_values("District Name")
-school_ratios.round(3)
+```{ojs}
+//| panel: input
+//| layout-ncol: 2
+viewof districtCompare = Inputs.select(compareOptions, {label: "Compare", value: compareOptions[0]})
+
+viewof districtReference = Inputs.select(referenceOptions, {label: "Reference", value: referenceOptions[0]})
+
+viewof districtMeasure = Inputs.select(measureOptions, {label: "Show", value: measureOptions[1]})
+
+viewof districtFlag = Inputs.range([0, 50], {label: "Flag if off by more than (%)", step: 1, value: 10})
 ```
 
-## 2. College validation (by county)
+::: {.panel-tabset}
 
-```{python}
-real_county = pd.read_csv(
-    paths["intermediate"] / "real_enrollment_by_county.csv", dtype={"COUNTYFP": str}
-)
-synthetic_county = pd.read_csv(
-    paths["intermediate"] / "synthetic_college_by_county.csv", dtype={"COUNTYFP": str}
-)
+## Table
 
-college_validation = real_county.merge(
-    synthetic_county, on="COUNTYFP", how="outer", indicator=True
-)
-# Every county should be in both tables; anything else is a join problem to fix before reading ratios
-print("counties only in one table:", (college_validation["_merge"] != "both").sum())
-college_validation = college_validation.drop(columns="_merge")
+```{ojs}
+//| label: tbl-district
+//| tbl-cap: "Real and synthetic students by district. Percent difference is (synthetic minus reference) divided by reference. A row is flagged when its percent difference is larger than the threshold."
 
-for col in ["sch_grade", "age_18_24"]:
-    college_validation[f"{col}_vs_ushe"] = college_validation[col] / college_validation["ushe_enrollment"]
-    college_validation[f"{col}_vs_nces"] = college_validation[col] / college_validation["nces_enrollment"]
+districtTable = districtReal.map(d => {
+  const s = districtSynthMap.get(d["District Name"]);
+  const ref = districtReference === "Utah DOE" ? d.doe_enrollment : d.nces_enrollment;
+  const syn = s ? (districtCompare === compareOptions[0] ? s.sch_grade : s.age_3_18) : null;
+  const diff = syn != null && ref != null ? syn - ref : null;
+  const pct = diff != null && ref ? diff / ref : null;
+  const ratio = diff != null && ref ? syn / ref : null;
+  const shown = districtMeasure === "Difference" ? diff : districtMeasure === "Percent difference" ? pct : ratio;
+  return {
+    District: d["District Name"],
+    [districtRefKey]: ref,
+    [districtSynKey]: syn,
+    [districtMeasure]: shown,
+    Flag: pct != null && Math.abs(pct) * 100 > districtFlag ? "⚠" : ""
+  };
+})
 
-college_validation.round(3)
+countFormat = v => v == null ? "—" : Math.round(v).toLocaleString("en-US");
+shownFormat = districtMeasure === "Percent difference"
+  ? (v => v == null ? "—" : `${(v * 100).toFixed(1)}%`)
+  : districtMeasure === "Ratio"
+    ? (v => v == null ? "—" : v.toFixed(2))
+    : (v => v == null ? "—" : `${v > 0 ? "+" : ""}${Math.round(v).toLocaleString("en-US")}`);
+
+Inputs.table(districtTable, {
+  columns: ["District", districtRefKey, districtSynKey, districtMeasure, "Flag"],
+  format: {[districtRefKey]: countFormat, [districtSynKey]: countFormat, [districtMeasure]: shownFormat},
+  maxHeight: "none"
+})
 ```
 
-## 3. Box Elder
+## Scatter
 
-```{python}
-#| eval: false
-# TODO: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary
-#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own
-#   section rather than folded into the main district/county tables
+```{ojs}
+//| label: fig-district-scatter
+//| fig-cap: "Synthetic against real, by district, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
+//| fig-alt: "Four scatter plots in a 2 by 2 grid. Rows are the reference sources (Utah DOE and NCES CCD) and columns are the synthetic measures (enrolled and population aged 3-18). Each point is a district, with the real count on the horizontal axis and the synthetic count on the vertical axis."
+
+scatterRows = districtReal.flatMap(d => {
+  const s = districtSynthMap.get(d["District Name"]);
+  if (!s) return [];
+  const name = d["District Name"];
+  return [
+    {reference: "Utah DOE", measure: "Enrolled", x: d.doe_enrollment, y: s.sch_grade, district: name},
+    {reference: "Utah DOE", measure: "Population", x: d.doe_enrollment, y: s.age_3_18, district: name},
+    {reference: "NCES CCD", measure: "Enrolled", x: d.nces_enrollment, y: s.sch_grade, district: name},
+    {reference: "NCES CCD", measure: "Population", x: d.nces_enrollment, y: s.age_3_18, district: name}
+  ];
+});
+
+scatterMax = d3.max(scatterRows, d => Math.max(d.x, d.y));
+
+diagRows = ["Utah DOE", "NCES CCD"].flatMap(reference =>
+  ["Enrolled", "Population"].flatMap(measure => [
+    {reference, measure, x: 0, y: 0},
+    {reference, measure, x: scatterMax, y: scatterMax}
+  ])
+);
+
+Plot.plot({
+  width: 760,
+  height: 640,
+  grid: true,
+  style: {background: "transparent", color: "inherit"},
+  fx: {label: null},
+  fy: {label: null},
+  x: {label: "Reference (students)", grid: true},
+  y: {label: "Synthetic (persons)", grid: true},
+  marks: [
+    Plot.line(diagRows, {x: "x", y: "y", fx: "measure", fy: "reference", stroke: "#999", strokeDasharray: "4 4"}),
+    Plot.dot(scatterRows, {
+      x: "x", y: "y", fx: "measure", fy: "reference",
+      fill: "#1f78b4", r: 4, tip: tipTheme, title: d => d.district
+    })
+  ]
+})
 ```
 
-## 4. Results
+:::
+
+### Enrolled by school level
 
 Pick any combination of school levels and districts. The chart adds up the selection: each district
 shows real DOE and NCES enrollment next to the synthetic grade count and the synthetic age-band count.
 
 ```{ojs}
-levelOrder = ["Pre-K", "K", "Elementary", "Middle", "High"]
+levelOrder = ["Pre-K", "K", "Elementary", "Middle", "High"];
 
-// Age bands used for the sanity bound, one per level (the bands overlap at boundary ages)
-ageBands = ({"Pre-K": [3, 5], "K": [5, 6], "Elementary": [6, 11], "Middle": [12, 14], "High": [15, 18]})
+// Age bands used for the sanity bound: one band per level, no overlaps, so each age belongs to one level
+ageBands = ({"Pre-K": [3, 4], "K": [5, 5], "Elementary": [6, 11], "Middle": [12, 14], "High": [15, 18]});
 
-realByLevel = FileAttachment("_data/intermediate/real_by_district_level.csv").csv({typed: true})
-synthByLevel = FileAttachment("_data/intermediate/synthetic_by_district_level.csv").csv({typed: true})
-synthAge = FileAttachment("_data/intermediate/synthetic_age_by_district.csv").csv({typed: true})
+realByLevel = FileAttachment("_data/intermediate/real_by_district_level.csv").csv({typed: true});
+synthByLevel = FileAttachment("_data/intermediate/synthetic_by_district_level.csv").csv({typed: true});
+synthAge = FileAttachment("_data/intermediate/synthetic_age_by_district.csv").csv({typed: true});
 
 levelRows = realByLevel.map(d => {
   const s = synthByLevel.find(x => x["District Name"] === d["District Name"] && x.Level === d.Level);
@@ -119,9 +190,9 @@ levelRows = realByLevel.map(d => {
     nces: d.nces_enrollment ?? 0,
     grade: s ? s.sch_grade : 0
   };
-})
+});
 
-districtNames = [...new Set(levelRows.map(d => d.district))].sort()
+districtNames = [...new Set(levelRows.map(d => d.district))].sort();
 ```
 
 ```{ojs}
@@ -132,7 +203,9 @@ viewof selectedLevels = Inputs.select(levelOrder, {
   label: "School levels",
   multiple: 5,
   value: levelOrder,
-  format: lvl => `${lvl} (Age: ${ageBands[lvl][0]}-${ageBands[lvl][1]})`
+  format: lvl => ageBands[lvl][0] === ageBands[lvl][1]
+    ? `${lvl} (Age: ${ageBands[lvl][0]})`
+    : `${lvl} (Age: ${ageBands[lvl][0]}-${ageBands[lvl][1]})`
 })
 
 viewof selectedDistricts = Inputs.select(districtNames, {
@@ -153,7 +226,7 @@ selectedFacet = splitByDistrict.length > 0
 
 ```{ojs}
 //| label: fig-level-compare
-//| fig-cap: "Students by district for the selected school levels. DOE and NCES are K-12 plus preschool enrollment. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels' age bands, with each person counted once even where bands overlap."
+//| fig-cap: "Students by district for the selected school levels. DOE and NCES are K-12 plus preschool enrollment. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels' age bands, with each person counted once."
 //| fig-alt: "Grouped bar chart with one group per selected district. Each group has four bars: DOE, NCES, synthetic grade count and synthetic age-band count, for the selected school levels."
 
 chartRows = {
@@ -188,6 +261,7 @@ chartRows.length === 0
       height: 460,
       marginBottom: 60,
       grid: true,
+      style: {background: "transparent", color: "inherit"},
       ...(selectedFacet ? {fx: {label: null, domain: selectedDistricts}} : {}),
       x: {axis: null},
       y: {label: "Students", grid: true},
@@ -202,14 +276,244 @@ chartRows.length === 0
           x: "source",
           y: "students",
           fill: "source",
-          tip: true
+          tip: tipTheme
         }),
         Plot.ruleY([0])
       ]
     })
 ```
 
-## 5. Summary
+## 2. College validation (by county)
+
+```{ojs}
+collegeCompareOptions = ["Enrolled (undergraduate and graduate)", "Population aged 18-24"];
+collegeReferenceOptions = ["USHE (public, all levels)", "IPEDS (campus-based)"];
+
+realCollegeLevel = FileAttachment("_data/intermediate/real_college_by_county_level.csv").csv({typed: true});
+realCountyTotals = FileAttachment("_data/intermediate/real_enrollment_by_county.csv").csv({typed: true});
+synthCollege = FileAttachment("_data/intermediate/synthetic_college_by_county.csv").csv({typed: true});
+
+countyOrder = [3, 11, 35, 49, 57];
+countyName = ({3: "Box Elder", 11: "Davis", 35: "Salt Lake", 49: "Utah", 57: "Weber"});
+
+collegeRefKey = `Reference (${collegeReference.startsWith("USHE") ? "USHE" : ipedsLabel})`;
+collegeSynKey = collegeCompare === collegeCompareOptions[0] ? "Synthetic enrolled" : "Synthetic age 18-24";
+```
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 2
+
+viewof collegeCompare = Inputs.select(collegeCompareOptions, {label: "Compare", value: collegeCompareOptions[0]})
+
+viewof collegeReference = Inputs.select(collegeReferenceOptions, {label: "Reference", value: collegeReferenceOptions[0]})
+
+viewof collegeMeasure = Inputs.select(measureOptions, {label: "Show", value: measureOptions[1]})
+
+viewof collegeFlag = Inputs.range([0, 50], {label: "Flag if off by more than (%)", step: 1, value: 10})
+```
+
+::: {.panel-tabset}
+
+## Table
+
+```{ojs}
+//| label: tbl-college
+//| tbl-cap: "Real and synthetic college students by county. USHE covers public institutions only, all levels. IPEDS is campus-based enrollment (in-person plus hybrid). Synthetic enrolled counts residents at any college. Percent difference is (synthetic minus reference) divided by reference."
+
+collegeTable = countyOrder.map(c => {
+  const syn = synthCollege.find(d => d.COUNTYFP === c);
+  const ushe = realCountyTotals.find(d => d.COUNTYFP === c)?.ushe_enrollment ?? null;
+  const ipeds = d3.sum(realCollegeLevel.filter(d => d.COUNTYFP === c && ipedsInScope(d)), d => d.nces_enrollment);
+  const ref = collegeReference.startsWith("USHE") ? ushe : ipeds;
+  const enrolled = collegeCompare === collegeCompareOptions[0];
+  const synVal = syn ? (enrolled ? syn.undergraduate + syn.graduate : syn.age_18_24) : null;
+  const diff = synVal != null && ref != null ? synVal - ref : null;
+  const pct = diff != null && ref ? diff / ref : null;
+  const ratio = diff != null && ref ? synVal / ref : null;
+  const shown = collegeMeasure === "Difference" ? diff : collegeMeasure === "Percent difference" ? pct : ratio;
+  return {
+    County: countyName[c],
+    [collegeRefKey]: ref,
+    [collegeSynKey]: synVal,
+    [collegeMeasure]: shown,
+    Flag: pct != null && Math.abs(pct) * 100 > collegeFlag ? "⚠" : ""
+  };
+})
+
+Inputs.table(collegeTable, {
+  columns: ["County", collegeRefKey, collegeSynKey, collegeMeasure, "Flag"],
+  format: {
+    [collegeRefKey]: countFormat,
+    [collegeSynKey]: countFormat,
+    [collegeMeasure]: collegeMeasure === "Percent difference"
+      ? (v => v == null ? "—" : `${(v * 100).toFixed(1)}%`)
+      : collegeMeasure === "Ratio"
+        ? (v => v == null ? "—" : v.toFixed(2))
+        : (v => v == null ? "—" : `${v > 0 ? "+" : ""}${Math.round(v).toLocaleString("en-US")}`)
+  }
+})
+```
+
+## Scatter
+
+```{ojs}
+//| label: fig-college-scatter
+//| fig-cap: "Synthetic against real, by county, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
+//| fig-alt: "Four scatter plots in a 2 by 2 grid. Rows are the reference sources (USHE and IPEDS) and columns are the synthetic measures (enrolled and population aged 18-24). Each point is a county, with the real count on the horizontal axis and the synthetic count on the vertical axis."
+
+collegeScatterRows = countyOrder.flatMap(c => {
+  const syn = synthCollege.find(d => d.COUNTYFP === c);
+  if (!syn) return [];
+  const ushe = realCountyTotals.find(d => d.COUNTYFP === c)?.ushe_enrollment;
+  const ipeds = d3.sum(realCollegeLevel.filter(d => d.COUNTYFP === c && ipedsInScope(d)), d => d.nces_enrollment);
+  const enrolledSyn = syn.undergraduate + syn.graduate;
+  const name = countyName[c];
+  return [
+    {reference: "USHE", measure: "Enrolled", x: ushe, y: enrolledSyn, county: name},
+    {reference: "USHE", measure: "Population", x: ushe, y: syn.age_18_24, county: name},
+    {reference: "IPEDS", measure: "Enrolled", x: ipeds, y: enrolledSyn, county: name},
+    {reference: "IPEDS", measure: "Population", x: ipeds, y: syn.age_18_24, county: name}
+  ].filter(d => d.x != null);
+});
+
+collegeScatterMax = d3.max(collegeScatterRows, d => Math.max(d.x, d.y));
+
+collegeDiagRows = ["USHE", "IPEDS"].flatMap(reference =>
+  ["Enrolled", "Population"].flatMap(measure => [
+    {reference, measure, x: 0, y: 0},
+    {reference, measure, x: collegeScatterMax, y: collegeScatterMax}
+  ])
+);
+
+Plot.plot({
+  width: 760,
+  height: 640,
+  grid: true,
+  style: {background: "transparent", color: "inherit"},
+  fx: {label: null},
+  fy: {label: null},
+  x: {label: "Reference (students)", grid: true},
+  y: {label: "Synthetic (persons)", grid: true},
+  marks: [
+    Plot.line(collegeDiagRows, {x: "x", y: "y", fx: "measure", fy: "reference", stroke: "#999", strokeDasharray: "4 4"}),
+    Plot.dot(collegeScatterRows, {
+      x: "x", y: "y", fx: "measure", fy: "reference",
+      fill: "#1f78b4", r: 5, tip: tipTheme, title: d => d.county
+    })
+  ]
+})
+```
+
+:::
+
+### Colleges by county
+
+Pick the counties and college levels to compare. USHE covers public institutions only and has no
+level split, so its bar always shows all levels. The age band counts persons aged 18-24 whatever
+the level, as a sanity bound.
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 2
+viewof selectedCounties = Inputs.select(countyOrder, {
+  label: "Counties",
+  multiple: 5,
+  value: countyOrder,
+  format: c => countyName[c]
+})
+
+viewof selectedCollegeLevels = Inputs.select(["Undergraduate", "Graduate"], {
+  label: "College level",
+  multiple: 2,
+  value: ["Undergraduate", "Graduate"]
+})
+
+viewof collegeIncludePrivate = Inputs.checkbox(["Include private institutions"], {
+  label: "Institutions",
+  value: ["Include private institutions"]
+})
+
+viewof splitByCounty = Inputs.checkbox(["Split by county"], {
+  label: "Chart",
+  value: ["Split by county"]
+})
+```
+
+```{ojs}
+selectedCountySplit = splitByCounty.length > 0;
+includePrivate = collegeIncludePrivate.length > 0;
+ipedsLabel = includePrivate ? "IPEDS, all institutions" : "IPEDS, public only";
+ipedsInScope = d => includePrivate || d.Control === "Public";
+```
+
+```{ojs}
+//| label: fig-college-compare
+//| fig-cap: "College enrollment by county for the selected levels. USHE is public institutions only, all levels. IPEDS is campus-based enrollment (in-person plus hybrid) at every institution in the county that IPEDS covers. Synthetic counts residents enrolled at any college, by SCHG level. The age band is not split by level."
+//| fig-alt: "Grouped bar chart with one group per selected county. Each group has four bars: USHE, IPEDS, synthetic enrolled and synthetic age 18-24, for the selected college levels."
+
+collegeRows = {
+  const out = [];
+  for (const c of selectedCounties) {
+    const ipeds = d3.sum(
+      realCollegeLevel.filter(d => d.COUNTYFP === c && selectedCollegeLevels.includes(d.Level) && ipedsInScope(d)),
+      d => d.nces_enrollment
+    );
+    const ushe = realCountyTotals.find(d => d.COUNTYFP === c)?.ushe_enrollment ?? 0;
+    const syn = synthCollege.find(d => d.COUNTYFP === c) ?? {undergraduate: 0, graduate: 0, age_18_24: 0};
+    const synEnrolled =
+      (selectedCollegeLevels.includes("Undergraduate") ? syn.undergraduate : 0) +
+      (selectedCollegeLevels.includes("Graduate") ? syn.graduate : 0);
+    out.push({county: countyName[c], source: "USHE (all levels)", students: ushe});
+    out.push({county: countyName[c], source: ipedsLabel, students: ipeds});
+    out.push({county: countyName[c], source: "Synthetic enrolled", students: synEnrolled});
+    out.push({county: countyName[c], source: "Synthetic age 18-24", students: syn.age_18_24});
+  }
+  if (selectedCountySplit) return out;
+  // Split off: add the selected counties into one total per source
+  return d3.rollups(out, v => d3.sum(v, d => d.students), d => d.source)
+    .map(([source, students]) => ({county: "Total", source, students}));
+}
+
+chartCollege = collegeRows.length === 0
+  ? html`<p><em>Select at least one county and one college level.</em></p>`
+  : Plot.plot({
+      width: 960,
+      height: 460,
+      marginBottom: 60,
+      grid: true,
+      style: {background: "transparent", color: "inherit"},
+      ...(selectedCountySplit ? {fx: {label: null, domain: selectedCounties.map(c => countyName[c])}} : {}),
+      x: {axis: null},
+      y: {label: "Students", grid: true},
+      color: {
+        legend: true,
+        domain: ["USHE (all levels)", ipedsLabel, "Synthetic enrolled", "Synthetic age 18-24"],
+        range: ["#1f78b4", "#33a02c", "#e31a1c", "#ff7f00"]
+      },
+      marks: [
+        Plot.barY(collegeRows, {
+          ...(selectedCountySplit ? {fx: "county"} : {}),
+          x: "source",
+          y: "students",
+          fill: "source",
+          tip: tipTheme
+        }),
+        Plot.ruleY([0])
+      ]
+    })
+```
+
+## 3. Box Elder
+
+```{python}
+#| eval: false
+# TODO: same comparisons as sections 1-2, scoped to Box Elder only, with the model-boundary
+#   clipping from 3_synthetic.qmd's Box Elder handling applied -- reported here as its own
+#   section rather than folded into the main district/county tables
+```
+
+## 4. Summary
 
 <!-- TODO: a few sentences on what the validation actually shows once there are real numbers to
      describe -- not written in advance of having results. -->

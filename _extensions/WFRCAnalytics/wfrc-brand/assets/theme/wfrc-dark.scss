@@ -363,3 +363,9 @@ code span.cn {
 .tok-comment {
     color: $body-secondary !important;
 }
+
+// Quarto input panels use Bootstrap's light card background, which clashes with the dark body
+.panel-input {
+  background-color: lighten($body-bg, 5%) !important;
+  color: $body-color;
+}

@@ -13,7 +13,8 @@ the real enrollment numbers from `2_enrollment.qmd`.
   NCES. By district: `sch_grade` (every person with `SCHG` 1-14, at any age, matching DOE's totalk12 +
   preschool and NCES's K-12 + PK) and `age_3_18` (every person aged 3-18, counted independently, a
   sanity bound since age is controlled in PopulationSim). By county:
-  `sch_grade` (`SCHG` 15 or higher, any age) and `age_18_24` (population aged 18-24, a sanity bound).
+  `undergraduate` (`SCHG` 15) and `graduate` (`SCHG` 16) at any age, and `age_18_24` (population aged
+  18-24, a sanity bound).
 - **What it reads**: PopulationSim's synthetic person output (local-only, under
   `_data/raw/populationsim/ABM/1_Inputs/ScenarioBaseSample/1_PopulationSim/output/`, gitignored). The
   dorm and group-quarters students are in the same file, so no second file is needed. It also reads
@@ -62,8 +63,9 @@ persons = pd.read_csv(
 # Same rules as PopulationSim's PersonType_Label (2_InputPreperation_Seed2.ipynb, person-type rules):
 # SCHG 1-14 is pre-college and SCHG 15 or higher is college. K-12 is pre-college at ages 6-18;
 # University student is college at age 16 or older.
-# College: SCHG 15 (undergraduate) and 16 (beyond bachelor's), at any age. Age is counted separately.
-persons["grade_15_plus"] = persons["sch_grade"].ge(15)
+# College at any age: SCHG 15 is undergraduate and SCHG 16 (beyond bachelor's) is graduate
+persons["undergraduate"] = persons["sch_grade"].eq(15)
+persons["graduate"] = persons["sch_grade"].eq(16)
 persons["age_18_24"] = persons["age"].between(18, 24)
 # Nursery/preschool (SCHG 1) through grade 12 (SCHG 14), at any age. Matches DOE's totalk12 + preschool
 # and NCES's K-12 + PK. Age is counted separately below, so this flag has no age condition.
@@ -111,7 +113,8 @@ district_persons
 college_persons = (
     persons.groupby("COUNTYFP")
     .agg(
-        sch_grade=("grade_15_plus", "sum"),
+        undergraduate=("undergraduate", "sum"),
+        graduate=("graduate", "sum"),
         age_18_24=("age_18_24", "sum"),
     )
     .reset_index()

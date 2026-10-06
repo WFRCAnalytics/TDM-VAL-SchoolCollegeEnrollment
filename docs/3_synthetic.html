@@ -87,7 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d1a3c7ef0f27de390c984bb61a93f1f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-9a5b7506bf8f95eb61b8ed512e223511.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-dark-ff57422db6c4207c9319844177b5b1b7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/bootstrap/bootstrap-d1a3c7ef0f27de390c984bb61a93f1f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -424,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>This script produces the “synthetic” half of the validation schema: PopulationSim’s estimate of how many K-12 students and college students live in each district and county, to compare against the real enrollment numbers from <code>2_enrollment.qmd</code>.</p>
 <ul>
-<li><strong>Objective</strong>: count synthetic persons by school district and by county, to compare with DOE and NCES. By district: <code>sch_grade</code> (every person with <code>SCHG</code> 1-14, at any age, matching DOE’s totalk12 + preschool and NCES’s K-12 + PK) and <code>age_3_18</code> (every person aged 3-18, counted independently, a sanity bound since age is controlled in PopulationSim). By county: <code>sch_grade</code> (<code>SCHG</code> 15 or higher, any age) and <code>age_18_24</code> (population aged 18-24, a sanity bound).</li>
+<li><strong>Objective</strong>: count synthetic persons by school district and by county, to compare with DOE and NCES. By district: <code>sch_grade</code> (every person with <code>SCHG</code> 1-14, at any age, matching DOE’s totalk12 + preschool and NCES’s K-12 + PK) and <code>age_3_18</code> (every person aged 3-18, counted independently, a sanity bound since age is controlled in PopulationSim). By county: <code>undergraduate</code> (<code>SCHG</code> 15) and <code>graduate</code> (<code>SCHG</code> 16) at any age, and <code>age_18_24</code> (population aged 18-24, a sanity bound).</li>
 <li><strong>What it reads</strong>: PopulationSim’s synthetic person output (local-only, under <code>_data/raw/populationsim/ABM/1_Inputs/ScenarioBaseSample/1_PopulationSim/output/</code>, gitignored). The dorm and group-quarters students are in the same file, so no second file is needed. It also reads the school and college crosswalks from <code>1_geography.qmd</code>.</li>
 <li><strong>MAZ join</strong>: each person has a <code>maz_id</code>. The MAZ rows in <code>crosswalk_school.csv</code> give each person a school district, and the MAZ rows in <code>crosswalk_college.csv</code> give each person a county.</li>
 <li><strong>Known gaps</strong>: college counts are residence-based and include every enrolled resident, while IPEDS counts by institution location and USHE counts public institutions only. The two sides differ in definition, not only in data.</li>
@@ -434,7 +434,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="ac205b24" class="cell" data-execution_count="1">
+<div id="54dcdab0" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -454,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="load-synthetic-persons" class="level2">
 <h2 class="anchored" data-anchor-id="load-synthetic-persons">1. Load synthetic persons</h2>
-<div id="2b404738" class="cell" data-execution_count="2">
+<div id="adb691fd" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every person's household is in the households file, and res_type 3 marks group-quarters (dorm)</span></span>
@@ -467,25 +467,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="classify-students" class="level2">
 <h2 class="anchored" data-anchor-id="classify-students">2. Classify students</h2>
-<div id="0a246b97" class="cell" data-execution_count="3">
+<div id="64407fc5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rules as PopulationSim's PersonType_Label (2_InputPreperation_Seed2.ipynb, person-type rules):</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SCHG 1-14 is pre-college and SCHG 15 or higher is college. K-12 is pre-college at ages 6-18;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># University student is college at age 16 or older.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># College: SCHG 15 (undergraduate) and 16 (beyond bachelor's), at any age. Age is counted separately.</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"grade_15_plus"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].ge(<span class="dv">15</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_18_24"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">18</span>, <span class="dv">24</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Nursery/preschool (SCHG 1) through grade 12 (SCHG 14), at any age. Matches DOE's totalk12 + preschool</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># and NCES's K-12 + PK. Age is counted separately below, so this flag has no age condition.</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"grade_1_14"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].between(<span class="dv">1</span>, <span class="dv">14</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_3_18"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">3</span>, <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># College at any age: SCHG 15 is undergraduate and SCHG 16 (beyond bachelor's) is graduate</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"undergraduate"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].eq(<span class="dv">15</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"graduate"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].eq(<span class="dv">16</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_18_24"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">18</span>, <span class="dv">24</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Nursery/preschool (SCHG 1) through grade 12 (SCHG 14), at any age. Matches DOE's totalk12 + preschool</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># and NCES's K-12 + PK. Age is counted separately below, so this flag has no age condition.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"grade_1_14"</span>] <span class="op">=</span> persons[<span class="st">"sch_grade"</span>].between(<span class="dv">1</span>, <span class="dv">14</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>persons[<span class="st">"age_3_18"</span>] <span class="op">=</span> persons[<span class="st">"age"</span>].between(<span class="dv">3</span>, <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
 <section id="join-persons-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="join-persons-to-district-and-county">3. Join persons to district and county</h2>
-<div id="e240ce45" class="cell" data-execution_count="4">
+<div id="5be58fc5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>crosswalk_school <span class="op">=</span> pd.read_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"crosswalk_school.csv"</span>, dtype<span class="op">=</span>{<span class="st">"ID"</span>: <span class="bu">str</span>})</span>
@@ -512,7 +513,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="aggregate-to-district-and-county" class="level2">
 <h2 class="anchored" data-anchor-id="aggregate-to-district-and-county">4. Aggregate to district and county</h2>
-<div id="71d50c84" class="cell" data-execution_count="5">
+<div id="17dbd998" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each column counts persons in that district (summing a boolean counts the True rows)</span></span>
@@ -618,18 +619,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="2e124392" class="cell" data-execution_count="6">
+<div id="57dddf83" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>college_persons <span class="op">=</span> (</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    persons.groupby(<span class="st">"COUNTYFP"</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        sch_grade<span class="op">=</span>(<span class="st">"grade_15_plus"</span>, <span class="st">"sum"</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        age_18_24<span class="op">=</span>(<span class="st">"age_18_24"</span>, <span class="st">"sum"</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>college_persons</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        undergraduate<span class="op">=</span>(<span class="st">"undergraduate"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        graduate<span class="op">=</span>(<span class="st">"graduate"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        age_18_24<span class="op">=</span>(<span class="st">"age_18_24"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>college_persons</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -640,7 +642,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">COUNTYFP</th>
-<th data-quarto-table-cell-role="th">sch_grade</th>
+<th data-quarto-table-cell-role="th">undergraduate</th>
+<th data-quarto-table-cell-role="th">graduate</th>
 <th data-quarto-table-cell-role="th">age_18_24</th>
 </tr>
 </thead>
@@ -648,31 +651,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>003</td>
-<td>1304</td>
+<td>1126</td>
+<td>178</td>
 <td>2705</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>011</td>
-<td>19639</td>
+<td>16257</td>
+<td>3382</td>
 <td>35640</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>035</td>
-<td>81728</td>
+<td>66494</td>
+<td>15234</td>
 <td>121371</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>049</td>
-<td>91395</td>
+<td>80873</td>
+<td>10522</td>
 <td>123869</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
 <td>057</td>
-<td>15728</td>
+<td>13505</td>
+<td>2223</td>
 <td>26652</td>
 </tr>
 </tbody>
@@ -683,7 +691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="by-school-level" class="level3">
 <h3 class="anchored" data-anchor-id="by-school-level">By school level</h3>
-<div id="953e6fcd" class="cell" data-execution_count="7">
+<div id="cb8fb186" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Levels by SCHG code, at any age, matching the grade columns used for real enrollment in 2_enrollment.qmd:</span></span>
@@ -1107,7 +1115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="box-elder-clipping" class="level2">
 <h2 class="anchored" data-anchor-id="box-elder-clipping">5. Box Elder clipping</h2>
-<div id="48c3a854" class="cell" data-execution_count="8">
+<div id="54a1bb53" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: using 1_geography.qmd's model_boundary layer, flag which Box Elder MAZs fall inside vs.</span></span>
@@ -1117,7 +1125,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="write-output" class="level2">
 <h2 class="anchored" data-anchor-id="write-output">6. Write output</h2>
-<div id="b3c2246c" class="cell" data-execution_count="9">
+<div id="ca729030" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>district_persons.to_csv(paths[<span class="st">"intermediate"</span>] <span class="op">/</span> <span class="st">"synthetic_k12_by_district.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>

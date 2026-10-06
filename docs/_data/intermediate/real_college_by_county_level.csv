@@ -1,0 +1,19 @@
+COUNTYFP,Level,Control,nces_enrollment
+011,Graduate,Public,115.0
+011,Undergraduate,Private for-profit,422.0
+011,Undergraduate,Public,8051.0
+035,Graduate,Private for-profit,74.0
+035,Graduate,Private not-for-profit,310.0
+035,Graduate,Public,7869.0
+035,Undergraduate,Private for-profit,5096.0
+035,Undergraduate,Private not-for-profit,2561.0
+035,Undergraduate,Public,46861.0
+049,Graduate,Private for-profit,1071.0
+049,Graduate,Private not-for-profit,2767.0
+049,Graduate,Public,706.0
+049,Undergraduate,Private for-profit,1642.0
+049,Undergraduate,Private not-for-profit,31508.0
+049,Undergraduate,Public,41405.0
+057,Graduate,Public,574.0
+057,Undergraduate,Private for-profit,58.0
+057,Undergraduate,Public,23925.0
