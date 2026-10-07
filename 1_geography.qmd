@@ -66,9 +66,9 @@ constants = {
 ```
 
 ```{python}
-opensgid_engine = sqlalchemy.create_engine(
-    "postgresql+psycopg://agrc:agrc@opensgid.ugrc.utah.gov:5432/opensgid"
-)
+# Public, read-only credential documented by UGRC for the Open SGID: https://gis.utah.gov/sgid/open-sgid/
+OPENSGID_URI = "postgresql+psycopg://agrc:agrc@opensgid.ugrc.utah.gov:5432/opensgid"
+opensgid_engine = sqlalchemy.create_engine(OPENSGID_URI)
 ```
 
 ```{python}
