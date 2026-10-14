@@ -26,7 +26,10 @@ ways: against real enrollment directly, and against the age-group population as 
   but no crosswalk uses them.
 - **Open SGID (UGRC):** school district boundaries; K-12 school locations and Utah DOE per-school
   enrollment counts (`ugrc_school`); higher-education locations (`ugrc_college`). Read over the network
-  the first time, then from cache.
+  the first time, then from cache. The current `ugrc_school` layer is still downloaded for reference,
+  but the analysis uses the BY2023 snapshot in `_data/raw/ugrc_by2023/`, copied from
+  [TDM-INP-K-12-Enrollment](https://github.com/WFRCAnalytics/TDM-INP-K-12-Enrollment/tree/main/UGRC%20Data/BY2023)
+  so K-12 counts match the model input. Its `SchoolYear` field is 2025.
 - **NCES:** EDGE public school locations with CCD enrollment; EDGE private school locations; EDGE
   postsecondary locations; the Private School Universe Survey (PSS) enrollment file; IPEDS Fall
   Enrollment (distance-education and full-/part-time files) and the institutional directory (HD).

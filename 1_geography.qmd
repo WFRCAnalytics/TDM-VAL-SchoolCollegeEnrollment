@@ -284,6 +284,7 @@ bound_blocks.explore()
 ```{python}
 ugrc_school_path = paths["raw"] / "geometry" / "ugrc_school.gpkg"
 
+# Current Open SGID layer. Kept for reference only -- the analysis uses the BY2023 snapshot below.
 # 1. Download only if not already cached locally
 if not ugrc_school_path.exists():
     all_ugrc_schools = gpd.read_postgis(
@@ -299,10 +300,51 @@ if not ugrc_school_path.exists():
 # 2. Read + filter in one step, pushed down to SQLite
 county_list_sql = ", ".join(f"'{fips}'" for fips in county_fips)
 
-ugrc_schools = gpd.read_file(
+ugrc_schools_current = gpd.read_file(
     ugrc_school_path,
     sql=f"SELECT * FROM ugrc_school WHERE county_fips IN ({county_list_sql})",
 )
+```
+
+### UGRC Pre-K to 12, BY2023 snapshot (used)
+
+```{python}
+# Copy of UGRC Data/BY2023 from https://github.com/WFRCAnalytics/TDM-INP-K-12-Enrollment, the
+# snapshot behind the model's K-12 enrollment input. Its SchoolYear field is 2025 (pulled March 2025).
+ugrc_school_by2023_shp = paths["raw"] / "ugrc_by2023" / "Schools_PreKto12.shp"
+ugrc_school_by2023_path = paths["intermediate"] / "ugrc_school_by2023.gpkg"
+
+# Shapefile names are cut to 10 characters, so restore the Open SGID names that downstream code uses
+truncated_names = {
+    "SchoolNumb": "schoolnumber",
+    "CharterSch": "charterschool",
+    "PrivateSch": "privateschool",
+    "OnlineScho": "onlineschool",
+    "SchoolLeve": "schoollevel",
+    "FederalLoc": "federallocalecode",
+    "PhoneNumbe": "phonenumber",
+    "AmericanIn": "americanindian",
+    "MultipleRa": "multiplerace",
+    "PacificIsl": "pacificislander",
+    "Economical": "economicallydisadvantaged",
+    "EnglishLea": "englishlearner",
+    "StudentDis": "studentdisability",
+}
+all_ugrc_schools_by2023 = (
+    gpd.read_file(ugrc_school_by2023_shp)
+    .rename(columns=truncated_names)
+    .rename(columns=str.lower)
+    .to_crs(constants["crs"])
+)
+assert set(all_ugrc_schools_by2023.columns) <= set(ugrc_schools_current.columns), (
+    "BY2023 columns do not match the Open SGID schema"
+)
+all_ugrc_schools_by2023["county_fips"] = gpd.sjoin(
+    all_ugrc_schools_by2023, all_counties[["COUNTYFP", "geometry"]], predicate="within", how="left"
+)["COUNTYFP"]
+all_ugrc_schools_by2023.to_file(ugrc_school_by2023_path)
+
+ugrc_schools = all_ugrc_schools_by2023[all_ugrc_schools_by2023["county_fips"].isin(county_fips)]
 ```
 
 ```{python}

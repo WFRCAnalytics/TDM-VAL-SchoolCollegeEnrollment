@@ -20,7 +20,8 @@ PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
 
 - **Objective**: get district-level K-12 enrollment and county-level college enrollment from real,
   non-synthetic sources, joined through the school and college crosswalks built in `1_geography.qmd`.
-- **What it pulls**: Utah DOE enrollment (public schools only, from UGRC's own per-school counts),
+- **What it pulls**: Utah DOE enrollment (public schools only, from the BY2023 UGRC snapshot copied
+  from TDM-INP-K-12-Enrollment; its SchoolYear field is 2025),
   NCES enrollment by district (public via CCD); NCES private-school enrollment (Private School
   Universe Survey), reported in section 3 but not in the district validation table; USHE enrollment
   by institution and site (the WFRC data request, not a home-ZIP file, so its geography is the
@@ -69,11 +70,11 @@ college_crosswalk = pd.read_csv(
 ## 1. K-12 — Utah DOE enrollment by district
 
 ```{python}
-# Public schools only
+# Public schools only, from the BY2023 UGRC snapshot (SchoolYear 2025) built in 1_geography.qmd
 ugrc_public_schools = gpd.read_file(
-    paths["raw"] / "geometry" / "ugrc_school.gpkg",
+    paths["intermediate"] / "ugrc_school_by2023.gpkg",
     sql="""
-        SELECT * FROM ugrc_school
+        SELECT * FROM ugrc_school_by2023
         WHERE privateschool = 'False'
           AND onlineschool IS NOT 'Y'
     """,
@@ -81,8 +82,12 @@ ugrc_public_schools = gpd.read_file(
 
 # Join school -> district via the school crosswalk (point-in-polygon, one row per school) rather than
 # matching the school's own `leaname` text against the district boundary's `name` text.
+# Only the public school IDs joined below are checked. The BY2023 snapshot lists one private school
+# (Realms of Inquiry, 1175, zero students) twice, with points in two districts.
 doe_crosswalk = school_crosswalk[
-    (school_crosswalk["Unit"] == "school") & (school_crosswalk["Source"] == "UGRC")
+    (school_crosswalk["Unit"] == "school")
+    & (school_crosswalk["Source"] == "UGRC")
+    & school_crosswalk["ID"].isin(ugrc_public_schools["schoolid"].astype(str))
 ]
 assert (doe_crosswalk.groupby("ID")["District Name"].nunique() <= 1).all(), (
     "UGRC school ID maps to two districts"
@@ -130,9 +135,9 @@ unmatched_doe_schools[["schoolid", "totalk12"]]
 ```{python}
 # Online school enrollment (reported separately; not included in the district totals above)
 online_enrollment = gpd.read_file(
-    paths["raw"] / "geometry" / "ugrc_school.gpkg",
+    paths["intermediate"] / "ugrc_school_by2023.gpkg",
     sql="""
-        SELECT * FROM ugrc_school
+        SELECT * FROM ugrc_school_by2023
         WHERE privateschool = 'False'
           AND onlineschool = 'Y'
     """,
@@ -152,9 +157,9 @@ assert (nces_crosswalk.groupby("ID")["District Name"].nunique() <= 1).all(), (
 )
 nces_crosswalk = nces_crosswalk.drop_duplicates(subset=["ID"])
 
-# DOE totalk12 is K-12 only: it equals the sum of k and grades 1-12 on every public, non-online row, and
-# it excludes preschool. NCES TOTAL includes PreK, plus other codes (UG, AE, G13), so NCES is summed
-# over KG-G12 to match the DOE definition. NCES codes a grade the school doesn't offer as -2; those
+# DOE totalk12 is K-12 only: it equals the sum of k and grades 1-12 on every public, non-online row except
+# two in the BY2023 snapshot (see the level check in section 6), and it excludes preschool. NCES TOTAL
+# includes PreK, plus other codes (UG, AE, G13), so NCES is summed over KG-G12 to match the DOE definition. NCES codes a grade the school doesn't offer as -2; those
 # cells count as zero students.
 nces_k12_grades = ["KG"] + [f"G{i:02d}" for i in range(1, 13)]
 assert (nces_public_school[nces_k12_grades] >= -2).all().all(), "NCES K-12 grade has an unexpected code"
@@ -554,7 +559,9 @@ nces_gap = (
     real_by_level.groupby("District Name")["nces_enrollment"].sum()
     - nces_enrollment_by_district.set_index("District Name")["nces_enrollment"]
 )
-assert doe_gap.abs().max() < 0.5, "DOE levels do not add up to district totals"
+# In the BY2023 snapshot, Mount Jordan Middle (Canyons) and Alice C. Harris Intermediate (Box Elder)
+# each report totalk12 one less than their grade sum, so those two districts are off by one student.
+assert doe_gap.abs().max() < 1.5, "DOE levels do not add up to district totals"
 assert nces_gap.abs().max() < 0.5, "NCES levels do not add up to district totals"
 
 real_by_level.to_csv(paths["intermediate"] / "real_by_district_level.csv", index=False)
