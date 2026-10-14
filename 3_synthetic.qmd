@@ -1,6 +1,6 @@
 ---
 title: "Synthetic Population"
-subtitle: "PopulationSim synthetic enrollment estimates, by district and county"
+subtitle: "PopulationSim 2023 synthetic enrollment estimates, by district and county"
 ---
 
 ## Overview
@@ -15,7 +15,7 @@ the real enrollment numbers from `2_enrollment.qmd`.
   sanity bound since age is controlled in PopulationSim). By county:
   `undergraduate` (`SCHG` 15) and `graduate` (`SCHG` 16) at any age, and `age_18_24` (population aged
   18-24, a sanity bound).
-- **What it reads**: PopulationSim's synthetic person output (local-only, under
+- **What it reads**: PopulationSim's 2023 synthetic person output (local-only, under
   `_data/raw/populationsim/ABM/1_Inputs/ScenarioBaseSample/1_PopulationSim/output/`, gitignored). The
   dorm and group-quarters students are in the same file, so no second file is needed. It also reads
   the school and college crosswalks from `1_geography.qmd`.

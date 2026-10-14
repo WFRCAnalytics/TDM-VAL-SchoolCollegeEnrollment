@@ -27,6 +27,9 @@ PopulationSim's synthetic population (`3_synthetic.qmd`) gets compared against.
   by institution and site (the WFRC data request, not a home-ZIP file, so its geography is the
   institution's site); and IPEDS by county (fall 2023 campus-based enrollment, institutional control,
   and full-time/part-time detail).
+- **Data vintages**: Utah DOE 2024-25 (the BY2023 UGRC snapshot, `SchoolYear` 2025), NCES CCD and
+  PSS 2023-24, USHE Academic Year 2025 Term 2, IPEDS fall 2023, and PopulationSim 2023. Every chart and
+  table names the vintage next to each source.
 - **Known gaps**:
   - Charter schools are counted as public schools in the district totals. Whether Utah DOE credits
     their enrollment to the resident district has not been checked against DOE's published totals.
@@ -493,10 +496,14 @@ school_enrollment = (
 school_enrollment[school_enrollment[["doe_enrollment", "nces_enrollment"]].isna().any(axis=1)]
 ```
 
-*K-12 and preschool enrollment by school district, public schools only: Utah DOE (UGRC school counts, K-12 plus preschool) and NCES public (CCD, K-12 plus PK). Blank cells are gaps in the source, not zeros.*
+*K-12 and preschool enrollment by school district, public schools only: Utah DOE 2024-25 (BY2023 UGRC snapshot, `SchoolYear` 2025, K-12 plus preschool) and NCES public (CCD 2023-24, K-12 plus PK). Blank cells are gaps in the source, not zeros.*
 
 ```{ojs}
-districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
+districts_table = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true}).then(rows => rows.map(d => ({
+  "District Name": d["District Name"],
+  "Utah DOE 2024-25": d.doe_enrollment,
+  "NCES CCD 2023-24": d.nces_enrollment
+})))
 
 Inputs.table(districts_table, {rows: 25})
 ```
@@ -609,7 +616,7 @@ Hover over a point or bar to see its values.
 
 ```{ojs}
 //| label: fig-district-compare
-//| fig-cap: "Public K-12 and preschool enrollment by district: Utah DOE (UGRC school counts) against NCES (CCD). Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most."
+//| fig-cap: "Public K-12 and preschool enrollment by district: Utah DOE 2024-25 (UGRC school counts) against NCES CCD 2023-24. Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most."
 //| fig-alt: "Scatter plot with Utah DOE enrollment on the horizontal axis and NCES enrollment on the vertical axis, one point per school district, with a dashed diagonal line marking equal counts; points above the line have higher NCES counts and points below have higher DOE counts."
 
 districts = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true})
@@ -625,8 +632,8 @@ Plot.plot({
   marginTop: 20,
   marginRight: 20,
   style: {background: "transparent", color: "inherit"},
-  x: {label: "DOE enrollment (UGRC school counts)"},
-  y: {label: "NCES enrollment (CCD)"},
+  x: {label: "Utah DOE enrollment, 2024-25 (UGRC school counts)"},
+  y: {label: "NCES CCD enrollment, 2023-24"},
   marks: [
     Plot.line([[0, 0], [max_district, max_district]], {stroke: "#999", strokeDasharray: "4 4"}),
     Plot.dot(districts, {
@@ -639,8 +646,8 @@ Plot.plot({
         fill: "white",
         stroke: "#374151",
         format: {
-          x: d => `DOE: ${d.toLocaleString()}`,
-          y: d => `NCES: ${d.toLocaleString()}`
+          x: d => `DOE 2024-25: ${d.toLocaleString()}`,
+          y: d => `NCES 2023-24: ${d.toLocaleString()}`
         }
       }
     })

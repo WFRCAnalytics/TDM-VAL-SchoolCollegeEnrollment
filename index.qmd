@@ -19,9 +19,11 @@ PopulationSim does not control on school enrollment, so each comparison runs two
 
 ## Comparisons at a glance
 
+Synthetic counts are from the 2023 PopulationSim run.
+
 | Level | Real reference | Synthetic: enrolled | Synthetic: age band |
 |---|---|---|---|
-| K-12, by district | Utah DOE school counts (K-12 + preschool); NCES CCD public schools (K-12 + PK) | `SCHG` 1-14, any age | Ages 3-18 |
+| K-12, by district | Utah DOE school counts, 2024-25 (K-12 + preschool); NCES CCD public schools, 2023-24 (K-12 + PK) | `SCHG` 1-14, any age | Ages 3-18 |
 | College, by county | USHE (public institutions, all levels, Academic Year 2025 Term 2); IPEDS campus-based (fall 2023) | `SCHG` 15 (undergraduate) and 16 (graduate), any age | Ages 18-24 |
 
 ## Pages
@@ -38,14 +40,14 @@ PopulationSim does not control on school enrollment, so each comparison runs two
 ```{mermaid}
 flowchart TD
     subgraph sources["Data sources"]
-        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts"]
-        NCES["NCES\nCCD public schools, Private School Universe Survey, postsecondary locations"]
-        IPEDS["IPEDS\nFall Enrollment and institutional control"]
+        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts (BY2023 snapshot, 2024-25)"]
+        NCES["NCES\nCCD public schools and Private School Universe Survey (2023-24), postsecondary locations"]
+        IPEDS["IPEDS\nFall 2023 Enrollment and institutional control"]
         CENSUS["Census TIGER (via pygris)\ncounties and blocks; blocks are not used in the crosswalks"]
         MAZSRC["MAZ microzones\ndraft layer supplied for Utah"]
         TAZSRC["WFRC WasatchFrontTAZ\nreference layer only"]
-        USHE["USHE\nenrollment by institution and site"]
-        PSIM["PopulationSim persons\nsynthetic population, local only"]
+        USHE["USHE\nenrollment by institution and site (AY 2025)"]
+        PSIM["PopulationSim persons\n2023 synthetic population, local only"]
     end
 
     UGRC --> GEO

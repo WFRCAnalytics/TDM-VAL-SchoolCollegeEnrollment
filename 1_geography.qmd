@@ -606,7 +606,7 @@ for layer_name, layer in map_layers.items():
 
 ```{ojs}
 //| label: fig-study-area
-//| fig-cap: "Study area. Gray fill is school district boundaries, black lines are county boundaries, blue dots are K-12 schools and red dots are colleges (all from UGRC)."
+//| fig-cap: "Study area. Gray fill is school district boundaries, black lines are county boundaries, blue dots are K-12 schools (UGRC BY2023 snapshot, SchoolYear 2025) and red dots are colleges (UGRC Open SGID)."
 //| fig-alt: "Map of Box Elder, Davis, Weber, Salt Lake and Utah counties in northern Utah. School district boundaries are shaded light gray, with blue dots for K-12 schools and red dots for colleges."
 
 study_counties = FileAttachment("_data/intermediate/map_counties.geojson").json()

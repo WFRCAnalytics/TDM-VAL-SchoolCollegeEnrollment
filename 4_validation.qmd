@@ -15,6 +15,9 @@ and PopulationSim's synthetic estimates (`3_synthetic.qmd`) get compared.
 - **Using the page**: the inputs above each table pick what is compared and against which source.
   The table and the scatter plots update with them. The flag marks rows that are further off than
   the threshold you set.
+- **Data vintages**: Utah DOE 2024-25 (the BY2023 UGRC snapshot, `SchoolYear` 2025), NCES CCD and
+  PSS 2023-24, USHE Academic Year 2025 Term 2, IPEDS fall 2023, and PopulationSim 2023. Every chart and
+  table names the vintage next to each source.
 - **What it reads**: the district and county tables from `2_enrollment.qmd` and the synthetic tables
   from `3_synthetic.qmd`, all in `_data/intermediate/`.
 - **Status**: sections 1 and 2 (districts and counties) are built. Section 3 (Box Elder) and the summary
@@ -57,7 +60,7 @@ tipTheme = Generators.observe(notify => {
 
 ```{ojs}
 compareOptions = ["Enrolled (school grades)", "Population aged 3-18"];
-referenceOptions = ["Utah DOE", "NCES CCD"];
+referenceOptions = ["Utah DOE 2024-25", "NCES CCD 2023-24"];
 measureOptions = ["Difference", "Percent difference", "Ratio"];
 
 districtReal = FileAttachment("_data/intermediate/real_enrollment_by_district.csv").csv({typed: true});
@@ -65,7 +68,7 @@ districtSynth = FileAttachment("_data/intermediate/synthetic_k12_by_district.csv
 districtSynthMap = new Map(districtSynth.map(d => [d["District Name"], d]));
 
 districtRefKey = `Reference (${districtReference})`;
-districtSynKey = districtCompare === compareOptions[0] ? "Synthetic enrolled" : "Synthetic population";
+districtSynKey = districtCompare === compareOptions[0] ? "Synthetic enrolled (PopSim 2023)" : "Synthetic population (PopSim 2023)";
 ```
 
 ```{ojs}
@@ -86,11 +89,11 @@ viewof districtFlag = Inputs.range([0, 50], {label: "Flag if off by more than (%
 
 ```{ojs}
 //| label: tbl-district
-//| tbl-cap: "Real and synthetic students by district. Percent difference is (synthetic minus reference) divided by reference. A row is flagged when its percent difference is larger than the threshold."
+//| tbl-cap: "Real and synthetic students by district. Utah DOE is 2024-25, NCES CCD is 2023-24 and the synthetic population is PopulationSim 2023. Percent difference is (synthetic minus reference) divided by reference. A row is flagged when its percent difference is larger than the threshold."
 
 districtTable = districtReal.map(d => {
   const s = districtSynthMap.get(d["District Name"]);
-  const ref = districtReference === "Utah DOE" ? d.doe_enrollment : d.nces_enrollment;
+  const ref = districtReference === referenceOptions[0] ? d.doe_enrollment : d.nces_enrollment;
   const syn = s ? (districtCompare === compareOptions[0] ? s.sch_grade : s.age_3_18) : null;
   const diff = syn != null && ref != null ? syn - ref : null;
   const pct = diff != null && ref ? diff / ref : null;
@@ -123,7 +126,7 @@ Inputs.table(districtTable, {
 
 ```{ojs}
 //| label: fig-district-scatter
-//| fig-cap: "Synthetic against real, by district, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
+//| fig-cap: "Synthetic (PopulationSim 2023) against real (Utah DOE 2024-25, NCES CCD 2023-24), by district, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
 //| fig-alt: "Four scatter plots in a 2 by 2 grid. Rows are the reference sources (Utah DOE and NCES CCD) and columns are the synthetic measures (enrolled and population aged 3-18). Each point is a district, with the real count on the horizontal axis and the synthetic count on the vertical axis."
 
 scatterRows = districtReal.flatMap(d => {
@@ -131,16 +134,16 @@ scatterRows = districtReal.flatMap(d => {
   if (!s) return [];
   const name = d["District Name"];
   return [
-    {reference: "Utah DOE", measure: "Enrolled", x: d.doe_enrollment, y: s.sch_grade, district: name},
-    {reference: "Utah DOE", measure: "Population", x: d.doe_enrollment, y: s.age_3_18, district: name},
-    {reference: "NCES CCD", measure: "Enrolled", x: d.nces_enrollment, y: s.sch_grade, district: name},
-    {reference: "NCES CCD", measure: "Population", x: d.nces_enrollment, y: s.age_3_18, district: name}
+    {reference: referenceOptions[0], measure: "Enrolled", x: d.doe_enrollment, y: s.sch_grade, district: name},
+    {reference: referenceOptions[0], measure: "Population", x: d.doe_enrollment, y: s.age_3_18, district: name},
+    {reference: referenceOptions[1], measure: "Enrolled", x: d.nces_enrollment, y: s.sch_grade, district: name},
+    {reference: referenceOptions[1], measure: "Population", x: d.nces_enrollment, y: s.age_3_18, district: name}
   ];
 });
 
 scatterMax = d3.max(scatterRows, d => Math.max(d.x, d.y));
 
-diagRows = ["Utah DOE", "NCES CCD"].flatMap(reference =>
+diagRows = referenceOptions.flatMap(reference =>
   ["Enrolled", "Population"].flatMap(measure => [
     {reference, measure, x: 0, y: 0},
     {reference, measure, x: scatterMax, y: scatterMax}
@@ -175,6 +178,7 @@ shows real DOE and NCES enrollment next to the synthetic grade count and the syn
 
 ```{ojs}
 levelOrder = ["Pre-K", "K", "Elementary", "Middle", "High"];
+levelSources = ["DOE 2024-25", "NCES 2023-24", "Synthetic grade (PopSim 2023)", "Synthetic age band (PopSim 2023)"];
 
 // Age bands used for the sanity bound: one band per level, no overlaps, so each age belongs to one level
 ageBands = ({"Pre-K": [3, 4], "K": [5, 5], "Elementary": [6, 11], "Middle": [12, 14], "High": [15, 18]});
@@ -228,7 +232,7 @@ selectedFacet = splitByDistrict.length > 0
 
 ```{ojs}
 //| label: fig-level-compare
-//| fig-cap: "Students by district for the selected school levels. DOE and NCES are K-12 plus preschool enrollment. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels' age bands, with each person counted once."
+//| fig-cap: "Students by district for the selected school levels. DOE (2024-25) and NCES (2023-24) are K-12 plus preschool enrollment. Synthetic counts are PopulationSim 2023. Synthetic grade counts persons in the same grades. Synthetic age band counts persons in the selected levels' age bands, with each person counted once."
 //| fig-alt: "Grouped bar chart with one group per selected district. Each group has four bars: DOE, NCES, synthetic grade count and synthetic age-band count, for the selected school levels."
 
 chartRows = {
@@ -245,10 +249,10 @@ chartRows = {
       synthAge.filter(d => d["District Name"] === dist && ages.has(d.age)),
       d => d.persons
     );
-    out.push({district: dist, source: "DOE", students: d3.sum(rows, d => d.doe)});
-    out.push({district: dist, source: "NCES", students: d3.sum(rows, d => d.nces)});
-    out.push({district: dist, source: "Synthetic grade", students: d3.sum(rows, d => d.grade)});
-    out.push({district: dist, source: "Synthetic age band", students: ageTotal});
+    out.push({district: dist, source: levelSources[0], students: d3.sum(rows, d => d.doe)});
+    out.push({district: dist, source: levelSources[1], students: d3.sum(rows, d => d.nces)});
+    out.push({district: dist, source: levelSources[2], students: d3.sum(rows, d => d.grade)});
+    out.push({district: dist, source: levelSources[3], students: ageTotal});
   }
   if (selectedFacet) return out;
   // Split off: add the selected districts into one total per source
@@ -269,7 +273,7 @@ chartRows.length === 0
       y: {label: "Students", grid: true},
       color: {
         legend: true,
-        domain: ["DOE", "NCES", "Synthetic grade", "Synthetic age band"],
+        domain: levelSources,
         range: ["#1f78b4", "#33a02c", "#e31a1c", "#ff7f00"]
       },
       marks: [
@@ -289,7 +293,7 @@ chartRows.length === 0
 
 ```{ojs}
 collegeCompareOptions = ["Enrolled (undergraduate and graduate)", "Population aged 18-24"];
-collegeReferenceOptions = ["USHE (public, all levels)", "IPEDS (campus-based)"];
+collegeReferenceOptions = ["USHE AY 2025 (public, all levels)", "IPEDS fall 2023 (campus-based)"];
 
 realCollegeLevel = FileAttachment("_data/intermediate/real_college_by_county_level.csv").csv({typed: true});
 realCountyTotals = FileAttachment("_data/intermediate/real_enrollment_by_county.csv").csv({typed: true});
@@ -298,8 +302,8 @@ synthCollege = FileAttachment("_data/intermediate/synthetic_college_by_county.cs
 countyOrder = [3, 11, 35, 49, 57];
 countyName = ({3: "Box Elder", 11: "Davis", 35: "Salt Lake", 49: "Utah", 57: "Weber"});
 
-collegeRefKey = `Reference (${collegeReference.startsWith("USHE") ? "USHE" : ipedsLabel})`;
-collegeSynKey = collegeCompare === collegeCompareOptions[0] ? "Synthetic enrolled" : "Synthetic age 18-24";
+collegeRefKey = `Reference (${collegeReference.startsWith("USHE") ? "USHE AY 2025" : ipedsLabel})`;
+collegeSynKey = collegeCompare === collegeCompareOptions[0] ? "Synthetic enrolled (PopSim 2023)" : "Synthetic age 18-24 (PopSim 2023)";
 ```
 
 ```{ojs}
@@ -321,7 +325,7 @@ viewof collegeFlag = Inputs.range([0, 50], {label: "Flag if off by more than (%)
 
 ```{ojs}
 //| label: tbl-college
-//| tbl-cap: "Real and synthetic college students by county. USHE covers public institutions only, all levels. IPEDS is campus-based enrollment (in-person plus hybrid). Synthetic enrolled counts residents at any college. Percent difference is (synthetic minus reference) divided by reference."
+//| tbl-cap: "Real and synthetic college students by county. USHE (Academic Year 2025 Term 2) covers public institutions only, all levels. IPEDS (fall 2023) is campus-based enrollment (in-person plus hybrid). Synthetic enrolled (PopulationSim 2023) counts residents at any college. Percent difference is (synthetic minus reference) divided by reference."
 
 collegeTable = countyOrder.map(c => {
   const syn = synthCollege.find(d => d.COUNTYFP === c);
@@ -361,7 +365,7 @@ Inputs.table(collegeTable, {
 
 ```{ojs}
 //| label: fig-college-scatter
-//| fig-cap: "Synthetic against real, by county, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
+//| fig-cap: "Synthetic (PopulationSim 2023) against real (USHE AY 2025, IPEDS fall 2023), by county, for each reference source and each synthetic measure. Points on the dashed line agree exactly. Each panel uses the same scale."
 //| fig-alt: "Four scatter plots in a 2 by 2 grid. Rows are the reference sources (USHE and IPEDS) and columns are the synthetic measures (enrolled and population aged 18-24). Each point is a county, with the real count on the horizontal axis and the synthetic count on the vertical axis."
 
 collegeScatterRows = countyOrder.flatMap(c => {
@@ -372,16 +376,16 @@ collegeScatterRows = countyOrder.flatMap(c => {
   const enrolledSyn = syn.undergraduate + syn.graduate;
   const name = countyName[c];
   return [
-    {reference: "USHE", measure: "Enrolled", x: ushe, y: enrolledSyn, county: name},
-    {reference: "USHE", measure: "Population", x: ushe, y: syn.age_18_24, county: name},
-    {reference: "IPEDS", measure: "Enrolled", x: ipeds, y: enrolledSyn, county: name},
-    {reference: "IPEDS", measure: "Population", x: ipeds, y: syn.age_18_24, county: name}
+    {reference: "USHE AY 2025", measure: "Enrolled", x: ushe, y: enrolledSyn, county: name},
+    {reference: "USHE AY 2025", measure: "Population", x: ushe, y: syn.age_18_24, county: name},
+    {reference: "IPEDS fall 2023", measure: "Enrolled", x: ipeds, y: enrolledSyn, county: name},
+    {reference: "IPEDS fall 2023", measure: "Population", x: ipeds, y: syn.age_18_24, county: name}
   ].filter(d => d.x != null);
 });
 
 collegeScatterMax = d3.max(collegeScatterRows, d => Math.max(d.x, d.y));
 
-collegeDiagRows = ["USHE", "IPEDS"].flatMap(reference =>
+collegeDiagRows = ["USHE AY 2025", "IPEDS fall 2023"].flatMap(reference =>
   ["Enrolled", "Population"].flatMap(measure => [
     {reference, measure, x: 0, y: 0},
     {reference, measure, x: collegeScatterMax, y: collegeScatterMax}
@@ -445,13 +449,13 @@ viewof splitByCounty = Inputs.checkbox(["Split by county"], {
 ```{ojs}
 selectedCountySplit = splitByCounty.length > 0;
 includePrivate = collegeIncludePrivate.length > 0;
-ipedsLabel = includePrivate ? "IPEDS, all institutions" : "IPEDS, public only";
+ipedsLabel = includePrivate ? "IPEDS fall 2023, all institutions" : "IPEDS fall 2023, public only";
 ipedsInScope = d => includePrivate || d.Control === "Public";
 ```
 
 ```{ojs}
 //| label: fig-college-compare
-//| fig-cap: "College enrollment by county for the selected levels. USHE is public institutions only, all levels. IPEDS is campus-based enrollment (in-person plus hybrid) at every institution in the county that IPEDS covers. Synthetic counts residents enrolled at any college, by SCHG level. The age band is not split by level."
+//| fig-cap: "College enrollment by county for the selected levels. USHE (Academic Year 2025 Term 2) is public institutions only, all levels. IPEDS (fall 2023) is campus-based enrollment (in-person plus hybrid) at every institution in the county that IPEDS covers. Synthetic (PopulationSim 2023) counts residents enrolled at any college, by SCHG level. The age band is not split by level."
 //| fig-alt: "Grouped bar chart with one group per selected county. Each group has four bars: USHE, IPEDS, synthetic enrolled and synthetic age 18-24, for the selected college levels."
 
 collegeRows = {
@@ -466,10 +470,10 @@ collegeRows = {
     const synEnrolled =
       (selectedCollegeLevels.includes("Undergraduate") ? syn.undergraduate : 0) +
       (selectedCollegeLevels.includes("Graduate") ? syn.graduate : 0);
-    out.push({county: countyName[c], source: "USHE (all levels)", students: ushe});
+    out.push({county: countyName[c], source: "USHE AY 2025 (all levels)", students: ushe});
     out.push({county: countyName[c], source: ipedsLabel, students: ipeds});
-    out.push({county: countyName[c], source: "Synthetic enrolled", students: synEnrolled});
-    out.push({county: countyName[c], source: "Synthetic age 18-24", students: syn.age_18_24});
+    out.push({county: countyName[c], source: "Synthetic enrolled (PopSim 2023)", students: synEnrolled});
+    out.push({county: countyName[c], source: "Synthetic age 18-24 (PopSim 2023)", students: syn.age_18_24});
   }
   if (selectedCountySplit) return out;
   // Split off: add the selected counties into one total per source
@@ -490,7 +494,7 @@ chartCollege = collegeRows.length === 0
       y: {label: "Students", grid: true},
       color: {
         legend: true,
-        domain: ["USHE (all levels)", ipedsLabel, "Synthetic enrolled", "Synthetic age 18-24"],
+        domain: ["USHE AY 2025 (all levels)", ipedsLabel, "Synthetic enrolled (PopSim 2023)", "Synthetic age 18-24 (PopSim 2023)"],
         range: ["#1f78b4", "#33a02c", "#e31a1c", "#ff7f00"]
       },
       marks: [

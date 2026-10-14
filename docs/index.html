@@ -462,6 +462,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="comparisons-at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="comparisons-at-a-glance">Comparisons at a glance</h2>
+<p>Synthetic counts are from the 2023 PopulationSim run.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -480,7 +481,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>K-12, by district</td>
-<td>Utah DOE school counts (K-12 + preschool); NCES CCD public schools (K-12 + PK)</td>
+<td>Utah DOE school counts, 2024-25 (K-12 + preschool); NCES CCD public schools, 2023-24 (K-12 + PK)</td>
 <td><code>SCHG</code> 1-14, any age</td>
 <td>Ages 3-18</td>
 </tr>
@@ -536,14 +537,14 @@ ul.task-list li input[type="checkbox"] {
 <div>
 <pre class="mermaid mermaid-js">flowchart TD
     subgraph sources["Data sources"]
-        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts"]
-        NCES["NCES\nCCD public schools, Private School Universe Survey, postsecondary locations"]
-        IPEDS["IPEDS\nFall Enrollment and institutional control"]
+        UGRC["UGRC / Open SGID\ncounty, district, school and college boundaries and locations; DOE school counts (BY2023 snapshot, 2024-25)"]
+        NCES["NCES\nCCD public schools and Private School Universe Survey (2023-24), postsecondary locations"]
+        IPEDS["IPEDS\nFall 2023 Enrollment and institutional control"]
         CENSUS["Census TIGER (via pygris)\ncounties and blocks; blocks are not used in the crosswalks"]
         MAZSRC["MAZ microzones\ndraft layer supplied for Utah"]
         TAZSRC["WFRC WasatchFrontTAZ\nreference layer only"]
-        USHE["USHE\nenrollment by institution and site"]
-        PSIM["PopulationSim persons\nsynthetic population, local only"]
+        USHE["USHE\nenrollment by institution and site (AY 2025)"]
+        PSIM["PopulationSim persons\n2023 synthetic population, local only"]
     end
 
     UGRC --&gt; GEO

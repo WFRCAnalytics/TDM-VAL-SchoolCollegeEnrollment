@@ -523,6 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Objective</strong>: get district-level K-12 enrollment and county-level college enrollment from real, non-synthetic sources, joined through the school and college crosswalks built in <code>1_geography.qmd</code>.</li>
 <li><strong>What it pulls</strong>: Utah DOE enrollment (public schools only, from the BY2023 UGRC snapshot copied from TDM-INP-K-12-Enrollment; its SchoolYear field is 2025), NCES enrollment by district (public via CCD); NCES private-school enrollment (Private School Universe Survey), reported in section 3 but not in the district validation table; USHE enrollment by institution and site (the WFRC data request, not a home-ZIP file, so its geography is the institution’s site); and IPEDS by county (fall 2023 campus-based enrollment, institutional control, and full-time/part-time detail).</li>
+<li><strong>Data vintages</strong>: Utah DOE 2024-25 (the BY2023 UGRC snapshot, <code>SchoolYear</code> 2025), NCES CCD and PSS 2023-24, USHE Academic Year 2025 Term 2, IPEDS fall 2023, and PopulationSim 2023. Every chart and table names the vintage next to each source.</li>
 <li><strong>Known gaps</strong>:
 <ul>
 <li>Charter schools are counted as public schools in the district totals. Whether Utah DOE credits their enrollment to the resident district has not been checked against DOE’s published totals.</li>
@@ -534,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="2769a9e4" class="cell" data-execution_count="1">
+<div id="257145bc" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -565,7 +566,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-utah-doe-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-utah-doe-enrollment-by-district">1. K-12 — Utah DOE enrollment by district</h2>
-<div id="bef00b74" class="cell" data-execution_count="2">
+<div id="fecb3ab1" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public schools only, from the BY2023 UGRC snapshot (SchoolYear 2025) built in 1_geography.qmd</span></span>
@@ -706,7 +707,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="032286c7" class="cell" data-execution_count="3">
+<div id="92e80576" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Public DOE schools that did not get a district from the school crosswalk</span></span>
@@ -787,7 +788,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="cd509377" class="cell" data-execution_count="4">
+<div id="f10e9f9b" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Online school enrollment (reported separately; not included in the district totals above)</span></span>
@@ -808,7 +809,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-nces-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-nces-enrollment-by-district">2. K-12 — NCES enrollment by district</h2>
-<div id="db00f5cf" class="cell" data-execution_count="5">
+<div id="a4febfad" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matches constants["data_year"] -- the vintage pulled in 1_geography.qmd</span></span>
@@ -932,7 +933,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="k-12-nces-private-school-enrollment-by-district" class="level2">
 <h2 class="anchored" data-anchor-id="k-12-nces-private-school-enrollment-by-district">3. K-12 — NCES private-school enrollment by district</h2>
-<div id="a642cc31" class="cell" data-execution_count="6">
+<div id="f0b9a546" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Private School Universe Survey (PSS)</span></span>
@@ -956,7 +957,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>).query(<span class="st">"PSTABB == 'UT'"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="7f71c0a3" class="cell" data-execution_count="7">
+<div id="ba3202e7" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>crosswalk_private <span class="op">=</span> school_crosswalk[school_crosswalk[<span class="st">"Source"</span>] <span class="op">==</span> <span class="st">"NCES private"</span>]</span>
@@ -1061,7 +1062,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colleges-ushe-enrollment-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="colleges-ushe-enrollment-by-county">4. Colleges — USHE enrollment by county</h2>
-<div id="fc666ff6" class="cell" data-execution_count="8">
+<div id="c4cb321b" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the only USHE data WFRC has on file is Academic Year 2025 (Term 2 / Spring) and Academic Year 2020 (Term 2)</span></span>
@@ -1073,7 +1074,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ushe_2025_fall <span class="op">=</span> ushe.query(<span class="st">"`Academic Year` == 2025 and Term == 2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="bba36d64" class="cell" data-execution_count="9">
+<div id="040075d5" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scoped to WFRC region institutions/sites only (constants["counties"] in 1_geography.qmd) --</span></span>
@@ -1171,7 +1172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colleges-ncesipeds-enrollment-by-county" class="level2">
 <h2 class="anchored" data-anchor-id="colleges-ncesipeds-enrollment-by-county">5. Colleges — NCES/IPEDS enrollment by county</h2>
-<div id="94151a51" class="cell" data-execution_count="10">
+<div id="2fac06eb" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS Fall Enrollment distance-education component (EF{year}A_DIST). In-person enrollment is</span></span>
@@ -1194,7 +1195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>ipeds_dist <span class="op">=</span> pd.read_csv(zip_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="c2e9d0eb" class="cell" data-execution_count="11">
+<div id="d1d168cf" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS institutional control (public, private not-for-profit, private for-profit) from the IPEDS</span></span>
@@ -1230,7 +1231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="4e51ec0c" class="cell" data-execution_count="12">
+<div id="c78a51c4" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Every institution in the study counties that IPEDS covers, using campus-based enrollment: in-person</span></span>
@@ -1437,7 +1438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="ipeds-full-time-and-part-time-main-file" class="level3">
 <h3 class="anchored" data-anchor-id="ipeds-full-time-and-part-time-main-file">IPEDS full-time and part-time (main file)</h3>
-<div id="fee719a4" class="cell" data-execution_count="13">
+<div id="8f0211ba" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IPEDS Fall Enrollment main file (enrollment by level and full- or part-time status) and its data</span></span>
@@ -1456,7 +1457,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        path.write_bytes(response.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="7aacc767" class="cell" data-execution_count="14">
+<div id="5d1796e9" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The codes used below, checked against the IPEDS dictionary, so a change in IPEDS fails here</span></span>
@@ -1479,7 +1480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> dict_labels.get(code) <span class="op">==</span> label, <span class="ss">f"EFALEVEL </span><span class="sc">{</span>code<span class="sc">}</span><span class="ss"> is '</span><span class="sc">{</span>dict_labels<span class="sc">.</span>get(code)<span class="sc">}</span><span class="ss">', expected '</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">'"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="7179fa85" class="cell" data-execution_count="15">
+<div id="6e97dc6f" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(ef_main_zip) <span class="im">as</span> z:</span>
@@ -1509,7 +1510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="assemble-enrollment-tables">6. Assemble enrollment tables</h2>
 <section id="school-enrollment-by-school-districts" class="level3">
 <h3 class="anchored" data-anchor-id="school-enrollment-by-school-districts">School Enrollment by School Districts</h3>
-<div id="75b160b5" class="cell" data-execution_count="16">
+<div id="ea6b08bf" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Canonical district list -- every district the school crosswalk covers (school points and MAZ rows),</span></span>
@@ -1525,7 +1526,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="d92f8543" class="cell" data-execution_count="17">
+<div id="ac766cab" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check -- every district should have both DOE and NCES public enrollment; NaN here means</span></span>
@@ -1552,13 +1553,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p><em>K-12 and preschool enrollment by school district, public schools only: Utah DOE (UGRC school counts, K-12 plus preschool) and NCES public (CCD, K-12 plus PK). Blank cells are gaps in the source, not zeros.</em></p>
+<p><em>K-12 and preschool enrollment by school district, public schools only: Utah DOE 2024-25 (BY2023 UGRC snapshot, <code>SchoolYear</code> 2025, K-12 plus preschool) and NCES public (CCD 2023-24, K-12 plus PK). Blank cells are gaps in the source, not zeros.</em></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" data-startfrom="499" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 498;"><span id="cb22-499"><a href="#cb22-499" aria-hidden="true" tabindex="-1"></a>districts_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb22-500"><a href="#cb22-500" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-501"><a href="#cb22-501" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(districts_table<span class="op">,</span> {<span class="dt">rows</span><span class="op">:</span> <span class="dv">25</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" data-startfrom="502" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 501;"><span id="cb22-502"><a href="#cb22-502" aria-hidden="true" tabindex="-1"></a>districts_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">then</span>(rows <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({</span>
+<span id="cb22-503"><a href="#cb22-503" aria-hidden="true" tabindex="-1"></a>  <span class="st">"District Name"</span><span class="op">:</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
+<span id="cb22-504"><a href="#cb22-504" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Utah DOE 2024-25"</span><span class="op">:</span> d<span class="op">.</span><span class="at">doe_enrollment</span><span class="op">,</span></span>
+<span id="cb22-505"><a href="#cb22-505" aria-hidden="true" tabindex="-1"></a>  <span class="st">"NCES CCD 2023-24"</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span></span>
+<span id="cb22-506"><a href="#cb22-506" aria-hidden="true" tabindex="-1"></a>})))</span>
+<span id="cb22-507"><a href="#cb22-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-508"><a href="#cb22-508" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(districts_table<span class="op">,</span> {<span class="dt">rows</span><span class="op">:</span> <span class="dv">25</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -1578,7 +1583,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="school-enrollment-by-level" class="level3">
 <h3 class="anchored" data-anchor-id="school-enrollment-by-level">School Enrollment by Level</h3>
-<div id="c5c2c0e0" class="cell" data-execution_count="18">
+<div id="c2e7bc94" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enrollment by school level, summed from the grade columns each level covers. A school's own label</span></span>
@@ -2088,7 +2093,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="college-enrollment-by-counties" class="level3">
 <h3 class="anchored" data-anchor-id="college-enrollment-by-counties">College Enrollment by Counties</h3>
-<div id="c4992718" class="cell" data-execution_count="19">
+<div id="95838f35" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>county_list <span class="op">=</span> college_crosswalk[[<span class="st">"COUNTYFP"</span>]].dropna().drop_duplicates()</span>
@@ -2098,7 +2103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>).merge(ipeds_enrollment_by_county, on<span class="op">=</span><span class="st">"COUNTYFP"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="86269572" class="cell" data-execution_count="20">
+<div id="246f1aa4" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same sanity check, county side</span></span>
@@ -2134,13 +2139,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-startfrom="590" data-source-offset="-91"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 589;"><span id="cb26-590"><a href="#cb26-590" aria-hidden="true" tabindex="-1"></a>counties_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_county.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">then</span>(rows <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({</span>
-<span id="cb26-591"><a href="#cb26-591" aria-hidden="true" tabindex="-1"></a>  <span class="dt">County</span><span class="op">:</span> ({<span class="dv">3</span><span class="op">:</span> <span class="st">"Box Elder"</span><span class="op">,</span> <span class="dv">11</span><span class="op">:</span> <span class="st">"Davis"</span><span class="op">,</span> <span class="dv">35</span><span class="op">:</span> <span class="st">"Salt Lake"</span><span class="op">,</span> <span class="dv">49</span><span class="op">:</span> <span class="st">"Utah"</span><span class="op">,</span> <span class="dv">57</span><span class="op">:</span> <span class="st">"Weber"</span>})[d<span class="op">.</span><span class="at">COUNTYFP</span>]<span class="op">,</span></span>
-<span id="cb26-592"><a href="#cb26-592" aria-hidden="true" tabindex="-1"></a>  <span class="st">"USHE (AY 2025)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">ushe_enrollment</span><span class="op">,</span></span>
-<span id="cb26-593"><a href="#cb26-593" aria-hidden="true" tabindex="-1"></a>  <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span></span>
-<span id="cb26-594"><a href="#cb26-594" aria-hidden="true" tabindex="-1"></a>})))</span>
-<span id="cb26-595"><a href="#cb26-595" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-596"><a href="#cb26-596" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(counties_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-startfrom="597" data-source-offset="-91"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 596;"><span id="cb26-597"><a href="#cb26-597" aria-hidden="true" tabindex="-1"></a>counties_table <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_county.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">then</span>(rows <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({</span>
+<span id="cb26-598"><a href="#cb26-598" aria-hidden="true" tabindex="-1"></a>  <span class="dt">County</span><span class="op">:</span> ({<span class="dv">3</span><span class="op">:</span> <span class="st">"Box Elder"</span><span class="op">,</span> <span class="dv">11</span><span class="op">:</span> <span class="st">"Davis"</span><span class="op">,</span> <span class="dv">35</span><span class="op">:</span> <span class="st">"Salt Lake"</span><span class="op">,</span> <span class="dv">49</span><span class="op">:</span> <span class="st">"Utah"</span><span class="op">,</span> <span class="dv">57</span><span class="op">:</span> <span class="st">"Weber"</span>})[d<span class="op">.</span><span class="at">COUNTYFP</span>]<span class="op">,</span></span>
+<span id="cb26-599"><a href="#cb26-599" aria-hidden="true" tabindex="-1"></a>  <span class="st">"USHE (AY 2025)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">ushe_enrollment</span><span class="op">,</span></span>
+<span id="cb26-600"><a href="#cb26-600" aria-hidden="true" tabindex="-1"></a>  <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">:</span> d<span class="op">.</span><span class="at">nces_enrollment</span></span>
+<span id="cb26-601"><a href="#cb26-601" aria-hidden="true" tabindex="-1"></a>})))</span>
+<span id="cb26-602"><a href="#cb26-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-603"><a href="#cb26-603" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(counties_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -2157,7 +2162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="e0aaf6aa" class="cell" data-execution_count="21">
+<div id="64ae0b2d" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>paths[<span class="st">"output"</span>].mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
@@ -2173,40 +2178,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-startfrom="615" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 614;"><span id="cb28-615"><a href="#cb28-615" aria-hidden="true" tabindex="-1"></a>districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb28-616"><a href="#cb28-616" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-617"><a href="#cb28-617" aria-hidden="true" tabindex="-1"></a>max_district <span class="op">=</span> d3<span class="op">.</span><span class="fu">max</span>(districts<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">doe_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span> d<span class="op">.</span><span class="at">nces_enrollment</span> <span class="op">??</span> <span class="dv">0</span>))</span>
-<span id="cb28-618"><a href="#cb28-618" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-619"><a href="#cb28-619" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb28-620"><a href="#cb28-620" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
-<span id="cb28-621"><a href="#cb28-621" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">520</span><span class="op">,</span></span>
-<span id="cb28-622"><a href="#cb28-622" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb28-623"><a href="#cb28-623" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb28-624"><a href="#cb28-624" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
-<span id="cb28-625"><a href="#cb28-625" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb28-626"><a href="#cb28-626" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb28-627"><a href="#cb28-627" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb28-628"><a href="#cb28-628" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"DOE enrollment (UGRC school counts)"</span>}<span class="op">,</span></span>
-<span id="cb28-629"><a href="#cb28-629" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"NCES enrollment (CCD)"</span>}<span class="op">,</span></span>
-<span id="cb28-630"><a href="#cb28-630" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb28-631"><a href="#cb28-631" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>([[<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>]<span class="op">,</span> [max_district<span class="op">,</span> max_district]]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"#999"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"4 4"</span>})<span class="op">,</span></span>
-<span id="cb28-632"><a href="#cb28-632" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(districts<span class="op">,</span> {</span>
-<span id="cb28-633"><a href="#cb28-633" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"doe_enrollment"</span><span class="op">,</span></span>
-<span id="cb28-634"><a href="#cb28-634" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"nces_enrollment"</span><span class="op">,</span></span>
-<span id="cb28-635"><a href="#cb28-635" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span></span>
-<span id="cb28-636"><a href="#cb28-636" aria-hidden="true" tabindex="-1"></a>      <span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
-<span id="cb28-637"><a href="#cb28-637" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
-<span id="cb28-638"><a href="#cb28-638" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
-<span id="cb28-639"><a href="#cb28-639" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb28-640"><a href="#cb28-640" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
-<span id="cb28-641"><a href="#cb28-641" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
-<span id="cb28-642"><a href="#cb28-642" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`DOE: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb28-643"><a href="#cb28-643" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`NCES: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
-<span id="cb28-644"><a href="#cb28-644" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb28-645"><a href="#cb28-645" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb28-646"><a href="#cb28-646" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb28-647"><a href="#cb28-647" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb28-648"><a href="#cb28-648" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-startfrom="622" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 621;"><span id="cb28-622"><a href="#cb28-622" aria-hidden="true" tabindex="-1"></a>districts <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/real_enrollment_by_district.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb28-623"><a href="#cb28-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-624"><a href="#cb28-624" aria-hidden="true" tabindex="-1"></a>max_district <span class="op">=</span> d3<span class="op">.</span><span class="fu">max</span>(districts<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">doe_enrollment</span> <span class="op">??</span> <span class="dv">0</span><span class="op">,</span> d<span class="op">.</span><span class="at">nces_enrollment</span> <span class="op">??</span> <span class="dv">0</span>))</span>
+<span id="cb28-625"><a href="#cb28-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-626"><a href="#cb28-626" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb28-627"><a href="#cb28-627" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
+<span id="cb28-628"><a href="#cb28-628" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">520</span><span class="op">,</span></span>
+<span id="cb28-629"><a href="#cb28-629" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb28-630"><a href="#cb28-630" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb28-631"><a href="#cb28-631" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
+<span id="cb28-632"><a href="#cb28-632" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb28-633"><a href="#cb28-633" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb28-634"><a href="#cb28-634" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb28-635"><a href="#cb28-635" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Utah DOE enrollment, 2024-25 (UGRC school counts)"</span>}<span class="op">,</span></span>
+<span id="cb28-636"><a href="#cb28-636" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"NCES CCD enrollment, 2023-24"</span>}<span class="op">,</span></span>
+<span id="cb28-637"><a href="#cb28-637" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb28-638"><a href="#cb28-638" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>([[<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>]<span class="op">,</span> [max_district<span class="op">,</span> max_district]]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"#999"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"4 4"</span>})<span class="op">,</span></span>
+<span id="cb28-639"><a href="#cb28-639" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(districts<span class="op">,</span> {</span>
+<span id="cb28-640"><a href="#cb28-640" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"doe_enrollment"</span><span class="op">,</span></span>
+<span id="cb28-641"><a href="#cb28-641" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"nces_enrollment"</span><span class="op">,</span></span>
+<span id="cb28-642"><a href="#cb28-642" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"#1f78b4"</span><span class="op">,</span></span>
+<span id="cb28-643"><a href="#cb28-643" aria-hidden="true" tabindex="-1"></a>      <span class="dt">r</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb28-644"><a href="#cb28-644" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> d[<span class="st">"District Name"</span>]<span class="op">,</span></span>
+<span id="cb28-645"><a href="#cb28-645" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
+<span id="cb28-646"><a href="#cb28-646" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb28-647"><a href="#cb28-647" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
+<span id="cb28-648"><a href="#cb28-648" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
+<span id="cb28-649"><a href="#cb28-649" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`DOE 2024-25: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb28-650"><a href="#cb28-650" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`NCES 2023-24: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb28-651"><a href="#cb28-651" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb28-652"><a href="#cb28-652" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb28-653"><a href="#cb28-653" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb28-654"><a href="#cb28-654" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb28-655"><a href="#cb28-655" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-district-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2255,7 +2260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-district-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Public K-12 and preschool enrollment by district: Utah DOE (UGRC school counts) against NCES (CCD). Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most.
+Figure&nbsp;1: Public K-12 and preschool enrollment by district: Utah DOE 2024-25 (UGRC school counts) against NCES CCD 2023-24. Points on the dashed line agree exactly; points far from it are districts where the two sources disagree most.
 </figcaption>
 </figure>
 </div>
@@ -2263,44 +2268,44 @@ Figure&nbsp;1: Public K-12 and preschool enrollment by district: Utah DOE (UGRC 
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-startfrom="656" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 655;"><span id="cb29-656"><a href="#cb29-656" aria-hidden="true" tabindex="-1"></a>college_long <span class="op">=</span> counties_table<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
-<span id="cb29-657"><a href="#cb29-657" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"USHE (AY 2025)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"USHE (AY 2025)"</span>]}<span class="op">,</span></span>
-<span id="cb29-658"><a href="#cb29-658" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"IPEDS in-person (fall 2023)"</span>]}</span>
-<span id="cb29-659"><a href="#cb29-659" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb29-660"><a href="#cb29-660" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-661"><a href="#cb29-661" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb29-662"><a href="#cb29-662" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
-<span id="cb29-663"><a href="#cb29-663" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">420</span><span class="op">,</span></span>
-<span id="cb29-664"><a href="#cb29-664" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb29-665"><a href="#cb29-665" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb29-666"><a href="#cb29-666" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
-<span id="cb29-667"><a href="#cb29-667" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb29-668"><a href="#cb29-668" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb29-669"><a href="#cb29-669" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb29-670"><a href="#cb29-670" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb29-671"><a href="#cb29-671" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb29-672"><a href="#cb29-672" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Headcount"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb29-673"><a href="#cb29-673" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Source"</span>}<span class="op">,</span></span>
-<span id="cb29-674"><a href="#cb29-674" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb29-675"><a href="#cb29-675" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barY</span>(college_long<span class="op">,</span> {</span>
-<span id="cb29-676"><a href="#cb29-676" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="st">"county"</span><span class="op">,</span></span>
-<span id="cb29-677"><a href="#cb29-677" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
-<span id="cb29-678"><a href="#cb29-678" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"headcount"</span><span class="op">,</span></span>
-<span id="cb29-679"><a href="#cb29-679" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
-<span id="cb29-680"><a href="#cb29-680" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">county</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">source</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb29-681"><a href="#cb29-681" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
-<span id="cb29-682"><a href="#cb29-682" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb29-683"><a href="#cb29-683" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
-<span id="cb29-684"><a href="#cb29-684" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
-<span id="cb29-685"><a href="#cb29-685" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fx</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb29-686"><a href="#cb29-686" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb29-687"><a href="#cb29-687" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb29-688"><a href="#cb29-688" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`Headcount: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
-<span id="cb29-689"><a href="#cb29-689" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb29-690"><a href="#cb29-690" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb29-691"><a href="#cb29-691" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb29-692"><a href="#cb29-692" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb29-693"><a href="#cb29-693" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-startfrom="663" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 662;"><span id="cb29-663"><a href="#cb29-663" aria-hidden="true" tabindex="-1"></a>college_long <span class="op">=</span> counties_table<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
+<span id="cb29-664"><a href="#cb29-664" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"USHE (AY 2025)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"USHE (AY 2025)"</span>]}<span class="op">,</span></span>
+<span id="cb29-665"><a href="#cb29-665" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">county</span><span class="op">:</span> d<span class="op">.</span><span class="at">County</span><span class="op">,</span> <span class="dt">source</span><span class="op">:</span> <span class="st">"IPEDS in-person (fall 2023)"</span><span class="op">,</span> <span class="dt">headcount</span><span class="op">:</span> d[<span class="st">"IPEDS in-person (fall 2023)"</span>]}</span>
+<span id="cb29-666"><a href="#cb29-666" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb29-667"><a href="#cb29-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-668"><a href="#cb29-668" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb29-669"><a href="#cb29-669" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">720</span><span class="op">,</span></span>
+<span id="cb29-670"><a href="#cb29-670" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">420</span><span class="op">,</span></span>
+<span id="cb29-671"><a href="#cb29-671" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb29-672"><a href="#cb29-672" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb29-673"><a href="#cb29-673" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">70</span><span class="op">,</span></span>
+<span id="cb29-674"><a href="#cb29-674" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb29-675"><a href="#cb29-675" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb29-676"><a href="#cb29-676" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb29-677"><a href="#cb29-677" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb29-678"><a href="#cb29-678" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb29-679"><a href="#cb29-679" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Headcount"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb29-680"><a href="#cb29-680" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Source"</span>}<span class="op">,</span></span>
+<span id="cb29-681"><a href="#cb29-681" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb29-682"><a href="#cb29-682" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barY</span>(college_long<span class="op">,</span> {</span>
+<span id="cb29-683"><a href="#cb29-683" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="st">"county"</span><span class="op">,</span></span>
+<span id="cb29-684"><a href="#cb29-684" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb29-685"><a href="#cb29-685" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"headcount"</span><span class="op">,</span></span>
+<span id="cb29-686"><a href="#cb29-686" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"source"</span><span class="op">,</span></span>
+<span id="cb29-687"><a href="#cb29-687" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">county</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">source</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb29-688"><a href="#cb29-688" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {</span>
+<span id="cb29-689"><a href="#cb29-689" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb29-690"><a href="#cb29-690" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span><span class="op">,</span></span>
+<span id="cb29-691"><a href="#cb29-691" aria-hidden="true" tabindex="-1"></a>        <span class="dt">format</span><span class="op">:</span> {</span>
+<span id="cb29-692"><a href="#cb29-692" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fx</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-693"><a href="#cb29-693" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-694"><a href="#cb29-694" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-695"><a href="#cb29-695" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`Headcount: </span><span class="sc">${</span>d<span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb29-696"><a href="#cb29-696" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb29-697"><a href="#cb29-697" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb29-698"><a href="#cb29-698" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb29-699"><a href="#cb29-699" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb29-700"><a href="#cb29-700" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-county-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2343,7 +2348,7 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 </section>
 <section id="universities-ushe-vs-ipeds-by-modality" class="level2">
 <h2 class="anchored" data-anchor-id="universities-ushe-vs-ipeds-by-modality">8. Universities: USHE vs IPEDS by modality</h2>
-<div id="3203ed06" class="cell" data-execution_count="22">
+<div id="e66fc520" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>university_names <span class="op">=</span> {</span>
@@ -2618,7 +2623,7 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-startfrom="759" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 758;"><span id="cb31-759"><a href="#cb31-759" aria-hidden="true" tabindex="-1"></a>uni_modality_compare <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/university_modality_compare.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-startfrom="766" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 765;"><span id="cb31-766"><a href="#cb31-766" aria-hidden="true" tabindex="-1"></a>uni_modality_compare <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"_data/intermediate/university_modality_compare.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-6" data-nodetype="declaration">
@@ -2629,29 +2634,29 @@ Figure&nbsp;2: College headcount by county from USHE (Academic Year 2025, full-t
 <div class="cell">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-startfrom="766" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 765;"><span id="cb32-766"><a href="#cb32-766" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb32-767"><a href="#cb32-767" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
-<span id="cb32-768"><a href="#cb32-768" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">110</span> <span class="op">*</span> <span class="kw">new</span> <span class="bu">Set</span>(uni_modality_compare<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Institution</span>))<span class="op">.</span><span class="at">size</span> <span class="op">+</span> <span class="dv">60</span><span class="op">,</span></span>
-<span id="cb32-769"><a href="#cb32-769" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span></span>
-<span id="cb32-770"><a href="#cb32-770" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
-<span id="cb32-771"><a href="#cb32-771" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
-<span id="cb32-772"><a href="#cb32-772" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb32-773"><a href="#cb32-773" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
-<span id="cb32-774"><a href="#cb32-774" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fy</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb32-775"><a href="#cb32-775" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb32-776"><a href="#cb32-776" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb32-777"><a href="#cb32-777" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="st">"In-person only"</span><span class="op">,</span> <span class="st">"Hybrid (some DE)"</span><span class="op">,</span> <span class="st">"Online only"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#1f78b4"</span><span class="op">,</span> <span class="st">"#f59e0b"</span><span class="op">,</span> <span class="st">"#9ca3af"</span>]}<span class="op">,</span></span>
-<span id="cb32-778"><a href="#cb32-778" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb32-779"><a href="#cb32-779" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barX</span>(uni_modality_compare<span class="op">,</span> {</span>
-<span id="cb32-780"><a href="#cb32-780" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fy</span><span class="op">:</span> <span class="st">"Institution"</span><span class="op">,</span></span>
-<span id="cb32-781"><a href="#cb32-781" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"Source"</span><span class="op">,</span></span>
-<span id="cb32-782"><a href="#cb32-782" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span></span>
-<span id="cb32-783"><a href="#cb32-783" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"Segment"</span><span class="op">,</span></span>
-<span id="cb32-784"><a href="#cb32-784" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">Institution</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Source</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Segment</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Students</span><span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb32-785"><a href="#cb32-785" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span>}</span>
-<span id="cb32-786"><a href="#cb32-786" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb32-787"><a href="#cb32-787" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb32-788"><a href="#cb32-788" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-startfrom="773" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 772;"><span id="cb32-773"><a href="#cb32-773" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb32-774"><a href="#cb32-774" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
+<span id="cb32-775"><a href="#cb32-775" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">110</span> <span class="op">*</span> <span class="kw">new</span> <span class="bu">Set</span>(uni_modality_compare<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Institution</span>))<span class="op">.</span><span class="at">size</span> <span class="op">+</span> <span class="dv">60</span><span class="op">,</span></span>
+<span id="cb32-776"><a href="#cb32-776" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span></span>
+<span id="cb32-777"><a href="#cb32-777" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">30</span><span class="op">,</span></span>
+<span id="cb32-778"><a href="#cb32-778" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
+<span id="cb32-779"><a href="#cb32-779" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb32-780"><a href="#cb32-780" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"inherit"</span>}<span class="op">,</span></span>
+<span id="cb32-781"><a href="#cb32-781" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fy</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb32-782"><a href="#cb32-782" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb32-783"><a href="#cb32-783" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb32-784"><a href="#cb32-784" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="st">"In-person only"</span><span class="op">,</span> <span class="st">"Hybrid (some DE)"</span><span class="op">,</span> <span class="st">"Online only"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#1f78b4"</span><span class="op">,</span> <span class="st">"#f59e0b"</span><span class="op">,</span> <span class="st">"#9ca3af"</span>]}<span class="op">,</span></span>
+<span id="cb32-785"><a href="#cb32-785" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb32-786"><a href="#cb32-786" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barX</span>(uni_modality_compare<span class="op">,</span> {</span>
+<span id="cb32-787"><a href="#cb32-787" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fy</span><span class="op">:</span> <span class="st">"Institution"</span><span class="op">,</span></span>
+<span id="cb32-788"><a href="#cb32-788" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"Source"</span><span class="op">,</span></span>
+<span id="cb32-789"><a href="#cb32-789" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"Students"</span><span class="op">,</span></span>
+<span id="cb32-790"><a href="#cb32-790" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"Segment"</span><span class="op">,</span></span>
+<span id="cb32-791"><a href="#cb32-791" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">Institution</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Source</span><span class="sc">}</span><span class="vs">, </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Segment</span><span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">Students</span><span class="op">.</span><span class="fu">toLocaleString</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb32-792"><a href="#cb32-792" aria-hidden="true" tabindex="-1"></a>      <span class="dt">tip</span><span class="op">:</span> {<span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#374151"</span>}</span>
+<span id="cb32-793"><a href="#cb32-793" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb32-794"><a href="#cb32-794" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb32-795"><a href="#cb32-795" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-university-modality" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2673,7 +2678,7 @@ Figure&nbsp;3: USHE vs IPEDS enrollment by modality. IPEDS is fall 2023 and incl
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG4gIC8qIFRvb2x0aXAgYm94IGlzIHdoaXRlLCBzbyBpdHMgdGV4dCBtdXN0IHN0YXkgZGFyayBpbiBkYXJrIG1vZGUgKi9cbiAgW2FyaWEtbGFiZWw9XCJ0aXBcIl0gdGV4dCB7IGZpbGw6ICMzNzQxNTEgIWltcG9ydGFudDsgfVxuPC9zdHlsZT5gXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJkaXN0cmljdHNfdGFibGUgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9yZWFsX2Vucm9sbG1lbnRfYnlfZGlzdHJpY3QuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KVxuXG5JbnB1dHMudGFibGUoZGlzdHJpY3RzX3RhYmxlLCB7cm93czogMjV9KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8gQ09VTlRZRlAgaXMgbnVtZXJpYyBvbmNlIHR5cGVkLCBzbyBtYXAgaXQgYmFjayB0byBuYW1lcyBoZXJlICgzID0gQm94IEVsZGVyLCBub3QgXCIwMDNcIilcbmNvdW50aWVzX3RhYmxlID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvcmVhbF9lbnJvbGxtZW50X2J5X2NvdW50eS5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pLnRoZW4ocm93cyA9PiByb3dzLm1hcChkID0+ICh7XG4gIENvdW50eTogKHszOiBcIkJveCBFbGRlclwiLCAxMTogXCJEYXZpc1wiLCAzNTogXCJTYWx0IExha2VcIiwgNDk6IFwiVXRhaFwiLCA1NzogXCJXZWJlclwifSlbZC5DT1VOVFlGUF0sXG4gIFwiVVNIRSAoQVkgMjAyNSlcIjogZC51c2hlX2Vucm9sbG1lbnQsXG4gIFwiSVBFRFMgaW4tcGVyc29uIChmYWxsIDIwMjMpXCI6IGQubmNlc19lbnJvbGxtZW50XG59KSkpXG5cbklucHV0cy50YWJsZShjb3VudGllc190YWJsZSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlxuZGlzdHJpY3RzID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvcmVhbF9lbnJvbGxtZW50X2J5X2Rpc3RyaWN0LmNzdlwiKS5jc3Yoe3R5cGVkOiB0cnVlfSlcblxubWF4X2Rpc3RyaWN0ID0gZDMubWF4KGRpc3RyaWN0cywgZCA9PiBNYXRoLm1heChkLmRvZV9lbnJvbGxtZW50ID8/IDAsIGQubmNlc19lbnJvbGxtZW50ID8/IDApKVxuXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzIwLFxuICBoZWlnaHQ6IDUyMCxcbiAgZ3JpZDogdHJ1ZSxcbiAgbWFyZ2luTGVmdDogOTAsXG4gIG1hcmdpbkJvdHRvbTogNzAsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpblJpZ2h0OiAyMCxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIHg6IHtsYWJlbDogXCJET0UgZW5yb2xsbWVudCAoVUdSQyBzY2hvb2wgY291bnRzKVwifSxcbiAgeToge2xhYmVsOiBcIk5DRVMgZW5yb2xsbWVudCAoQ0NEKVwifSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmxpbmUoW1swLCAwXSwgW21heF9kaXN0cmljdCwgbWF4X2Rpc3RyaWN0XV0sIHtzdHJva2U6IFwiIzk5OVwiLCBzdHJva2VEYXNoYXJyYXk6IFwiNCA0XCJ9KSxcbiAgICBQbG90LmRvdChkaXN0cmljdHMsIHtcbiAgICAgIHg6IFwiZG9lX2Vucm9sbG1lbnRcIixcbiAgICAgIHk6IFwibmNlc19lbnJvbGxtZW50XCIsXG4gICAgICBmaWxsOiBcIiMxZjc4YjRcIixcbiAgICAgIHI6IDQsXG4gICAgICB0aXRsZTogZCA9PiBkW1wiRGlzdHJpY3QgTmFtZVwiXSxcbiAgICAgIHRpcDoge1xuICAgICAgICBmaWxsOiBcIndoaXRlXCIsXG4gICAgICAgIHN0cm9rZTogXCIjMzc0MTUxXCIsXG4gICAgICAgIGZvcm1hdDoge1xuICAgICAgICAgIHg6IGQgPT4gYERPRTogJHtkLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgICAgICB5OiBkID0+IGBOQ0VTOiAke2QudG9Mb2NhbGVTdHJpbmcoKX1gXG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9KVxuICBdXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC01IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5jb2xsZWdlX2xvbmcgPSBjb3VudGllc190YWJsZS5mbGF0TWFwKGQgPT4gW1xuICB7Y291bnR5OiBkLkNvdW50eSwgc291cmNlOiBcIlVTSEUgKEFZIDIwMjUpXCIsIGhlYWRjb3VudDogZFtcIlVTSEUgKEFZIDIwMjUpXCJdfSxcbiAge2NvdW50eTogZC5Db3VudHksIHNvdXJjZTogXCJJUEVEUyBpbi1wZXJzb24gKGZhbGwgMjAyMylcIiwgaGVhZGNvdW50OiBkW1wiSVBFRFMgaW4tcGVyc29uIChmYWxsIDIwMjMpXCJdfVxuXSlcblxuUGxvdC5wbG90KHtcbiAgd2lkdGg6IDcyMCxcbiAgaGVpZ2h0OiA0MjAsXG4gIGdyaWQ6IHRydWUsXG4gIG1hcmdpbkxlZnQ6IDkwLFxuICBtYXJnaW5Cb3R0b206IDcwLFxuICBtYXJnaW5Ub3A6IDIwLFxuICBtYXJnaW5SaWdodDogMjAsXG4gIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBjb2xvcjogXCJpbmhlcml0XCJ9LFxuICBmeDoge2xhYmVsOiBudWxsfSxcbiAgeDoge2F4aXM6IG51bGx9LFxuICB5OiB7bGFiZWw6IFwiSGVhZGNvdW50XCIsIGdyaWQ6IHRydWV9LFxuICBjb2xvcjoge2xlZ2VuZDogdHJ1ZSwgbGFiZWw6IFwiU291cmNlXCJ9LFxuICBtYXJrczogW1xuICAgIFBsb3QuYmFyWShjb2xsZWdlX2xvbmcsIHtcbiAgICAgIGZ4OiBcImNvdW50eVwiLFxuICAgICAgeDogXCJzb3VyY2VcIixcbiAgICAgIHk6IFwiaGVhZGNvdW50XCIsXG4gICAgICBmaWxsOiBcInNvdXJjZVwiLFxuICAgICAgdGl0bGU6IGQgPT4gYCR7ZC5jb3VudHl9LCAke2Quc291cmNlfWAsXG4gICAgICB0aXA6IHtcbiAgICAgICAgZmlsbDogXCJ3aGl0ZVwiLFxuICAgICAgICBzdHJva2U6IFwiIzM3NDE1MVwiLFxuICAgICAgICBmb3JtYXQ6IHtcbiAgICAgICAgICBmeDogZmFsc2UsXG4gICAgICAgICAgeDogZmFsc2UsXG4gICAgICAgICAgZmlsbDogZmFsc2UsXG4gICAgICAgICAgeTogZCA9PiBgSGVhZGNvdW50OiAke2QudG9Mb2NhbGVTdHJpbmcoKX1gXG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9KVxuICBdXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC02IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidW5pX21vZGFsaXR5X2NvbXBhcmUgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS91bml2ZXJzaXR5X21vZGFsaXR5X2NvbXBhcmUuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC03IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzYwLFxuICBoZWlnaHQ6IDExMCAqIG5ldyBTZXQodW5pX21vZGFsaXR5X2NvbXBhcmUubWFwKGQgPT4gZC5JbnN0aXR1dGlvbikpLnNpemUgKyA2MCxcbiAgbWFyZ2luTGVmdDogMjAwLFxuICBtYXJnaW5SaWdodDogMzAsXG4gIG1hcmdpbkJvdHRvbTogNTAsXG4gIGdyaWQ6IHRydWUsXG4gIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBjb2xvcjogXCJpbmhlcml0XCJ9LFxuICBmeToge2xhYmVsOiBudWxsfSxcbiAgeDoge2xhYmVsOiBcIlN0dWRlbnRzXCIsIGdyaWQ6IHRydWV9LFxuICB5OiB7bGFiZWw6IG51bGx9LFxuICBjb2xvcjoge2xlZ2VuZDogdHJ1ZSwgZG9tYWluOiBbXCJJbi1wZXJzb24gb25seVwiLCBcIkh5YnJpZCAoc29tZSBERSlcIiwgXCJPbmxpbmUgb25seVwiXSwgcmFuZ2U6IFtcIiMxZjc4YjRcIiwgXCIjZjU5ZTBiXCIsIFwiIzljYTNhZlwiXX0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5iYXJYKHVuaV9tb2RhbGl0eV9jb21wYXJlLCB7XG4gICAgICBmeTogXCJJbnN0aXR1dGlvblwiLFxuICAgICAgeTogXCJTb3VyY2VcIixcbiAgICAgIHg6IFwiU3R1ZGVudHNcIixcbiAgICAgIGZpbGw6IFwiU2VnbWVudFwiLFxuICAgICAgdGl0bGU6IGQgPT4gYCR7ZC5JbnN0aXR1dGlvbn0sICR7ZC5Tb3VyY2V9LCAke2QuU2VnbWVudH06ICR7ZC5TdHVkZW50cy50b0xvY2FsZVN0cmluZygpfWAsXG4gICAgICB0aXA6IHtmaWxsOiBcIndoaXRlXCIsIHN0cm9rZTogXCIjMzc0MTUxXCJ9XG4gICAgfSlcbiAgXVxufSlcbiJ9XX0=
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG4gIC8qIFRvb2x0aXAgYm94IGlzIHdoaXRlLCBzbyBpdHMgdGV4dCBtdXN0IHN0YXkgZGFyayBpbiBkYXJrIG1vZGUgKi9cbiAgW2FyaWEtbGFiZWw9XCJ0aXBcIl0gdGV4dCB7IGZpbGw6ICMzNzQxNTEgIWltcG9ydGFudDsgfVxuPC9zdHlsZT5gXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJkaXN0cmljdHNfdGFibGUgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9yZWFsX2Vucm9sbG1lbnRfYnlfZGlzdHJpY3QuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KS50aGVuKHJvd3MgPT4gcm93cy5tYXAoZCA9PiAoe1xuICBcIkRpc3RyaWN0IE5hbWVcIjogZFtcIkRpc3RyaWN0IE5hbWVcIl0sXG4gIFwiVXRhaCBET0UgMjAyNC0yNVwiOiBkLmRvZV9lbnJvbGxtZW50LFxuICBcIk5DRVMgQ0NEIDIwMjMtMjRcIjogZC5uY2VzX2Vucm9sbG1lbnRcbn0pKSlcblxuSW5wdXRzLnRhYmxlKGRpc3RyaWN0c190YWJsZSwge3Jvd3M6IDI1fSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENPVU5UWUZQIGlzIG51bWVyaWMgb25jZSB0eXBlZCwgc28gbWFwIGl0IGJhY2sgdG8gbmFtZXMgaGVyZSAoMyA9IEJveCBFbGRlciwgbm90IFwiMDAzXCIpXG5jb3VudGllc190YWJsZSA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfZW5yb2xsbWVudF9ieV9jb3VudHkuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KS50aGVuKHJvd3MgPT4gcm93cy5tYXAoZCA9PiAoe1xuICBDb3VudHk6ICh7MzogXCJCb3ggRWxkZXJcIiwgMTE6IFwiRGF2aXNcIiwgMzU6IFwiU2FsdCBMYWtlXCIsIDQ5OiBcIlV0YWhcIiwgNTc6IFwiV2ViZXJcIn0pW2QuQ09VTlRZRlBdLFxuICBcIlVTSEUgKEFZIDIwMjUpXCI6IGQudXNoZV9lbnJvbGxtZW50LFxuICBcIklQRURTIGluLXBlcnNvbiAoZmFsbCAyMDIzKVwiOiBkLm5jZXNfZW5yb2xsbWVudFxufSkpKVxuXG5JbnB1dHMudGFibGUoY291bnRpZXNfdGFibGUpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmRpc3RyaWN0cyA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfZW5yb2xsbWVudF9ieV9kaXN0cmljdC5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pXG5cbm1heF9kaXN0cmljdCA9IGQzLm1heChkaXN0cmljdHMsIGQgPT4gTWF0aC5tYXgoZC5kb2VfZW5yb2xsbWVudCA/PyAwLCBkLm5jZXNfZW5yb2xsbWVudCA/PyAwKSlcblxuUGxvdC5wbG90KHtcbiAgd2lkdGg6IDcyMCxcbiAgaGVpZ2h0OiA1MjAsXG4gIGdyaWQ6IHRydWUsXG4gIG1hcmdpbkxlZnQ6IDkwLFxuICBtYXJnaW5Cb3R0b206IDcwLFxuICBtYXJnaW5Ub3A6IDIwLFxuICBtYXJnaW5SaWdodDogMjAsXG4gIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBjb2xvcjogXCJpbmhlcml0XCJ9LFxuICB4OiB7bGFiZWw6IFwiVXRhaCBET0UgZW5yb2xsbWVudCwgMjAyNC0yNSAoVUdSQyBzY2hvb2wgY291bnRzKVwifSxcbiAgeToge2xhYmVsOiBcIk5DRVMgQ0NEIGVucm9sbG1lbnQsIDIwMjMtMjRcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5saW5lKFtbMCwgMF0sIFttYXhfZGlzdHJpY3QsIG1heF9kaXN0cmljdF1dLCB7c3Ryb2tlOiBcIiM5OTlcIiwgc3Ryb2tlRGFzaGFycmF5OiBcIjQgNFwifSksXG4gICAgUGxvdC5kb3QoZGlzdHJpY3RzLCB7XG4gICAgICB4OiBcImRvZV9lbnJvbGxtZW50XCIsXG4gICAgICB5OiBcIm5jZXNfZW5yb2xsbWVudFwiLFxuICAgICAgZmlsbDogXCIjMWY3OGI0XCIsXG4gICAgICByOiA0LFxuICAgICAgdGl0bGU6IGQgPT4gZFtcIkRpc3RyaWN0IE5hbWVcIl0sXG4gICAgICB0aXA6IHtcbiAgICAgICAgZmlsbDogXCJ3aGl0ZVwiLFxuICAgICAgICBzdHJva2U6IFwiIzM3NDE1MVwiLFxuICAgICAgICBmb3JtYXQ6IHtcbiAgICAgICAgICB4OiBkID0+IGBET0UgMjAyNC0yNTogJHtkLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgICAgICB5OiBkID0+IGBOQ0VTIDIwMjMtMjQ6ICR7ZC50b0xvY2FsZVN0cmluZygpfWBcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH0pXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmNvbGxlZ2VfbG9uZyA9IGNvdW50aWVzX3RhYmxlLmZsYXRNYXAoZCA9PiBbXG4gIHtjb3VudHk6IGQuQ291bnR5LCBzb3VyY2U6IFwiVVNIRSAoQVkgMjAyNSlcIiwgaGVhZGNvdW50OiBkW1wiVVNIRSAoQVkgMjAyNSlcIl19LFxuICB7Y291bnR5OiBkLkNvdW50eSwgc291cmNlOiBcIklQRURTIGluLXBlcnNvbiAoZmFsbCAyMDIzKVwiLCBoZWFkY291bnQ6IGRbXCJJUEVEUyBpbi1wZXJzb24gKGZhbGwgMjAyMylcIl19XG5dKVxuXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzIwLFxuICBoZWlnaHQ6IDQyMCxcbiAgZ3JpZDogdHJ1ZSxcbiAgbWFyZ2luTGVmdDogOTAsXG4gIG1hcmdpbkJvdHRvbTogNzAsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpblJpZ2h0OiAyMCxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIGZ4OiB7bGFiZWw6IG51bGx9LFxuICB4OiB7YXhpczogbnVsbH0sXG4gIHk6IHtsYWJlbDogXCJIZWFkY291bnRcIiwgZ3JpZDogdHJ1ZX0sXG4gIGNvbG9yOiB7bGVnZW5kOiB0cnVlLCBsYWJlbDogXCJTb3VyY2VcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5iYXJZKGNvbGxlZ2VfbG9uZywge1xuICAgICAgZng6IFwiY291bnR5XCIsXG4gICAgICB4OiBcInNvdXJjZVwiLFxuICAgICAgeTogXCJoZWFkY291bnRcIixcbiAgICAgIGZpbGw6IFwic291cmNlXCIsXG4gICAgICB0aXRsZTogZCA9PiBgJHtkLmNvdW50eX0sICR7ZC5zb3VyY2V9YCxcbiAgICAgIHRpcDoge1xuICAgICAgICBmaWxsOiBcIndoaXRlXCIsXG4gICAgICAgIHN0cm9rZTogXCIjMzc0MTUxXCIsXG4gICAgICAgIGZvcm1hdDoge1xuICAgICAgICAgIGZ4OiBmYWxzZSxcbiAgICAgICAgICB4OiBmYWxzZSxcbiAgICAgICAgICBmaWxsOiBmYWxzZSxcbiAgICAgICAgICB5OiBkID0+IGBIZWFkY291bnQ6ICR7ZC50b0xvY2FsZVN0cmluZygpfWBcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH0pXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ1bmlfbW9kYWxpdHlfY29tcGFyZSA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3VuaXZlcnNpdHlfbW9kYWxpdHlfY29tcGFyZS5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcblBsb3QucGxvdCh7XG4gIHdpZHRoOiA3NjAsXG4gIGhlaWdodDogMTEwICogbmV3IFNldCh1bmlfbW9kYWxpdHlfY29tcGFyZS5tYXAoZCA9PiBkLkluc3RpdHV0aW9uKSkuc2l6ZSArIDYwLFxuICBtYXJnaW5MZWZ0OiAyMDAsXG4gIG1hcmdpblJpZ2h0OiAzMCxcbiAgbWFyZ2luQm90dG9tOiA1MCxcbiAgZ3JpZDogdHJ1ZSxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIGZ5OiB7bGFiZWw6IG51bGx9LFxuICB4OiB7bGFiZWw6IFwiU3R1ZGVudHNcIiwgZ3JpZDogdHJ1ZX0sXG4gIHk6IHtsYWJlbDogbnVsbH0sXG4gIGNvbG9yOiB7bGVnZW5kOiB0cnVlLCBkb21haW46IFtcIkluLXBlcnNvbiBvbmx5XCIsIFwiSHlicmlkIChzb21lIERFKVwiLCBcIk9ubGluZSBvbmx5XCJdLCByYW5nZTogW1wiIzFmNzhiNFwiLCBcIiNmNTllMGJcIiwgXCIjOWNhM2FmXCJdfSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmJhclgodW5pX21vZGFsaXR5X2NvbXBhcmUsIHtcbiAgICAgIGZ5OiBcIkluc3RpdHV0aW9uXCIsXG4gICAgICB5OiBcIlNvdXJjZVwiLFxuICAgICAgeDogXCJTdHVkZW50c1wiLFxuICAgICAgZmlsbDogXCJTZWdtZW50XCIsXG4gICAgICB0aXRsZTogZCA9PiBgJHtkLkluc3RpdHV0aW9ufSwgJHtkLlNvdXJjZX0sICR7ZC5TZWdtZW50fTogJHtkLlN0dWRlbnRzLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgIHRpcDoge2ZpbGw6IFwid2hpdGVcIiwgc3Ryb2tlOiBcIiMzNzQxNTFcIn1cbiAgICB9KVxuICBdXG59KVxuIn1dfQ==
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
