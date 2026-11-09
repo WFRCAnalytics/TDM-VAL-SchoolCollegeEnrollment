@@ -87,9 +87,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d33a26a16f254f821e10f8aca233cde0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-7623e4a83344a6f849c60ae67e6d19b9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-d33a26a16f254f821e10f8aca233cde0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-75a1b72cae5734e7af4df110d22ab200.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a8a1a83c72b8c6b0976b5795d35f34ff.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-75a1b72cae5734e7af4df110d22ab200.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -2703,69 +2703,133 @@ Figure&nbsp;3: USHE vs IPEDS enrollment by modality. IPEDS is fall 2023 and incl
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script>
+
 // Accessibility fixes for things Quarto and its libraries render but cannot configure.
+
 // Included on every page through wfrc-shared.yml (format.html.include-after-body).
+
 (function () {
+
   function fix(root) {
+
     // Listing banners are decorative; Quarto drops an empty `image-alt`.
+
     root.querySelectorAll('img.thumbnail-image:not([alt])').forEach(function (img) {
+
       img.setAttribute('alt', '');
+
     });
+
     // Quarto only sets `title` on the color-scheme toggle: add an accessible name and a clearer tooltip.
+
     root.querySelectorAll('.quarto-color-scheme-toggle:not([aria-label])').forEach(function (a) {
+
       a.setAttribute('aria-label', 'Toggle light and dark mode');
+
       a.setAttribute('title', 'Toggle light / dark');
+
     });
+
     // Collapsible callouts put aria-expanded on a plain div: make it a real, keyboard-operable button.
+
     root.querySelectorAll('.callout-header[aria-expanded]:not([role])').forEach(function (h) {
+
       h.setAttribute('role', 'button');
+
       h.setAttribute('tabindex', '0');
+
       h.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); h.click(); }
+
       });
+
     });
+
     // The announcement's dismiss control is a bare <i> with a click handler: give it a role, a name
+
     // and keyboard operation (Enter and Space).
+
     root.querySelectorAll('#quarto-announcement .quarto-announcement-action:not([role])').forEach(function (i) {
+
       i.setAttribute('role', 'button');
+
       i.setAttribute('tabindex', '0');
+
       i.setAttribute('aria-label', 'Dismiss announcement');
+
       i.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); i.click(); }
+
       });
+
     });
+
     // Quarto's "Back to top" is an <a role="button"> without an href, so the keyboard cannot reach it.
+
     root.querySelectorAll('#quarto-back-to-top:not([tabindex])').forEach(function (a) {
+
       a.setAttribute('tabindex', '0');
+
       a.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.scrollTo(0, 0); }
+
       });
+
     });
+
     // Observable Plot labels bare <g> marks; aria-label is not allowed on a role-less element.
+
     root.querySelectorAll('[class^="plot-"] g[aria-label]:not([role])').forEach(function (g) {
+
       g.removeAttribute('aria-label');
+
     });
+
     // Scrollable regions must be reachable by keyboard.
+
     root.querySelectorAll('pre, div.sourceCode, .card, .card-body, .table-striped, table, .cell-output-display').forEach(function (el) {
+
       if (el.hasAttribute('tabindex') || el.matches('a, button, input, select, textarea')) return;
+
       var o = getComputedStyle(el);
+
       var scrolls = /(auto|scroll)/.test(o.overflowX + o.overflowY) &&
+
         (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+
       if (scrolls) el.setAttribute('tabindex', '0');
+
     });
+
   }
+
   var queued = false;
+
   function schedule() {
+
     if (queued) return;
+
     queued = true;
+
     requestAnimationFrame(function () { queued = false; fix(document); });
+
   }
+
   fix(document);
+
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+
   window.addEventListener('resize', schedule);
+
   window.addEventListener('load', function () { setTimeout(schedule, 800); setTimeout(schedule, 2500); });
+
 })();
+
 </script>
+
 <script type="ojs-module-contents">
 eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG4gIC8qIFRvb2x0aXAgYm94IGlzIHdoaXRlLCBzbyBpdHMgdGV4dCBtdXN0IHN0YXkgZGFyayBpbiBkYXJrIG1vZGUgKi9cbiAgW2FyaWEtbGFiZWw9XCJ0aXBcIl0gdGV4dCB7IGZpbGw6ICMzNzQxNTEgIWltcG9ydGFudDsgfVxuPC9zdHlsZT5gXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJkaXN0cmljdHNfdGFibGUgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS9yZWFsX2Vucm9sbG1lbnRfYnlfZGlzdHJpY3QuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KS50aGVuKHJvd3MgPT4gcm93cy5tYXAoZCA9PiAoe1xuICBcIkRpc3RyaWN0IE5hbWVcIjogZFtcIkRpc3RyaWN0IE5hbWVcIl0sXG4gIFwiVXRhaCBET0UgMjAyNC0yNVwiOiBkLmRvZV9lbnJvbGxtZW50LFxuICBcIk5DRVMgQ0NEIDIwMjMtMjRcIjogZC5uY2VzX2Vucm9sbG1lbnRcbn0pKSlcblxuSW5wdXRzLnRhYmxlKGRpc3RyaWN0c190YWJsZSwge3Jvd3M6IDI1fSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENPVU5UWUZQIGlzIG51bWVyaWMgb25jZSB0eXBlZCwgc28gbWFwIGl0IGJhY2sgdG8gbmFtZXMgaGVyZSAoMyA9IEJveCBFbGRlciwgbm90IFwiMDAzXCIpXG5jb3VudGllc190YWJsZSA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfZW5yb2xsbWVudF9ieV9jb3VudHkuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KS50aGVuKHJvd3MgPT4gcm93cy5tYXAoZCA9PiAoe1xuICBDb3VudHk6ICh7MzogXCJCb3ggRWxkZXJcIiwgMTE6IFwiRGF2aXNcIiwgMzU6IFwiU2FsdCBMYWtlXCIsIDQ5OiBcIlV0YWhcIiwgNTc6IFwiV2ViZXJcIn0pW2QuQ09VTlRZRlBdLFxuICBcIlVTSEUgKEFZIDIwMjUpXCI6IGQudXNoZV9lbnJvbGxtZW50LFxuICBcIklQRURTIGluLXBlcnNvbiAoZmFsbCAyMDIzKVwiOiBkLm5jZXNfZW5yb2xsbWVudFxufSkpKVxuXG5JbnB1dHMudGFibGUoY291bnRpZXNfdGFibGUpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmRpc3RyaWN0cyA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfZW5yb2xsbWVudF9ieV9kaXN0cmljdC5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pXG5cbm1heF9kaXN0cmljdCA9IGQzLm1heChkaXN0cmljdHMsIGQgPT4gTWF0aC5tYXgoZC5kb2VfZW5yb2xsbWVudCA/PyAwLCBkLm5jZXNfZW5yb2xsbWVudCA/PyAwKSlcblxuUGxvdC5wbG90KHtcbiAgd2lkdGg6IDcyMCxcbiAgaGVpZ2h0OiA1MjAsXG4gIGdyaWQ6IHRydWUsXG4gIG1hcmdpbkxlZnQ6IDkwLFxuICBtYXJnaW5Cb3R0b206IDcwLFxuICBtYXJnaW5Ub3A6IDIwLFxuICBtYXJnaW5SaWdodDogMjAsXG4gIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBjb2xvcjogXCJpbmhlcml0XCJ9LFxuICB4OiB7bGFiZWw6IFwiVXRhaCBET0UgZW5yb2xsbWVudCwgMjAyNC0yNSAoVUdSQyBzY2hvb2wgY291bnRzKVwifSxcbiAgeToge2xhYmVsOiBcIk5DRVMgQ0NEIGVucm9sbG1lbnQsIDIwMjMtMjRcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5saW5lKFtbMCwgMF0sIFttYXhfZGlzdHJpY3QsIG1heF9kaXN0cmljdF1dLCB7c3Ryb2tlOiBcIiM5OTlcIiwgc3Ryb2tlRGFzaGFycmF5OiBcIjQgNFwifSksXG4gICAgUGxvdC5kb3QoZGlzdHJpY3RzLCB7XG4gICAgICB4OiBcImRvZV9lbnJvbGxtZW50XCIsXG4gICAgICB5OiBcIm5jZXNfZW5yb2xsbWVudFwiLFxuICAgICAgZmlsbDogXCIjMWY3OGI0XCIsXG4gICAgICByOiA0LFxuICAgICAgdGl0bGU6IGQgPT4gZFtcIkRpc3RyaWN0IE5hbWVcIl0sXG4gICAgICB0aXA6IHtcbiAgICAgICAgZmlsbDogXCJ3aGl0ZVwiLFxuICAgICAgICBzdHJva2U6IFwiIzM3NDE1MVwiLFxuICAgICAgICBmb3JtYXQ6IHtcbiAgICAgICAgICB4OiBkID0+IGBET0UgMjAyNC0yNTogJHtkLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgICAgICB5OiBkID0+IGBOQ0VTIDIwMjMtMjQ6ICR7ZC50b0xvY2FsZVN0cmluZygpfWBcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH0pXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmNvbGxlZ2VfbG9uZyA9IGNvdW50aWVzX3RhYmxlLmZsYXRNYXAoZCA9PiBbXG4gIHtjb3VudHk6IGQuQ291bnR5LCBzb3VyY2U6IFwiVVNIRSAoQVkgMjAyNSlcIiwgaGVhZGNvdW50OiBkW1wiVVNIRSAoQVkgMjAyNSlcIl19LFxuICB7Y291bnR5OiBkLkNvdW50eSwgc291cmNlOiBcIklQRURTIGluLXBlcnNvbiAoZmFsbCAyMDIzKVwiLCBoZWFkY291bnQ6IGRbXCJJUEVEUyBpbi1wZXJzb24gKGZhbGwgMjAyMylcIl19XG5dKVxuXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzIwLFxuICBoZWlnaHQ6IDQyMCxcbiAgZ3JpZDogdHJ1ZSxcbiAgbWFyZ2luTGVmdDogOTAsXG4gIG1hcmdpbkJvdHRvbTogNzAsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpblJpZ2h0OiAyMCxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIGZ4OiB7bGFiZWw6IG51bGx9LFxuICB4OiB7YXhpczogbnVsbH0sXG4gIHk6IHtsYWJlbDogXCJIZWFkY291bnRcIiwgZ3JpZDogdHJ1ZX0sXG4gIGNvbG9yOiB7bGVnZW5kOiB0cnVlLCBsYWJlbDogXCJTb3VyY2VcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5iYXJZKGNvbGxlZ2VfbG9uZywge1xuICAgICAgZng6IFwiY291bnR5XCIsXG4gICAgICB4OiBcInNvdXJjZVwiLFxuICAgICAgeTogXCJoZWFkY291bnRcIixcbiAgICAgIGZpbGw6IFwic291cmNlXCIsXG4gICAgICB0aXRsZTogZCA9PiBgJHtkLmNvdW50eX0sICR7ZC5zb3VyY2V9YCxcbiAgICAgIHRpcDoge1xuICAgICAgICBmaWxsOiBcIndoaXRlXCIsXG4gICAgICAgIHN0cm9rZTogXCIjMzc0MTUxXCIsXG4gICAgICAgIGZvcm1hdDoge1xuICAgICAgICAgIGZ4OiBmYWxzZSxcbiAgICAgICAgICB4OiBmYWxzZSxcbiAgICAgICAgICBmaWxsOiBmYWxzZSxcbiAgICAgICAgICB5OiBkID0+IGBIZWFkY291bnQ6ICR7ZC50b0xvY2FsZVN0cmluZygpfWBcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH0pXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ1bmlfbW9kYWxpdHlfY29tcGFyZSA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3VuaXZlcnNpdHlfbW9kYWxpdHlfY29tcGFyZS5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcblBsb3QucGxvdCh7XG4gIHdpZHRoOiA3NjAsXG4gIGhlaWdodDogMTEwICogbmV3IFNldCh1bmlfbW9kYWxpdHlfY29tcGFyZS5tYXAoZCA9PiBkLkluc3RpdHV0aW9uKSkuc2l6ZSArIDYwLFxuICBtYXJnaW5MZWZ0OiAyMDAsXG4gIG1hcmdpblJpZ2h0OiAzMCxcbiAgbWFyZ2luQm90dG9tOiA1MCxcbiAgZ3JpZDogdHJ1ZSxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIGZ5OiB7bGFiZWw6IG51bGx9LFxuICB4OiB7bGFiZWw6IFwiU3R1ZGVudHNcIiwgZ3JpZDogdHJ1ZX0sXG4gIHk6IHtsYWJlbDogbnVsbH0sXG4gIGNvbG9yOiB7bGVnZW5kOiB0cnVlLCBkb21haW46IFtcIkluLXBlcnNvbiBvbmx5XCIsIFwiSHlicmlkIChzb21lIERFKVwiLCBcIk9ubGluZSBvbmx5XCJdLCByYW5nZTogW1wiIzFmNzhiNFwiLCBcIiNmNTllMGJcIiwgXCIjOWNhM2FmXCJdfSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmJhclgodW5pX21vZGFsaXR5X2NvbXBhcmUsIHtcbiAgICAgIGZ5OiBcIkluc3RpdHV0aW9uXCIsXG4gICAgICB5OiBcIlNvdXJjZVwiLFxuICAgICAgeDogXCJTdHVkZW50c1wiLFxuICAgICAgZmlsbDogXCJTZWdtZW50XCIsXG4gICAgICB0aXRsZTogZCA9PiBgJHtkLkluc3RpdHV0aW9ufSwgJHtkLlNvdXJjZX0sICR7ZC5TZWdtZW50fTogJHtkLlN0dWRlbnRzLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgIHRpcDoge2ZpbGw6IFwid2hpdGVcIiwgc3Ryb2tlOiBcIiMzNzQxNTFcIn1cbiAgICB9KVxuICBdXG59KVxuIn1dfQ==
 </script>
