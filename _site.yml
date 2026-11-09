@@ -1,0 +1,4 @@
+# What this site does differently from the WFRC defaults in wfrc-shared.yml.
+# Guide: https://wfrcanalytics.github.io/wfrc-brand/customize.html
+execute:
+  freeze: false   # this site re-runs its notebooks on every render (they read live data); do not freeze
