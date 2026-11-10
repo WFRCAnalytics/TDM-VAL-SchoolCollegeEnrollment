@@ -8,8 +8,6 @@ subtitle: "Real K-12 (Utah DOE + NCES) and college (USHE + IPEDS) enrollment, by
 html`<style>
   .cell-output-display svg text { font-size: 15px !important; }
   .cell-output-display table { font-size: 16px; }
-  /* Tooltip box is white, so its text must stay dark in dark mode */
-  [aria-label="tip"] text { fill: #374151 !important; }
 </style>`
 ```
 
@@ -643,8 +641,6 @@ Plot.plot({
       r: 4,
       title: d => d["District Name"],
       tip: {
-        fill: "white",
-        stroke: "#374151",
         format: {
           x: d => `DOE 2024-25: ${d.toLocaleString()}`,
           y: d => `NCES 2023-24: ${d.toLocaleString()}`
@@ -686,8 +682,6 @@ Plot.plot({
       fill: "source",
       title: d => `${d.county}, ${d.source}`,
       tip: {
-        fill: "white",
-        stroke: "#374151",
         format: {
           fx: false,
           x: false,
@@ -791,7 +785,7 @@ Plot.plot({
       x: "Students",
       fill: "Segment",
       title: d => `${d.Institution}, ${d.Source}, ${d.Segment}: ${d.Students.toLocaleString()}`,
-      tip: {fill: "white", stroke: "#374151"}
+      tip: true
     })
   ]
 })
