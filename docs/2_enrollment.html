@@ -87,9 +87,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e20b662fef74af52adf6576dbc63ae56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-798057f4e911e0b0a54847710f3b69ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-e20b662fef74af52adf6576dbc63ae56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-57e93bb914fdb4f955c687f9b24a1aad.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-35e0da2efaba7681d22e2968cab620bd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-57e93bb914fdb4f955c687f9b24a1aad.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -121,7 +121,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
 
 
 <meta property="og:title" content="Enrollment – School &amp; College Enrollment Validation">
@@ -2694,69 +2697,133 @@ Figure&nbsp;3: USHE vs IPEDS enrollment by modality. IPEDS is fall 2023 and incl
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script>
+
 // Accessibility fixes for things Quarto and its libraries render but cannot configure.
+
 // Included on every page through wfrc-shared.yml (format.html.include-after-body).
+
 (function () {
+
   function fix(root) {
+
     // Listing banners are decorative; Quarto drops an empty `image-alt`.
+
     root.querySelectorAll('img.thumbnail-image:not([alt])').forEach(function (img) {
+
       img.setAttribute('alt', '');
+
     });
+
     // Quarto only sets `title` on the color-scheme toggle: add an accessible name and a clearer tooltip.
+
     root.querySelectorAll('.quarto-color-scheme-toggle:not([aria-label])').forEach(function (a) {
+
       a.setAttribute('aria-label', 'Toggle light and dark mode');
+
       a.setAttribute('title', 'Toggle light / dark');
+
     });
+
     // Collapsible callouts put aria-expanded on a plain div: make it a real, keyboard-operable button.
+
     root.querySelectorAll('.callout-header[aria-expanded]:not([role])').forEach(function (h) {
+
       h.setAttribute('role', 'button');
+
       h.setAttribute('tabindex', '0');
+
       h.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); h.click(); }
+
       });
+
     });
+
     // The announcement's dismiss control is a bare <i> with a click handler: give it a role, a name
+
     // and keyboard operation (Enter and Space).
+
     root.querySelectorAll('#quarto-announcement .quarto-announcement-action:not([role])').forEach(function (i) {
+
       i.setAttribute('role', 'button');
+
       i.setAttribute('tabindex', '0');
+
       i.setAttribute('aria-label', 'Dismiss announcement');
+
       i.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); i.click(); }
+
       });
+
     });
+
     // Quarto's "Back to top" is an <a role="button"> without an href, so the keyboard cannot reach it.
+
     root.querySelectorAll('#quarto-back-to-top:not([tabindex])').forEach(function (a) {
+
       a.setAttribute('tabindex', '0');
+
       a.addEventListener('keydown', function (e) {
+
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.scrollTo(0, 0); }
+
       });
+
     });
+
     // Observable Plot labels bare <g> marks; aria-label is not allowed on a role-less element.
+
     root.querySelectorAll('[class^="plot-"] g[aria-label]:not([role])').forEach(function (g) {
+
       g.removeAttribute('aria-label');
+
     });
+
     // Scrollable regions must be reachable by keyboard.
+
     root.querySelectorAll('pre, div.sourceCode, .card, .card-body, .table-striped, table, .cell-output-display').forEach(function (el) {
+
       if (el.hasAttribute('tabindex') || el.matches('a, button, input, select, textarea')) return;
+
       var o = getComputedStyle(el);
+
       var scrolls = /(auto|scroll)/.test(o.overflowX + o.overflowY) &&
+
         (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+
       if (scrolls) el.setAttribute('tabindex', '0');
+
     });
+
   }
+
   var queued = false;
+
   function schedule() {
+
     if (queued) return;
+
     queued = true;
+
     requestAnimationFrame(function () { queued = false; fix(document); });
+
   }
+
   fix(document);
+
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+
   window.addEventListener('resize', schedule);
+
   window.addEventListener('load', function () { setTimeout(schedule, 800); setTimeout(schedule, 2500); });
+
 })();
+
 </script>
+
 <script type="ojs-module-contents">
 eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPHN0eWxlPlxuICAuY2VsbC1vdXRwdXQtZGlzcGxheSBzdmcgdGV4dCB7IGZvbnQtc2l6ZTogMTVweCAhaW1wb3J0YW50OyB9XG4gIC5jZWxsLW91dHB1dC1kaXNwbGF5IHRhYmxlIHsgZm9udC1zaXplOiAxNnB4OyB9XG48L3N0eWxlPmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRpc3RyaWN0c190YWJsZSA9IEZpbGVBdHRhY2htZW50KFwiX2RhdGEvaW50ZXJtZWRpYXRlL3JlYWxfZW5yb2xsbWVudF9ieV9kaXN0cmljdC5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pLnRoZW4ocm93cyA9PiByb3dzLm1hcChkID0+ICh7XG4gIFwiRGlzdHJpY3QgTmFtZVwiOiBkW1wiRGlzdHJpY3QgTmFtZVwiXSxcbiAgXCJVdGFoIERPRSAyMDI0LTI1XCI6IGQuZG9lX2Vucm9sbG1lbnQsXG4gIFwiTkNFUyBDQ0QgMjAyMy0yNFwiOiBkLm5jZXNfZW5yb2xsbWVudFxufSkpKVxuXG5JbnB1dHMudGFibGUoZGlzdHJpY3RzX3RhYmxlLCB7cm93czogMjV9KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8gQ09VTlRZRlAgaXMgbnVtZXJpYyBvbmNlIHR5cGVkLCBzbyBtYXAgaXQgYmFjayB0byBuYW1lcyBoZXJlICgzID0gQm94IEVsZGVyLCBub3QgXCIwMDNcIilcbmNvdW50aWVzX3RhYmxlID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvcmVhbF9lbnJvbGxtZW50X2J5X2NvdW50eS5jc3ZcIikuY3N2KHt0eXBlZDogdHJ1ZX0pLnRoZW4ocm93cyA9PiByb3dzLm1hcChkID0+ICh7XG4gIENvdW50eTogKHszOiBcIkJveCBFbGRlclwiLCAxMTogXCJEYXZpc1wiLCAzNTogXCJTYWx0IExha2VcIiwgNDk6IFwiVXRhaFwiLCA1NzogXCJXZWJlclwifSlbZC5DT1VOVFlGUF0sXG4gIFwiVVNIRSAoQVkgMjAyNSlcIjogZC51c2hlX2Vucm9sbG1lbnQsXG4gIFwiSVBFRFMgaW4tcGVyc29uIChmYWxsIDIwMjMpXCI6IGQubmNlc19lbnJvbGxtZW50XG59KSkpXG5cbklucHV0cy50YWJsZShjb3VudGllc190YWJsZSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlxuZGlzdHJpY3RzID0gRmlsZUF0dGFjaG1lbnQoXCJfZGF0YS9pbnRlcm1lZGlhdGUvcmVhbF9lbnJvbGxtZW50X2J5X2Rpc3RyaWN0LmNzdlwiKS5jc3Yoe3R5cGVkOiB0cnVlfSlcblxubWF4X2Rpc3RyaWN0ID0gZDMubWF4KGRpc3RyaWN0cywgZCA9PiBNYXRoLm1heChkLmRvZV9lbnJvbGxtZW50ID8/IDAsIGQubmNlc19lbnJvbGxtZW50ID8/IDApKVxuXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzIwLFxuICBoZWlnaHQ6IDUyMCxcbiAgZ3JpZDogdHJ1ZSxcbiAgbWFyZ2luTGVmdDogOTAsXG4gIG1hcmdpbkJvdHRvbTogNzAsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpblJpZ2h0OiAyMCxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIHg6IHtsYWJlbDogXCJVdGFoIERPRSBlbnJvbGxtZW50LCAyMDI0LTI1IChVR1JDIHNjaG9vbCBjb3VudHMpXCJ9LFxuICB5OiB7bGFiZWw6IFwiTkNFUyBDQ0QgZW5yb2xsbWVudCwgMjAyMy0yNFwifSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmxpbmUoW1swLCAwXSwgW21heF9kaXN0cmljdCwgbWF4X2Rpc3RyaWN0XV0sIHtzdHJva2U6IFwiIzk5OVwiLCBzdHJva2VEYXNoYXJyYXk6IFwiNCA0XCJ9KSxcbiAgICBQbG90LmRvdChkaXN0cmljdHMsIHtcbiAgICAgIHg6IFwiZG9lX2Vucm9sbG1lbnRcIixcbiAgICAgIHk6IFwibmNlc19lbnJvbGxtZW50XCIsXG4gICAgICBmaWxsOiBcIiMxZjc4YjRcIixcbiAgICAgIHI6IDQsXG4gICAgICB0aXRsZTogZCA9PiBkW1wiRGlzdHJpY3QgTmFtZVwiXSxcbiAgICAgIHRpcDoge1xuICAgICAgICBmb3JtYXQ6IHtcbiAgICAgICAgICB4OiBkID0+IGBET0UgMjAyNC0yNTogJHtkLnRvTG9jYWxlU3RyaW5nKCl9YCxcbiAgICAgICAgICB5OiBkID0+IGBOQ0VTIDIwMjMtMjQ6ICR7ZC50b0xvY2FsZVN0cmluZygpfWBcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH0pXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmNvbGxlZ2VfbG9uZyA9IGNvdW50aWVzX3RhYmxlLmZsYXRNYXAoZCA9PiBbXG4gIHtjb3VudHk6IGQuQ291bnR5LCBzb3VyY2U6IFwiVVNIRSAoQVkgMjAyNSlcIiwgaGVhZGNvdW50OiBkW1wiVVNIRSAoQVkgMjAyNSlcIl19LFxuICB7Y291bnR5OiBkLkNvdW50eSwgc291cmNlOiBcIklQRURTIGluLXBlcnNvbiAoZmFsbCAyMDIzKVwiLCBoZWFkY291bnQ6IGRbXCJJUEVEUyBpbi1wZXJzb24gKGZhbGwgMjAyMylcIl19XG5dKVxuXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzIwLFxuICBoZWlnaHQ6IDQyMCxcbiAgZ3JpZDogdHJ1ZSxcbiAgbWFyZ2luTGVmdDogOTAsXG4gIG1hcmdpbkJvdHRvbTogNzAsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpblJpZ2h0OiAyMCxcbiAgc3R5bGU6IHtiYWNrZ3JvdW5kOiBcInRyYW5zcGFyZW50XCIsIGNvbG9yOiBcImluaGVyaXRcIn0sXG4gIGZ4OiB7bGFiZWw6IG51bGx9LFxuICB4OiB7YXhpczogbnVsbH0sXG4gIHk6IHtsYWJlbDogXCJIZWFkY291bnRcIiwgZ3JpZDogdHJ1ZX0sXG4gIGNvbG9yOiB7bGVnZW5kOiB0cnVlLCBsYWJlbDogXCJTb3VyY2VcIn0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5iYXJZKGNvbGxlZ2VfbG9uZywge1xuICAgICAgZng6IFwiY291bnR5XCIsXG4gICAgICB4OiBcInNvdXJjZVwiLFxuICAgICAgeTogXCJoZWFkY291bnRcIixcbiAgICAgIGZpbGw6IFwic291cmNlXCIsXG4gICAgICB0aXRsZTogZCA9PiBgJHtkLmNvdW50eX0sICR7ZC5zb3VyY2V9YCxcbiAgICAgIHRpcDoge1xuICAgICAgICBmb3JtYXQ6IHtcbiAgICAgICAgICBmeDogZmFsc2UsXG4gICAgICAgICAgeDogZmFsc2UsXG4gICAgICAgICAgZmlsbDogZmFsc2UsXG4gICAgICAgICAgeTogZCA9PiBgSGVhZGNvdW50OiAke2QudG9Mb2NhbGVTdHJpbmcoKX1gXG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9KVxuICBdXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC02IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidW5pX21vZGFsaXR5X2NvbXBhcmUgPSBGaWxlQXR0YWNobWVudChcIl9kYXRhL2ludGVybWVkaWF0ZS91bml2ZXJzaXR5X21vZGFsaXR5X2NvbXBhcmUuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC03IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5QbG90LnBsb3Qoe1xuICB3aWR0aDogNzYwLFxuICBoZWlnaHQ6IDExMCAqIG5ldyBTZXQodW5pX21vZGFsaXR5X2NvbXBhcmUubWFwKGQgPT4gZC5JbnN0aXR1dGlvbikpLnNpemUgKyA2MCxcbiAgbWFyZ2luTGVmdDogMjAwLFxuICBtYXJnaW5SaWdodDogMzAsXG4gIG1hcmdpbkJvdHRvbTogNTAsXG4gIGdyaWQ6IHRydWUsXG4gIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBjb2xvcjogXCJpbmhlcml0XCJ9LFxuICBmeToge2xhYmVsOiBudWxsfSxcbiAgeDoge2xhYmVsOiBcIlN0dWRlbnRzXCIsIGdyaWQ6IHRydWV9LFxuICB5OiB7bGFiZWw6IG51bGx9LFxuICBjb2xvcjoge2xlZ2VuZDogdHJ1ZSwgZG9tYWluOiBbXCJJbi1wZXJzb24gb25seVwiLCBcIkh5YnJpZCAoc29tZSBERSlcIiwgXCJPbmxpbmUgb25seVwiXSwgcmFuZ2U6IFtcIiMxZjc4YjRcIiwgXCIjZjU5ZTBiXCIsIFwiIzljYTNhZlwiXX0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5iYXJYKHVuaV9tb2RhbGl0eV9jb21wYXJlLCB7XG4gICAgICBmeTogXCJJbnN0aXR1dGlvblwiLFxuICAgICAgeTogXCJTb3VyY2VcIixcbiAgICAgIHg6IFwiU3R1ZGVudHNcIixcbiAgICAgIGZpbGw6IFwiU2VnbWVudFwiLFxuICAgICAgdGl0bGU6IGQgPT4gYCR7ZC5JbnN0aXR1dGlvbn0sICR7ZC5Tb3VyY2V9LCAke2QuU2VnbWVudH06ICR7ZC5TdHVkZW50cy50b0xvY2FsZVN0cmluZygpfWAsXG4gICAgICB0aXA6IHRydWVcbiAgICB9KVxuICBdXG59KVxuIn1dfQ==
 </script>
